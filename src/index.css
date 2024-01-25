@@ -1,0 +1,47 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1c1b1f !important;
+    background: -moz-linear-gradient(45deg, #1c1b1f 0%, #25232a 100%);
+    background: -webkit-linear-gradient(45deg, #1c1b1f 0%, #25232a 100%);
+    background: linear-gradient(45deg, #1c1b1f 0%, #25232a 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1c1b1f", endColorstr="#25232a", GradientType=1);
+    height: 100%;
+    overflow: auto;
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot {
+    border-radius: 15px !important;
+}
+
+.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm,
+.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-formControl {
+    border-radius: 15px !important;
+    background: none !important;
+    background-color: #25232a !important;
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-multiline {
+    border-radius: 15px !important;
+}
+
+button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium,
+label.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-sizeMedium.MuiButton-outlinedSizeMedium.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-sizeMedium.MuiButton-outlinedSizeMedium.flex.justify-center.items-center {
+    border-color: #938F99 !important;
+}
+
+button.MuiButtonBase-root.MuiButton-root.MuiLoadingButton-root.MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-sizeMedium.MuiButton-outlinedSizeMedium.MuiButton-root.MuiLoadingButton-root.MuiButton-outlined.MuiButton-outlinedPrimary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

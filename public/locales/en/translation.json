@@ -1,0 +1,101 @@
+{
+  "errors": {
+    "too_many_requests": "Too often! Try again in 5 minutes.",
+    "login_already_exists": "This login already exists!",
+    "you_can_use_this_login": "This login can be used",
+    "password_length": "Password is too short",
+    "invalid_invite_code": "Invalid invite code",
+    "internal_error": "An error has occurred. Try again later.",
+    "fill_all_fields": "Fill all fields",
+    "invalid_link": "Invalid link"
+  },
+  "success": {
+    "login_proccess": "You have successfully logged in!",
+    "register_proccess": "You have successfully logged in!"
+  },
+  "login": {
+    "title": "Login",
+    "or_create_new_account": ["Or", "create new account"],
+    "login_placeholder": "Login",
+    "password_placeholder": "Password",
+    "button": "login"
+  },
+  "register": {
+    "title": "Register",
+    "account_already": ["Already have an account?", "Login"],
+    "labels": ["Login", "Password", "Invite code"],
+    "button": "register"
+  },
+  "main": {
+    "select_button_city": "city",
+    "select_button_city_everything_option": "all",
+    "search_box_institution": "search...",
+    "institution_card": {
+      "rate_button": "Rate",
+      "link_button": "Link",
+      "comments_label": "Comments",
+      "address_label": "Address",
+      "rate_dialog": {
+        "title": "Rate",
+        "content_text": [
+          "Please rate the treatment of LGBTQIA representatives at this establishment",
+          "Leave a comment"
+        ],
+        "action_button": "Rate",
+        "rate_successfully_added": "You have successfully left your rating! Thank you!"
+      }
+    }
+  },
+
+  "settings": {
+    "labels": {
+      "support_project": "Support project",
+      "invite_code_for_friend": "Invite-code for friend",
+      "amount_of_approved_institutions": "Number of approved establishments",
+      "amount_of_requested_institutions": "Number of establishments under consideration",
+      "exit_button": "Exit account",
+      "language_button": "Change language"
+    },
+    "authors": {
+      "developer_and_author_of_the_project": "Developer and author of project",
+      "helper_and_tester_of_the_project": "Helper and tester of the project"
+    }
+  },
+  "request": {
+    "request_sent_and_later_will_be_checked_by_moderators": "You have submitted your request to add a new establishment to the list. In a short time, the moderators will review your request.",
+    "ok_button": "OK",
+    "request_for_new_institution_label": "Request to add an establishment",
+    "inputs": {
+      "title": {
+        "label": "Title",
+        "example": "Restaurant `open'"
+      },
+      "description": {
+        "label": "Description",
+        "example": "A very cool establishment..."
+      },
+      "address": {
+        "label": "Address",
+        "example": "Altyn 77"
+      },
+      "link": {
+        "label": "Link to label in map/institution's website"
+      }
+    },
+    "buttons": {
+      "request": {
+        "loading_state": "Loading...",
+        "label": "Request"
+      },
+      "img": {
+        "label": "Add image"
+      }
+    }
+  },
+  "navigation_bar": {
+    "pages": ["Home", "Requests", "Profile"]
+  },
+  "system": {
+    "developer_and_author_of_project": "Developer and author of project"
+  }
+}

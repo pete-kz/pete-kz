@@ -1,0 +1,97 @@
+{
+    "errors": {
+        "too_many_requests": "Слишком часто! Попробуйте еще раз через 5 минут",
+        "login_already_exists": "Такой логин уже существует!",
+        "you_can_use_this_login": "Этот логин можно использовать",
+        "password_length": "Пароль слишком короткий",
+        "invalid_invite_code": "Неверный инвайт-код",
+        "internal_error": "Произошла ошибка. Попробуйте позже",
+        "fill_all_fields": "Заполните все поля",
+        "invalid_link": "Неверная ссылка"
+    },
+    "success": {
+        "login_proccess": "Вы успешно вошли!",
+        "register_proccess": "Вы успешно зарегестрировались!"
+    },
+    "login": {
+        "title": "Вход",
+        "or_create_new_account": ["Или","создать новый аккаунт"],
+        "login_placeholder": "Логин",
+        "password_placeholder": "Пароль",
+        "button": "войти"
+    },
+    "register": {
+        "title": "Регистрация",
+        "account_already": ["Уже есть аккаунт?", "Войти"],
+        "labels": ["Логин","Пароль","Инвайт-код"],
+        "button": "регистрация"
+    },
+    "main": {
+        "select_button_city": "Город",
+        "select_button_city_everything_option": "Все",
+        "search_box_institution": "Поиск...",
+        "institution_card": {
+            "rate_button": "Оценить",
+            "link_button": "Ссылка",
+            "comments_label": "Комментарии",
+            "address_label": "Адрес",
+            "rate_dialog": {
+                "title": "Оценка",
+                "content_text": ["Пожалуйста, оцените отношение к представителям LGBTQIA в данном заведении", "Оставьте комментарий"],
+                "action_button": "Оценить",
+                "rate_successfully_added": "Вы успешно оставили свою оценку! Спасибо Вам!"
+            }
+        }
+    },
+    "settings": {
+        "labels": {
+            "support_project": "Поддержать проект",
+            "invite_code_for_friend": "Инвайт-код для друга",
+            "amount_of_approved_institutions": "Количество одобренных заведений",
+            "amount_of_requested_institutions": "Количество заведений в рассмотрении",
+            "exit_button": "Выйти из аккаунта",
+            "language_button": "Сменить язык"
+        },
+        "authors": {
+            "developer_and_author_of_the_project": "Разработчик и автор проекта",
+            "helper_and_tester_of_the_project": "Помощник и тестер сайта"
+        }
+    },
+    "request": {
+        "request_sent_and_later_will_be_checked_by_moderators": "Вы отправили свой запрос на добавление нового заведения в список. В течении некоторого времени, модераторы рассмотрят ваш запрос",
+        "ok_button": "ОК",
+        "request_for_new_institution_label": "Запрос на добавление заведения",
+        "inputs": {
+            "title": {
+                "label": "Название",
+                "example": "Ресторан `Открытый`"
+            },
+            "description": {
+                "label": "Описание",
+                "example": "Очень крутое заведение..."
+            },
+            "address": {
+                "label": "Адрес",
+                "example": "Мкр. Алтын 77"
+            },
+            "link": {
+                "label": "Ссылка на метку в карте/сайт заведения"
+            }
+        },
+        "buttons": {
+            "request": {
+                "loading_state": "Загрузка...",
+                "label": "Запросить"
+            },
+            "img": {
+                "label": "Добавить изображение"
+            }
+        }
+    },
+    "navigation_bar": {
+        "pages": ["Главная", "Запросы", "Профиль"]
+    },
+    "system": {
+        "developer_and_author_of_project": "Разработчик и автор проекта"
+    }
+}
