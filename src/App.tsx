@@ -15,8 +15,9 @@ import Main from './Pages/Main'
 import Login from './Pages/Authentication/Login.js'
 import Register from './Pages/Authentication/Register'
 import Settings from './Pages/Settings'
-import Request from './Pages/Request'
-import Disclaimer from './Pages/Disclaimer.js'
+import Favoutires from './Pages/Favourites.js'
+import Profile from './Pages/Profile.js'
+import PetPage from './Pages/Pet.js'
 
 export default function App() {
 
@@ -32,10 +33,6 @@ export default function App() {
 			element: <DefaultLayout><Register /></DefaultLayout>,
 		},
 		{
-			path: '/disclaimer',
-			element: <DefaultLayout><Disclaimer /></DefaultLayout>,
-		},
-		{
 			path: '/',
 			element: <RequireAuth loginPath={loginPage}><DefaultLayout><MainLayout /></DefaultLayout></RequireAuth>,
 			children: [
@@ -44,8 +41,16 @@ export default function App() {
 					element: <Main />,
 				},
 				{
-					path: '/request',
-					element: <Request />,
+					path: '/favourites',
+					element: <Favoutires />,
+				},
+				{
+					path: '/profile',
+					element: <Profile />,
+				},
+				{
+					path: '/pets',
+					element: <PetPage />,
 				},
 				{
 					path: '/settings',

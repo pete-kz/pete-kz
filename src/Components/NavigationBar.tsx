@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react'
-import { Home, Person, PostAddOutlined, AdminPanelSettingsOutlined } from '@mui/icons-material'
+import { Home, Person, Settings } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useAuthUser } from 'react-auth-kit'
 import { useTranslation } from 'react-i18next'
-import { axiosAuth as axios, notification } from '@utils'
-import { API } from '@config'
 import { themeColor } from '@colors'
-import { AxiosResponse } from 'axios'
 
-const pages: string[][] = [['navigation_bar.pages.0', '/'], ['navigation_bar.pages.1', '/request'], ['navigation_bar.pages.2', '/settings']]
-const pagesPaths: string[] = ['/', '/request', '/settings']
+const pages: string[][] = [
+	['navigation_bar.pages.1', '/profile'], 
+	['navigation_bar.pages.0', '/'], 
+	
+	['navigation_bar.pages.2', '/settings']
+]
+const pagesPaths: string[] = ['/profile', '/', '/settings']
 
 export default function NavigationBar() {
 
 	// States
-	const [ADMINS, setADMINS] = React.useState<string[]>([])
 	const [currentPageIndex, setCurrentPageIndex] = React.useState<number>(0)
 	const [count, setCount] = React.useState<number>(0)
 	const { t } = useTranslation()
@@ -24,21 +25,8 @@ export default function NavigationBar() {
 	const navigate = useNavigate()
 	const authStateUser = useAuthUser()
 	const user: { _id?: string } | null = authStateUser()
-	const isAdmin: boolean = ADMINS.includes(user!._id ?? '12345678')
 	if (user == null) {
 		navigate('/login')
-	}
-
-	// Functions
-	function fetchAdmins() {
-		axios.get(`${API.baseURL}/config/`).then((response: AxiosResponse) => {
-			if (!response.data.err) {
-				const { admins } = response.data
-				setADMINS(admins)
-			} else {
-				notification.custom.error(response.data.err)
-			}
-		})
 	}
 
 	function activeStyle(index: number, currentIndex: number) {
@@ -49,14 +37,10 @@ export default function NavigationBar() {
 	}
 
 	function activeClasses(index: number, currentIndex: number) {
-		if (index === currentIndex) {
-			return 'rounded-2xl px-3 transition ease-in-out'
-		}
-		return 'rounded-2xl px-3 transition ease-in-out bg-none'
+		return `rounded-2xl px-3 transition ease-in-out ${index === currentIndex ? '' : 'bg-none'}`
 	}
-
+		
 	React.useEffect(() => {
-		fetchAdmins()
 		setCurrentPageIndex(pagesPaths.indexOf(location.pathname))
 	}, [count])
 
@@ -67,25 +51,15 @@ export default function NavigationBar() {
 					<button key={page[1]} type="button" onClick={() => { navigate(page[1]); setCount(count + 1) }}>
 						<div className="flex flex-col justify-center items-center">
 							<div style={activeStyle(index, currentPageIndex)} className={activeClasses(index, currentPageIndex)}>
-								{index === 0 && <Home />}
-								{index === 1 && <PostAddOutlined />}
-								{index === 2 && <Person />}
+								{index === 1 && <Home />}
+								{/* {index === 1 && <StarBorderOutlined />} */}
+								{index === 0 && <Person />}
+								{index === 2 && <Settings />}
 							</div>
 							<p>{t(page[0])}</p>
 						</div>
 					</button>
 				))}
-				{isAdmin
-					&& (
-						<button type="button" onClick={() => { window.location.href = 'http://admin.allymap.info/'; setCount(count + 1) }}>
-							<div className="flex flex-col justify-center items-center">
-								<div style={activeStyle(3, currentPageIndex)} className={activeClasses(3, currentPageIndex)}>
-									<AdminPanelSettingsOutlined />
-								</div>
-								<p>Admin</p>
-							</div>
-						</button>
-					)}
 			</div>
 		</header>
 	)

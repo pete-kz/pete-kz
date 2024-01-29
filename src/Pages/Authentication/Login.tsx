@@ -38,6 +38,7 @@ export default function Login() {
 			login,
 			password,
 		}).then((response: AxiosResponse) => {
+			console.log(response.data)
 			if (!response.data.err) {
 				if (signIn({
 					token: response.data.token,

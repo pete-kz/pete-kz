@@ -2,45 +2,28 @@
  *  RESPONSE TYPES
  */
 
-export type Comment_Data = {
-    _id: string,
-    userID: string,
-    institutionID: string,
-    date: string,
-    dateStamp: string,
-    content: string,
-    rate: string,
-}
-
-export type Institution_Data = {
+export type Pet_Response = {
     _id: string
-	title: string
-	description: string
-    userID: string
-    status: string
-	address: string
-	link: string
-	imagePath: string
+	name: string
+    age: string
+    type: 'Cat' | 'Dog' | 'Other'
+    description: string
+    userID: User_Data["_id"],
+    imagesPath: string[],
     city: string
 }
 
-export type RequestInstitution_Data = {
+export type User_Response = {
     _id: string
-    userRequestID: string
-    title: string
-    address: string
-	description: string
-	link: string
-	imagePath: string
-    city: string
-}
-
-export type User_Data = {
-    _id: string
-    login: string
-    password: string
-    inviteCode: string
-    acceptCode: string
+    login: string,
+    social: {
+        telegram: string,
+        instagram: string,
+        phone: string
+    },
+    email: string,
+    password: string,
+    liked: string[],
     token: string
 }
 
@@ -48,62 +31,34 @@ export type User_Data = {
  *  PROPS TYPES
  */
 
-export type EditInstitutionDialog_Props = {
+export type EditPetDialog_Props = {
 	open: boolean
-	institutionID: string
-	institutionTitle: string
+	petID: string
+	petName: string
 	onClose: Function
 }
 
-export type UserComments_Props = {
-	userID: string
-	rate: string
-	comment: string
-}
-
-export type UserCard_Props = {
-    id: string
+export interface UserCard_Props {
     login: string
-    inviteCode: string
-    acceptCode: string
+    social: {
+        telegram?: string
+        instagram?: string
+        phone: string
+    }
+    email: string
+    password: string
+    liked: PetCard_props["id"][]
+    token: string
 }
 
-export type Comments_Props = {
-	comments: Array<Comment_Props>
-	expanded?: boolean
-	id: string
-}
-
-export type Comment_Props = {
-	rate: string
-	userID: string
-	institutionID: string
-	content: string
-    _id: string
-    date: string
-    dateStamp: string
-}
-
-export type InstitutionCard_Props = {
-	userID: string
+export type PetCard_props = {
 	id: string
 	name: string
-	address: string
-	status: string
-	description: string
-	link: string
-	imagePath: string
-    city?: string
-}
-
-export type RequestInstitutionCard_Props = {
-    id?: string
-    name: string
-    address: string
+    age: string
+    type: 'Cat' | 'Dog' | 'Other'
     description: string
-    link: string
-    imagePath: string
-    userID?: string
+    userID: User_Data["_id"],
+    imagesPath: string[],
     city?: string
 }
 

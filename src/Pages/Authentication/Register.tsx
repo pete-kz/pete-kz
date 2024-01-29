@@ -1,5 +1,5 @@
 import React from 'react'
-import { AccountCircle, Password, Celebration } from '@mui/icons-material'
+import { AccountCircle, Password, Phone } from '@mui/icons-material'
 import { Button, TextField } from '@mui/material'
 import { useIsAuthenticated } from 'react-auth-kit'
 import { useNavigate, Link } from 'react-router-dom'
@@ -21,7 +21,7 @@ export default function Register() {
 	// States
 	const [login, setLogin] = React.useState<string>('')
 	const [password, setPassword] = React.useState<string>('')
-	const [inviteCode, setInviteCode] = React.useState<string>('')
+	const [phone, setPhone] = React.useState<string>('')
 	const [registerButtonDisabled, setRegisterButtonDisabled] = React.useState<boolean>(false)
 
 	// States
@@ -33,14 +33,15 @@ export default function Register() {
 		setLogin(event.target.value)
 		setRegisterButtonDisabled(false)
 	}
-	const handleInviteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setInviteCode(event.target.value)
+
+	const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setPhone(event.target.value)
 		setRegisterButtonDisabled(false)
 	}
 
 	// Functions
 	const register = () => {
-		if (login == '' || password == '' || inviteCode == '') {
+		if (login == '' || password == '') {
 			notification.custom.error(t('errors.fill_all_fields'))
 			setRegisterButtonDisabled(true)
 			return null
@@ -48,7 +49,7 @@ export default function Register() {
 		axios.post(`${API.baseURL}/users/register`, {
 			login,
 			password,
-			inviteCode,
+			social: { phone }
 		}).then((response: AxiosResponse) => {
 			if (!response.data.err) {
 				navigate('/login')
@@ -56,7 +57,7 @@ export default function Register() {
 				notification.custom.error(response.data.err)
 			}
 			return null
-		}).catch((r) => { notification.custom.error(t('errors.too_many_requests')) })
+		}).catch(() => { notification.custom.error(t('errors.too_many_requests')) })
 	}
 
 	function handleOnBlurLoginInput() {
@@ -79,10 +80,16 @@ export default function Register() {
 		}
 	}
 
-	function handleOnBlurInviteCodeInput() {
-		if (inviteCode.length != 8 || inviteCode == '') {
-			notification.custom.error(t('errors.invalid_invite_code'))
+	function handleOnBlurPhoneInput() {
+		if (!phone.includes('+')) {
+			notification.custom.error(t('errors.phone_international'))
 			setRegisterButtonDisabled(true)
+			return
+		}
+		if (phone == '') {
+			notification.custom.error(t('errors.phone_required'))
+			setRegisterButtonDisabled(true)
+			return
 		}
 	}
 
@@ -106,16 +113,16 @@ export default function Register() {
 						</p>
 					</div>
 					<div className="flex flex-end items-center mb-2">
+						<Phone className="mr-2" />
+						<TextField label={t('register.labels.2')} variant="outlined" type="tel" onChange={handlePhoneChange} onBlur={handleOnBlurPhoneInput} />
+					</div>
+					<div className="flex flex-end items-center mb-2">
 						<AccountCircle className="mr-2" />
-						<TextField label={t('register.labels.0')} variant="outlined" onChange={handleLoginChange} onBlur={handleOnBlurLoginInput} />
+						<TextField label={t('register.labels.0')} variant="outlined" onChange={handleLoginChange} onBlur={handleOnBlurLoginInput} type='text'/>
 					</div>
 					<div className="flex flex-end items-center mb-2">
 						<Password className="mr-2" />
 						<TextField label={t('register.labels.1')} variant="outlined" type="password" onChange={handlePasswordChange} onBlur={handleOnBlurPasswordInput} />
-					</div>
-					<div className="flex flex-end items-center mb-2">
-						<Celebration className="mr-2" />
-						<TextField label={t('register.labels.2')} variant="outlined" onChange={handleInviteChange} onBlur={handleOnBlurInviteCodeInput} />
 					</div>
 					<div className="flex justify-center items-center" style={{ marginTop: 12 }}>
 						<Button
