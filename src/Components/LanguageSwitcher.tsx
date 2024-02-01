@@ -1,7 +1,6 @@
 /* eslint-disable linebreak-style */
 import React, { useState, useEffect } from 'react'
 import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
-import { LanguageOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 
 const languages = [['ru', '🇷🇺 Русский'], ['kz', '🇰🇿 Қазақ тілі'], ['en', '🇬🇧 English']]
@@ -13,14 +12,13 @@ export default function LanguageSwitcher() {
 	const [currentLanguage, setLanguage] = useState<string>('')
 
 	useEffect(() => {
-		setLanguage(i18n.language)
+		setLanguage(i18n.language === 'en-US' ? 'en' : i18n.language)
 		i18n.changeLanguage(currentLanguage)
 	}, [])
 
 	return (
-		<FormControl fullWidth style={{ marginTop: 8 }}>
+		<FormControl fullWidth style={{ marginTop: 16 }}>
 			<InputLabel className="flex justify-center items-center">
-				<LanguageOutlined className="mr-1 flex justify-center items-center" />
 				{t('settings.labels.language_button')}
 			</InputLabel>
 			<Select

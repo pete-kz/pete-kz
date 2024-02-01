@@ -1,21 +1,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
-import { axiosAuth as axios, notification } from '@utils'
+import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
-import LoadingPage from '@/Components/LoadingPage'
-import { Button, TextField } from '@mui/material'
-
-function useQuery() {
-    const { search } = useLocation()
-
-    return React.useMemo(() => new URLSearchParams(search), [search])
-}
+import { Button, TextField, IconButton, Typography } from '@mui/material'
+import { Favorite, KeyboardReturn } from '@mui/icons-material'
+import ReactImageGallery from 'react-image-gallery'
+import { themeColor } from '@/Utils/colors'
+import { red } from '@mui/material/colors'
 
 
 export default function PetPage() {
@@ -37,6 +34,7 @@ export default function PetPage() {
     const [name, setName] = useState<string>('')
     const [age, setAge] = useState<string>('')
     const [description, setDescription] = useState<string>('')
+    const [imageLinks, setImageLinks] = useState<any[]>([])
 
 
     // Functions
@@ -81,10 +79,10 @@ export default function PetPage() {
     function updatePetInfo() {
         notification.custom.promise(
             axios.post(`${API.baseURL}/pets/edit`, {
-                query: { _id: petData?._id},
+                query: { _id: petData?._id },
                 updated: {
-                    name, 
-                    age, 
+                    name,
+                    age,
                     description
                 }
             })
@@ -117,22 +115,28 @@ export default function PetPage() {
     useEffect(() => {
         checkEditMode()
         fetchOwner()
+
+        const images = []
+        petData?.imagesPath.map(imageLink => {
+            images.push({
+                original: imageLink,
+                thumbnail: imageLink
+            })
+        })
+        setImageLinks(images)
     }, [petData])
 
     return (
         <>
             {petData && (
                 editMode ? (
-                    <m.div className='m-2 p-2' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                        <div>
-                            <p>Picture cannot be changed</p>
-                            {petData.imagesPath.map((image, index) => (
-                                <img src={image} className='flex' style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden' }} key={image} />
-                            ))}
+                    <m.div className='m-2 p-2 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                        <div className='mb-3'>
+                            <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
                         </div>
                         <div className='gap-2 flex flex-col'>
                             <div className='flex gap-2 w-full'>
-                                <TextField defaultValue={name} label={'Name'} variant="outlined" onChange={handleNameChange} />
+                                <TextField defaultValue={name} fullWidth label={'Name'} variant="outlined" onChange={handleNameChange} />
                                 <TextField defaultValue={age} label={'Age'} style={{ width: 60 }} variant="outlined" onChange={handleAgeChange} type='number' />
                             </div>
                             <TextField defaultValue={description} label={'Description'} variant="outlined" onChange={handleDescriptionChange} multiline />
@@ -140,27 +144,85 @@ export default function PetPage() {
                         <Button className='w-full' style={{ marginTop: 10 }} variant='contained' onClick={updatePetInfo}>Update</Button>
                     </m.div>
                 ) : (
-                    <m.div className='m-2 p-2' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                        <div>
-                            {petData.imagesPath.map((image, index) => (
+                    <>
+                        {query.get('more') === 'true' && (
+                            <LikeReturnBottom pet={petData} />
+                        )}
+                        <m.div className='m-2 p-2 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <div>
+                                <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
+                                {/* {petData.imagesPath.map((image, index) => (
                                 <img src={image} className='flex' style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden' }} key={image} />
-                            ))}
-                        </div>
-                        <div>
-                            <p>{petData.name}, {petData.age}</p>
-                            <p>{petData.description}</p>
-                        </div>
-                        <div>
-                            <p>Owner: {ownerData?.login}</p>
-                            <p>Contacts:</p>
-                            {ownerData?.social.instagram && (<p> instagram: {ownerData?.social.instagram}</p>)}
-                            {ownerData?.social.telegram && (<p> telegram: {ownerData?.social.telegram}</p>)}
-                            {ownerData?.social.phone && (<p> phone: {ownerData?.social.phone}</p>)}
+                            ))} */}
+                            </div>
+                            <div>
+                                <Typography variant='h6'>{petData.name}, {petData.age}</Typography>
+                                <Typography variant='body2'>{petData.description}</Typography>
+                            </div>
+                            {query.get('contacts') === 'true' && (
+                                <div>
+                                    <p>Owner: {ownerData?.login}</p>
+                                    <p>Contacts:</p>
+                                    {ownerData?.social.instagram && (<p> instagram: {ownerData?.social.instagram}</p>)}
+                                    {ownerData?.social.telegram && (<p> telegram: {ownerData?.social.telegram}</p>)}
+                                    {ownerData?.social.phone && (<p> phone: {ownerData?.social.phone}</p>)}
+                                </div>
+                            )}
 
-                        </div>
-                    </m.div>
+                        </m.div>
+                    </>
                 )
             )}
+        </>
+    )
+}
+
+function LikeReturnBottom(props: { pet: Pet_Response }) {
+    // Setups
+    const authStateUser = useAuthUser()
+    const user = authStateUser() || {}
+
+    // States
+    const [userData, setUserData] = useState<User_Response>()
+
+    function addLikedPet() {
+        if (!userData) return
+        const userPrevData = structuredClone(userData)
+        userPrevData.liked.push(props.pet._id)
+        // @ts-expect-error Using interface User_Response that have strict definitions throws error when trying to exclude password from data
+        userPrevData.password = undefined
+        axios.post(`${API.baseURL}/users/update/${userData._id}`, { update: userPrevData }).then((res: AxiosResponse) => {
+            if (!res.data.err) {
+                notification.custom.success('Liked! Check in your profile later')
+            } else {
+                notification.custom.error(res.data.err)
+            }
+        })
+
+    }
+
+    function getOwner() {
+        axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
+            if (!res.data.err) {
+                setUserData(res.data)
+            } else {
+                notification.custom.error(res.data.err)
+            }
+        })
+    }
+
+    useEffect(() => {
+        getOwner()
+    }, [])
+
+    return (
+        <>
+            <div className='absolute w-screen flex items-center justify-center bottom-[6rem]'>
+                <div className='flex items-center gap-3'>
+                    <IconButton sx={{ backgroundColor: themeColor.cardBackground, color: themeColor.iconButtonColor }} onClick={() => { window.open(`/?start_id=${props.pet._id}`, '_self') }}><KeyboardReturn /></IconButton>
+                    <IconButton sx={{ backgroundColor: themeColor.cardBackground, color: red[500] }} onClick={addLikedPet}><Favorite /></IconButton>
+                </div>
+            </div>
         </>
     )
 }

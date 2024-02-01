@@ -31,13 +31,13 @@ export default function NavigationBar() {
 
 	function activeStyle(index: number, currentIndex: number) {
 		if (index === currentIndex) {
-			return { backgroundColor: themeColor[5] }
+			return { backgroundColor: themeColor[5], color: '#49454f' }
 		}
-		return {}
+		return { color: '#49454f' }
 	}
 
 	function activeClasses(index: number, currentIndex: number) {
-		return `rounded-2xl px-3 transition ease-in-out ${index === currentIndex ? '' : 'bg-none'}`
+		return `rounded-2xl px-3 transition ease-in-out ${index === currentIndex ? '' : 'bg-none'} text-color-[#49454f]`
 	}
 		
 	React.useEffect(() => {
@@ -56,7 +56,7 @@ export default function NavigationBar() {
 								{index === 0 && <Person />}
 								{index === 2 && <Settings />}
 							</div>
-							<p>{t(page[0])}</p>
+							<p style={{ color: '#49454f' }}>{t(page[0])}</p>
 						</div>
 					</button>
 				))}

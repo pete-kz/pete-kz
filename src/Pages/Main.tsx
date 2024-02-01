@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
 import { m } from 'framer-motion'
-import { Select, type SelectChangeEvent, MenuItem, FormControl, InputLabel } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
-import { type Pet_Response } from '@declarations'
-import { axiosAuth as axios, notification } from '@utils'
+import { User_Response, type Pet_Response } from '@declarations'
+import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
 import PetCard from '@/Components/Cards/Pet.card'
 
@@ -24,31 +23,42 @@ export default function Main() {
 	const signout = useSignOut()
 	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
+	const query = useQuery()
 
 	// States
-	const [institutions, setInstitutions] = useState<Pet_Response[]>([])
+	const [allPets, setAllPets] = useState<Pet_Response[]>([])
 	const [petIndex, setPet] = useState<number>(0)
 	const [city, setCity] = useState<string>('')
 
 	// Handlers
 	function changePet(type: 'n' | 'p') {
 		if (type === 'n') {
-			return petIndex != (institutions.length - 1) ? setPet(pet => pet + 1) : 0
+			return petIndex != (allPets.length - 1) ? setPet(pet => pet + 1) : 0
 		}
 		return petIndex != 0 ? setPet(pet => pet - 1) : 0
 	}
 
 	// Functions
-	function fetchInstitutions() {
-		notification.custom.promise(
-			axios.post(`${API.baseURL}/pets/find`, {}).then((res: AxiosResponse) => {
-				if (!res.data.err) {
-					setInstitutions(res.data)
-				} else {
-					notification.custom.error(res.data.err)
-				}
-			}),
-		)
+	function fetchAllPets() {
+
+		axios.post(`${API.baseURL}/pets/find`, {}).then((res: AxiosResponse) => {
+			if (!res.data.err) {
+				const pets: Pet_Response[] = res.data
+				axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
+					if (!res.data.err) {
+						const userData: User_Response = res.data
+						// if pet already in users skipped or liked, filter them out
+						setAllPets(pets.filter(pet => !(userData.liked.includes(pet._id))))
+					} else {
+						notification.custom.error(res.data.err)
+					}
+				})
+
+			} else {
+				notification.custom.error(res.data.err)
+			}
+		})
+
 	}
 
 	function checkToken() {
@@ -59,14 +69,27 @@ export default function Main() {
 		}
 	}
 
+	function checkQuery() {
+		const pet_id = query.get('start_id')
+		if (allPets && pet_id) {
+			allPets.map((pet) => {
+				if (pet._id === pet_id) setPet(allPets.indexOf(pet))
+			})
+		}
+	}
+
 	useEffect(() => {
 		if (isAuthenticated()) {
-			fetchInstitutions()
+			fetchAllPets()
 			checkToken()
 		} else {
 			navigate('/login')
 		}
 	}, [])
+
+	useEffect(() => {
+		checkQuery()
+	}, [allPets])
 
 	return (
 		<>
@@ -89,31 +112,46 @@ export default function Main() {
 			</m.div> */}
 
 			<div className="flex justify-center flex-wrap">
-				{institutions.map((pet, index: number) => (
-					pet?.city?.includes(city) && (
-						index === petIndex && (
-							<PetCard
-								key={index}
-								imagesPath={pet.imagesPath}
-								age={pet.age}
-								type={pet.type}
-								name={pet.name}
-								description={pet.description}
-								id={pet._id}
-								userID={user._id}
-								city={pet.city}
-							/>
-						)
-					)
+				{allPets.length > 0 ?
+					(
+						<> {
+							allPets.map((pet, index: number) => (
+								pet?.city?.includes(city) && (
+									index === petIndex && (
+										<PetCard
+											key={index}
+											imagesPath={pet.imagesPath}
+											age={pet.age}
+											type={pet.type}
+											name={pet.name}
+											description={pet.description}
+											id={pet._id}
+											userID={user._id}
+											city={pet.city}
+											changePet={changePet}
+										/>
+									)
+								)
 
-				))}
+							))}
+						</>
+					)
+					:
+					(
+						<div className='w-screen h-screen flex justify-center items-center px-3'>
+
+							<p>There are no more pets to show for you! Check liked and skipped or wait a little while for new ones to come!</p>
+
+						</div>
+					)
+				}
 			</div>
-			<div className='absolute bottom-20'>
+			{/* <div className='absolute bottom-20'>
 				<div className='flex justify-between w-screen px-3'>
 				<button className='bg-white p-2 text-black' onClick={() => { changePet('p')}}>prev</button>
 				<button className='bg-white p-2 text-black' onClick={() => { changePet('n')}}>next</button>
 				</div>
-			</div>
+			</div> */}
 		</>
 	)
 }

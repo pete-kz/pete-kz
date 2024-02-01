@@ -1,5 +1,7 @@
 import axios from 'axios'
+import React from 'react'
 import { toast, type ToastOptions } from 'react-hot-toast'
+import { useLocation } from 'react-router-dom'
 
 const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem(
 	'_auth',
@@ -82,4 +84,10 @@ const notification: Notification = {
 	},
 }
 
-export { axiosAuth, notification, type Notification }
+function useQuery() {
+    const { search } = useLocation()
+
+    return React.useMemo(() => new URLSearchParams(search), [search])
+}
+
+export { axiosAuth, notification, type Notification, useQuery }

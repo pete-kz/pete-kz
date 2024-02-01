@@ -97,12 +97,11 @@ export default function Login() {
 					</div>
 					<Button
 						id="loginbtn"
-						sx={{ borderColor: themeColor[12], color: themeColor[7], borderRadius: 9999, fontWeight: 500, width: '100%', border: 1, }}
+						sx={{ color: themeColor[7], borderRadius: 9999, fontWeight: 500, width: '100%', border: `1px solid ${themeColor[12]}`, }}
 						onClick={userSignIn}
 					>
 						{t('login.button')}
 					</Button>
-					<LanguageSwitcher />
 				</div>
 			</m.div>
 		</>

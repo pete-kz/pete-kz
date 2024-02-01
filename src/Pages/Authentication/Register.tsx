@@ -127,9 +127,7 @@ export default function Register() {
 					<div className="flex justify-center items-center" style={{ marginTop: 12 }}>
 						<Button
 							onClick={register}
-							sx={{
-								borderColor: themeColor[12], color: themeColor[7], borderRadius: 9999, fontWeight: 500, width: '100%', border: 1,
-							}}
+							sx={{ color: themeColor[7], borderRadius: 9999, fontWeight: 500, width: '100%', border: `1px solid ${themeColor[12]}`, }}
 							variant="outlined"
 							fullWidth
 							disabled={registerButtonDisabled}

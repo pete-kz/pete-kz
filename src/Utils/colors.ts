@@ -7,17 +7,23 @@ interface themeColor {
   9: string
   11: string
   12: string
+  [key: string]: string
 }
 
-const themeColor: themeColor = {
-	2: '#25232a',
-	3: '#2b2831',
-	5: '#4a4458',
-	6: '#cac4d0',
-	7: '#d0bcff',
-	9: '#302d38',
-	11: '#E6E1E5',
-	12: '#938F99',
+const themeColor = {
+  2: '#EDE7F6', // Light purple for background
+  3: '#f3edf7', // Background color for bottom navigation bar
+  5: '#e6e1e9', // Background color for items in bottom navigation bar
+  6: '#F3E5F5', // Very light purple for card backgrounds
+  7: '#6750a4', // Button text 
+  9: '#CE93D8', // Purple for active elements or icons
+  11: '#FFCDD2', // Light pink for contrast against the purple
+  12: '#79747e', // button border
+  'cardBackground': '#fef7ff',
+  'iconColor': '#cac4d0',
+  'divBorder': '#d7d1db',
+  'primaryTextLight': '#1d1b20',
+  'iconButtonColor': '#49454f'
 }
 
 export { themeColor }

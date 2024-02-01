@@ -24,6 +24,7 @@ export type User_Response = {
     email: string,
     password: string,
     liked: string[],
+    skipped: string[],
     token: string
 }
 
@@ -59,7 +60,8 @@ export type PetCard_props = {
     description: string
     userID: User_Data["_id"],
     imagesPath: string[],
-    city?: string
+    city?: string,
+    changePet?: (type: 'n' | 'p') => void
 }
 
 export type NavigationBar_Props = {
