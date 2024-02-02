@@ -26,6 +26,10 @@ body {
     background-color: #F3E5F5 !important; /* Very light purple for elements like inputs and dialogs */
 }
 
+div[role="status"] {
+    justify-content: start;
+}
+
 
 @tailwind base;
 @tailwind components;

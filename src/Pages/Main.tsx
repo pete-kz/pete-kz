@@ -2,13 +2,17 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
-import { m } from 'framer-motion'
+import { m, AnimatePresence, useAnimate } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
 import PetCard from '@/Components/Cards/Pet.card'
+import toast from 'react-hot-toast'
+import { themeColor } from '@/Utils/colors'
+import { Button, Icon, IconButton } from '@mui/material'
+import { ArrowLeft, ArrowRight } from '@mui/icons-material'
 
 
 const cities: string[] = ['Алматы', 'Астана', 'Шымкент']
@@ -24,6 +28,7 @@ export default function Main() {
 	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
 	const query = useQuery()
+	const [scope, animate] = useAnimate()
 
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
@@ -32,10 +37,21 @@ export default function Main() {
 
 	// Handlers
 	function changePet(type: 'n' | 'p') {
-		if (type === 'n') {
-			return petIndex != (allPets.length - 1) ? setPet(pet => pet + 1) : 0
+		if (type === 'n' && petIndex != (allPets.length - 1)) {
+			console.log(1)
+			return animate(scope.current, { opacity: 0, x: -400 }, { duration: .45 }).then(() => {
+				animate(scope.current, { x: 400 },  { duration: 0 }).then(() => {
+					setPet(pet => pet + 1)
+				})
+			})
 		}
-		return petIndex != 0 ? setPet(pet => pet - 1) : 0
+		if (petIndex != 0 && type === 'p') {
+			return animate(scope.current, { opacity: 0, x: 400 }, { duration: .45 }).then(() => {
+				animate(scope.current, { x: -400 },  { duration: 0 }).then(() => {
+					setPet(pet => pet - 1)
+				})
+			})
+		}
 	}
 
 	// Functions
@@ -79,13 +95,13 @@ export default function Main() {
 	}
 
 	useEffect(() => {
-		if (isAuthenticated()) {
-			fetchAllPets()
-			checkToken()
-		} else {
+		if (!isAuthenticated()) {
 			navigate('/login')
 		}
-	}, [])
+		fetchAllPets()
+		checkToken()
+		animate(scope.current, { opacity: 1, x: 0 }, { duration: .45 })
+	}, [petIndex])
 
 	useEffect(() => {
 		checkQuery()
@@ -93,31 +109,39 @@ export default function Main() {
 
 	return (
 		<>
-			{/* <m.div className="flex justify-center items-center flex-row mx-2 mb-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-				<FormControl fullWidth style={{ marginTop: 8 }}>
-					<InputLabel>{t('main.select_button_city')}</InputLabel>
-					<Select
-						value={city}
-						label={t('main.select_button_city')}
-						className="rounded-3xl"
-						onChange={(event: SelectChangeEvent) => { setCity(event.target.value) }}
-					>
-						<MenuItem value="">{t('main.select_button_city_everything_option')}</MenuItem>
-						{cities.map((_city: string) => (
-							<MenuItem key={_city} value={_city}>{_city}</MenuItem>
-						))}
-
-					</Select>
-				</FormControl>
-			</m.div> */}
-
-			<div className="flex justify-center flex-wrap">
-				{allPets.length > 0 ?
-					(
-						<> {
-							allPets.map((pet, index: number) => (
+			<div className="flex justify-center items-center h-screen">
+				<div className='absolute w-screen flex items-center justify-center bottom-[6rem]'>
+					<div className='flex items-center gap-3'>
+						<IconButton sx={{
+							color: themeColor.iconButtonColor, background: themeColor.cardBackground,
+							':active': {
+								background: themeColor.cardBackground
+							}, ':hover': {
+								background: themeColor.cardBackground
+							},
+						}} onClick={() => {
+							changePet('p')
+						}}><ArrowLeft /></IconButton>
+						<IconButton sx={{
+							color: themeColor.iconButtonColor, background: themeColor.cardBackground,
+							':active': {
+								background: themeColor.cardBackground
+							}, ':hover': {
+								background: themeColor.cardBackground
+							}
+						}} onClick={() => {
+							changePet('n')
+						}}><ArrowRight /></IconButton>
+					</div>
+				</div>
+				<div id='pet_card' ref={scope}>
+					{allPets.length > 0 ? (
+						<>
+							{allPets.map((pet, index: number) => (
 								pet?.city?.includes(city) && (
 									index === petIndex && (
+
+
 										<PetCard
 											key={index}
 											imagesPath={pet.imagesPath}
@@ -128,30 +152,23 @@ export default function Main() {
 											id={pet._id}
 											userID={user._id}
 											city={pet.city}
-											changePet={changePet}
 										/>
-									)
-								)
 
-							))}
+
+									))))}
+
 						</>
 					)
-					:
-					(
-						<div className='w-screen h-screen flex justify-center items-center px-3'>
-
-							<p>There are no more pets to show for you! Check liked and skipped or wait a little while for new ones to come!</p>
-
-						</div>
-					)
-				}
-			</div>
-			{/* <div className='absolute bottom-20'>
-				<div className='flex justify-between w-screen px-3'>
-				<button className='bg-white p-2 text-black' onClick={() => { changePet('p')}}>prev</button>
-				<button className='bg-white p-2 text-black' onClick={() => { changePet('n')}}>next</button>
+						:
+						(
+							<div className='w-screen h-screen flex justify-center items-center px-3'>
+								<p>There are no more pets to show for you! Check liked and skipped or wait a little while for new ones to come!</p>
+							</div>
+						)
+					}
 				</div>
-			</div> */}
+			</div>
 		</>
 	)
+
 }

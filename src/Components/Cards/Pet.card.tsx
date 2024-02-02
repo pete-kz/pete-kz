@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useMemo, useState } from 'react'
-import { Avatar, IconButton, Button, Card, CardHeader, TextField, CardActions, CardMedia, CardContent, Typography } from '@mui/material'
+import { Avatar, IconButton, Button, Card, CardHeader, TextField, CardActions, CardMedia, CardContent, Typography, Skeleton } from '@mui/material'
 import { Clear, StarOutlined, Favorite, ArrowRight, ArrowLeft, Cancel, MoreVert } from '@mui/icons-material'
-import { m } from 'framer-motion'
+import { m, useAnimate } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { themeColor } from '@colors'
 import type { Pet_Response, User_Response, PetCard_props } from '@declarations'
@@ -12,12 +12,13 @@ import { AxiosResponse } from 'axios'
 import { useAuthUser } from 'react-auth-kit'
 import { red } from '@mui/material/colors'
 
-export default function PetCard({ id, name, age, type, description, userID, imagesPath, city, changePet }: PetCard_props) {
+export default function PetCard({ id, name, age, type, description, userID, imagesPath, city }: PetCard_props) {
 
   // Setups
   const { t, i18n } = useTranslation()
   const authStateUser = useAuthUser()
   const user = authStateUser() || {}
+  const [scope, animate] = useAnimate()
 
   // States
   const [owner, setOwner] = useState<User_Response>()
@@ -33,9 +34,6 @@ export default function PetCard({ id, name, age, type, description, userID, imag
     })
   }
 
-  
-
-
   if (userID == null) {
     localStorage.removeItem('token')
     location.reload()
@@ -46,9 +44,9 @@ export default function PetCard({ id, name, age, type, description, userID, imag
   }, [])
 
   return (
-    <>
 
-      <div className='m-4 block' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15 }}>
+
+      <div className='m-4 block shadow-lg' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }}>
         <div className='flex justify-between p-3 items-center'>
           <div className='flex gap-2 items-center'>
             <div>
@@ -58,48 +56,33 @@ export default function PetCard({ id, name, age, type, description, userID, imag
             </div>
             <div className='block '>
               <Typography variant='h6'>{name}, {age}</Typography>
-              <Typography variant='subtitle1'>{owner?.login}</Typography>
+              {owner ? (
+                <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Typography variant='subtitle1'>{owner?.login}</Typography></m.div>
+              ) : (
+                <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Skeleton height={28} width={50}></Skeleton></m.div>
+              )}
             </div>
           </div>
-          {/* <div>
-            <IconButton sx={{ color: themeColor.iconButtonColor }} aria-label="settings">
-              <MoreVert />
-            </IconButton>
-          </div> */}
         </div>
-        <div>
-          <img src={imagesPath[0]} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} />
+        <div style={{ aspectRatio: '1/1', minWidth: '100%' }}>
+          <img className='placeholder_img' loading='eager' src={imagesPath[0]} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} />
         </div>
         <div className='p-3'>
           <div>
             <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }} maxHeight={20}>{description}...</Typography>
           </div>
-          <div className='w-full flex justify-between mt-3'>
-            <IconButton
-              sx={{ border: `1px solid ${themeColor.iconButtonColor}`, color: themeColor.iconButtonColor }}
-              className='gap-2'
-              onClick={() => { if (changePet) changePet('p') }}
-            >
-              <ArrowLeft />
-            </IconButton>
+          <div className='w-full flex justify-end mt-3'>
             <Button
-              variant='outlined'
+              variant='contained'
               onClick={() => { window.open(`/pets?id=${id}&more=true`, '_self') }}
-              className='w-full font-semibold'
-              sx={{ marginLeft: 1, marginRight: 1, border: `1px solid ${themeColor.iconButtonColor}` }}
+              className='font-semibold'
+              sx={{ marginLeft: 1, marginRight: 1, border: `1px solid ${themeColor.iconButtonColor}`, borderRadius: 15, width: '6rem' }}
             >
               More
             </Button>
-            <IconButton
-              sx={{ border: `1px solid ${themeColor.iconButtonColor}`, color: themeColor.iconButtonColor }}
-              className='gap-2'
-              onClick={() => { if (changePet) changePet('n') }}
-            >
-              <ArrowRight />
-            </IconButton>
           </div>
         </div>
       </div>
-    </>
+
   )
 }

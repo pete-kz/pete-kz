@@ -2,6 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import { toast, type ToastOptions } from 'react-hot-toast'
 import { useLocation } from 'react-router-dom'
+import { themeColor } from './colors'
 
 const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem(
 	'_auth',
@@ -15,11 +16,12 @@ const axiosAuth = axios.create({
 
 const notificationConfig: ToastOptions = {
 	style: {
-		background: '#302d38',
-		color: '#ffffff',
+		background: themeColor.cardBackground,
+		color: themeColor.iconButtonColor,
+		border: `1px solid ${themeColor.divBorder}`,
 	},
-	className: 'text-white rounded-xl',
-	position: 'bottom-left',
+	className: 'rounded-md shadow-lg w-full font-semibold',
+	position: 'top-center',
 }
 
 interface Notification {

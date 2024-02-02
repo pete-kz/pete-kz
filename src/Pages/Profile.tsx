@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAuthUser } from 'react-auth-kit'
-import { ArrowRight, Edit, AddCircle } from '@mui/icons-material'
+import { ArrowRight, Edit, AddCircle, Delete } from '@mui/icons-material'
 import { Avatar, Typography, IconButton } from '@mui/material'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
@@ -9,6 +9,7 @@ import { API } from '@config'
 import { AxiosResponse } from 'axios'
 import { Pet_Response, User_Response } from '@declarations'
 import { themeColor } from '@/Utils/colors'
+import { red } from '@mui/material/colors'
 
 export default function Profile() {
 
@@ -45,6 +46,18 @@ export default function Profile() {
             })
     }
 
+    function removePet(pet: Pet_Response) {
+        axios.post(`${API.baseURL}/pets/remove`, { query: { _id: pet._id }})
+            .then((res: AxiosResponse) => {
+                if (!res.data.err) {
+                    notification.custom.success(`Goodbye, ${pet.name}!`)
+                    setUsersPet(pets => pets?.filter(userPet => userPet._id != pet._id))
+                } else {
+                    notification.custom.error(res.data.err)
+                }
+            })
+    }
+
     useEffect(() => {
         getInfo()
     }, [])
@@ -71,9 +84,12 @@ export default function Profile() {
                         <div key={index} className='relative flex flex-col items-center p-3' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15 }} >
                             <Avatar src={pet.imagesPath[0]}></Avatar>
                             <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>
-                            <div>
+                            <div className='grid grid-rows-1 grid-cols-2 gap-2'>
                                 <IconButton onClick={() => { window.open(`/pets?id=${pet._id}&edit=true`, '_self') }} sx={{ color: themeColor.iconColor, backgroundColor: themeColor.cardBackground }}>
                                     <Edit fontSize='small' sx={{ color: themeColor.primaryTextLight }} />
+                                </IconButton>
+                                <IconButton onClick={() => { removePet(pet) }} sx={{ color: themeColor.iconColor, backgroundColor: themeColor.cardBackground }}>
+                                    <Delete fontSize='small' sx={{ color: red[500] }} />
                                 </IconButton>
                             </div>
                         </div>

@@ -2,6 +2,8 @@
  *  RESPONSE TYPES
  */
 
+import { AnimationScope } from "framer-motion"
+
 export type Pet_Response = {
     _id: string
 	name: string
@@ -60,8 +62,7 @@ export type PetCard_props = {
     description: string
     userID: User_Data["_id"],
     imagesPath: string[],
-    city?: string,
-    changePet?: (type: 'n' | 'p') => void
+    city?: string
 }
 
 export type NavigationBar_Props = {
