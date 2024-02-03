@@ -5,7 +5,7 @@ import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '@/Components/LanguageSwitcher'
-import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
+// import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
 
 export default function Settings() {
 
@@ -14,39 +14,39 @@ export default function Settings() {
 	const { i18n, t } = useTranslation()
 
 	// States
-	const [cities, setCities] = useState<{
-		en: string[]
-		ru: string[]
-		kz: string[]
-	}>({
-		'en': [],
-		'ru': [],
-		'kz': []
-	})
-	const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || 'Almaty')
+	// const [cities, setCities] = useState<{
+	// 	en: string[]
+	// 	ru: string[]
+	// 	kz: string[]
+	// }>({
+	// 	'en': [],
+	// 	'ru': [],
+	// 	'kz': []
+	// })
+	// const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || 'Almaty')
 
-	// Functions
-	function getCities() {
-		fetch('locales/cities.json').then((res) => {
-			res.json().then((res) => {
-				setCities(res)
-			})
-		})
-	}
+	// // Functions
+	// function getCities() {
+	// 	fetch('locales/cities.json').then((res) => {
+	// 		res.json().then((res) => {
+	// 			setCities(res)
+	// 		})
+	// 	})
+	// }
+
+	// useEffect(() => {
+	// 	localStorage.setItem('_city', currentCity)
+	// }, [currentCity, cities])
 
 	useEffect(() => {
-		localStorage.setItem('_city', currentCity)
-	}, [currentCity, cities])
-
-	useEffect(() => {
-		getCities()
+		localStorage.setItem('_city', '')
 	}, [])
 
 	return (
 		<m.div className="flex justify-center w-screen px-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 
 				<List className='w-full'>
-					<ListItem className=''>
+					{/* <ListItem className=''>
 						<FormControl fullWidth style={{ marginTop: 16 }}>
 							<InputLabel className="flex justify-center items-center">
 								{t('settings.labels.city')}
@@ -63,7 +63,7 @@ export default function Settings() {
 								))}
 							</Select>
 						</FormControl>
-					</ListItem>
+					</ListItem> */}
 					<ListItem>
 						<LanguageSwitcher />
 					</ListItem>
