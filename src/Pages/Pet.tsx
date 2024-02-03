@@ -30,12 +30,10 @@ export default function PetPage() {
     // States
     const [petData, setPetData] = useState<Pet_Response>()
     const [ownerData, setOwnerData] = useState<User_Response>()
-    const [editMode, setEditMode] = useState<boolean>(false)
     const [name, setName] = useState<string>('')
     const [age, setAge] = useState<string>('')
     const [description, setDescription] = useState<string>('')
     const [imageLinks, setImageLinks] = useState<any[]>([])
-
 
     // Functions
     function fetchPet() {
@@ -53,13 +51,15 @@ export default function PetPage() {
     }
 
     function fetchOwner() {
-        axios.post(`${API.baseURL}/users/find`, { query: { _id: petData?.userID } }).then((res: AxiosResponse) => {
-            if (!res.data.err) {
-                setOwnerData(res.data)
-            } else {
-                notification.custom.error(res.data.err)
-            }
-        })
+        if (petData) {
+            axios.post(`${API.baseURL}/users/find`, { query: { _id: petData?.userID } }).then((res: AxiosResponse) => {
+                if (!res.data.err) {
+                    setOwnerData(res.data)
+                } else {
+                    notification.custom.error(res.data.err)
+                }
+            })
+        }
     }
 
     function checkToken() {
@@ -67,12 +67,6 @@ export default function PetPage() {
         const isEqualTokens = authHeader() == token
         if (!isEqualTokens) {
             signout()
-        }
-    }
-
-    function checkEditMode() {
-        if (query.get('edit') === 'true' && ownerData?._id == user._id) {
-            setEditMode(true)
         }
     }
 
@@ -113,10 +107,9 @@ export default function PetPage() {
     }, [])
 
     useEffect(() => {
-        checkEditMode()
         fetchOwner()
 
-        const images = []
+        const images: { original: string, thumbnail: string }[] = []
         petData?.imagesPath.map(imageLink => {
             images.push({
                 original: imageLink,
@@ -129,46 +122,42 @@ export default function PetPage() {
     return (
         <>
             {petData && (
-                editMode ? (
-                    <m.div className='m-2 p-2 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                (query.get('edit') === 'true' && ownerData?._id == user._id) ? (
+                    <m.div className='m-2 p-4 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ backgroundColor: themeColor.cardBackground, borderRadius: 15,border: `1px solid ${themeColor.divBorder}`}}>
                         <div className='mb-3'>
                             <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
                         </div>
                         <div className='gap-2 flex flex-col'>
                             <div className='flex gap-2 w-full'>
-                                <TextField defaultValue={name} fullWidth label={'Name'} variant="outlined" onChange={handleNameChange} />
-                                <TextField defaultValue={age} label={'Age'} style={{ width: 60 }} variant="outlined" onChange={handleAgeChange} type='number' />
+                                <TextField defaultValue={name} fullWidth label={t('pet.name')} variant="outlined" onChange={handleNameChange} />
+                                <TextField defaultValue={age} label={t('pet.age')} style={{ width: 60 }} variant="outlined" onChange={handleAgeChange} type='number' />
                             </div>
-                            <TextField defaultValue={description} label={'Description'} variant="outlined" onChange={handleDescriptionChange} multiline />
+                            <TextField defaultValue={description} label={t('pet.description')} variant="outlined" onChange={handleDescriptionChange} multiline />
                         </div>
-                        <Button className='w-full' style={{ marginTop: 10 }} variant='contained' onClick={updatePetInfo}>Update</Button>
+                        <Button className='w-full' style={{ marginTop: 10 }} variant='contained' onClick={updatePetInfo}>{t('pet.update_btn')}</Button>
                     </m.div>
                 ) : (
                     <>
                         {query.get('more') === 'true' && (
                             <LikeReturnBottom pet={petData} />
                         )}
-                        <m.div className='m-2 p-2 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                        <m.div className='m-2 p-4 mb-20' style={{ backgroundColor: themeColor.cardBackground, borderRadius: 15,border: `1px solid ${themeColor.divBorder}`}} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                             <div>
                                 <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
-                                {/* {petData.imagesPath.map((image, index) => (
-                                <img src={image} className='flex' style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden' }} key={image} />
-                            ))} */}
                             </div>
                             <div>
                                 <Typography variant='h6'>{petData.name}, {petData.age}</Typography>
-                                <Typography variant='body2'>{petData.description}</Typography>
+                                <Typography sx={{ wordWrap: 'break-word' }} variant='body2'>{petData.description}</Typography>
                             </div>
                             {query.get('contacts') === 'true' && (
                                 <div>
-                                    <p>Owner: {ownerData?.login}</p>
-                                    <p>Contacts:</p>
-                                    {ownerData?.social.instagram && (<p> instagram: {ownerData?.social.instagram}</p>)}
-                                    {ownerData?.social.telegram && (<p> telegram: {ownerData?.social.telegram}</p>)}
-                                    {ownerData?.social.phone && (<p> phone: {ownerData?.social.phone}</p>)}
+                                    <p>{t('pet.contacts.name')}: {ownerData?.name}</p>
+                                    <p>{t('pet.contacts.label')}:</p>
+                                    {ownerData?.social.instagram && (<p> {t('pet.contacts.instagram')}: {ownerData?.social.instagram}</p>)}
+                                    {ownerData?.social.telegram && (<p> {t('pet.contacts.telegram')}: {ownerData?.social.telegram}</p>)}
+                                    {ownerData?.phone && (<p> {t('pet.contacts.phone')}: {ownerData?.phone}</p>)}
                                 </div>
                             )}
-
                         </m.div>
                     </>
                 )
@@ -177,7 +166,7 @@ export default function PetPage() {
     )
 }
 
-function LikeReturnBottom(props: { pet: Pet_Response }) {
+function LikeReturnBottom(props: { pet: Pet_Response}) {
     // Setups
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
@@ -201,7 +190,7 @@ function LikeReturnBottom(props: { pet: Pet_Response }) {
 
     }
 
-    function getOwner() {
+    function getUser() {
         axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
             if (!res.data.err) {
                 setUserData(res.data)
@@ -212,7 +201,7 @@ function LikeReturnBottom(props: { pet: Pet_Response }) {
     }
 
     useEffect(() => {
-        getOwner()
+        getUser()
     }, [])
 
     return (

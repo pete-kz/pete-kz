@@ -15,7 +15,6 @@ import Main from './Pages/Main'
 import Login from './Pages/Authentication/Login.js'
 import Register from './Pages/Authentication/Register'
 import Settings from './Pages/Settings'
-import Favoutires from './Pages/Favourites.js'
 import Profile from './Pages/Profile.js'
 import PetPage from './Pages/Pet.js'
 import AddPetPage from './Pages/PetAdd.js'
@@ -40,10 +39,6 @@ export default function App() {
 				{
 					index: true,
 					element: <Main />,
-				},
-				{
-					path: '/favourites',
-					element: <Favoutires />,
 				},
 				{
 					path: '/profile',

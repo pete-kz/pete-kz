@@ -92,4 +92,24 @@ function useQuery() {
     return React.useMemo(() => new URLSearchParams(search), [search])
 }
 
-export { axiosAuth, notification, type Notification, useQuery }
+function parseMongoDate(Mongo_Date: string) {
+	// 2024-02-03T01:39:13.410+00:00
+	const parsedTime = Mongo_Date.split('-')[2].split('T')[1].split('.')[0]
+	const date = {
+		year: Mongo_Date.split('-')[0],
+		month: Mongo_Date.split('-')[1].split('T')[0][0] != '0' ? Mongo_Date.split('-')[1].split('T')[0] : Mongo_Date.split('-')[1].split('T')[0][1],
+		day: Mongo_Date.split('-')[2].split('T')[0][0] != '0' ? Mongo_Date.split('-')[2].split('T')[0] : Mongo_Date.split('-')[2].split('T')[0][1],
+		// time: Mongo_Date.split('-')[2].split('T')[1].split('.')[0]
+	}
+	// 01:39:13
+	const time = {
+		hour: parsedTime.split(':')[0][0] != '0' ? Number(parsedTime.split(':')[0]) : Number(parsedTime.split(':')[0][1]),
+		minutes: parsedTime.split(':')[1][0] != '0' ? Number(parsedTime.split(':')[1]) : Number(parsedTime.split(':')[1][1])
+	}
+	return {
+		date,
+		time
+	}
+}
+
+export { axiosAuth, notification, type Notification, useQuery, parseMongoDate }

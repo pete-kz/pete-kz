@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next'
 import { themeColor } from '@colors'
 import { API } from '@config'
 import { notification } from '@utils'
+import PhoneInput from 'react-phone-number-input'
+import { E164Number } from 'libphonenumber-js/types.cjs'
 
 export default function Register() {
 
@@ -22,6 +24,7 @@ export default function Register() {
 	const [login, setLogin] = React.useState<string>('')
 	const [password, setPassword] = React.useState<string>('')
 	const [phone, setPhone] = React.useState<string>('')
+	const [name, setName] = React.useState<string>('')
 	const [registerButtonDisabled, setRegisterButtonDisabled] = React.useState<boolean>(false)
 
 	// States
@@ -29,27 +32,36 @@ export default function Register() {
 		setPassword(event.target.value)
 		setRegisterButtonDisabled(false)
 	}
+
 	const handleLoginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setLogin(event.target.value)
 		setRegisterButtonDisabled(false)
 	}
 
-	const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setPhone(event.target.value)
+	const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setName(event.target.value)
 		setRegisterButtonDisabled(false)
+	}
+
+	const handlePhoneChange = (type: E164Number | React.ChangeEvent<HTMLInputElement> | undefined) => {
+		if (type !== undefined) {
+			setPhone(typeof type === typeof {} ? (type as React.ChangeEvent<HTMLInputElement>).target.value : (type as E164Number))
+			setRegisterButtonDisabled(false)
+		}
 	}
 
 	// Functions
 	const register = () => {
-		if (login == '' || password == '') {
+		if (login == '' || password == '' || phone.length < 7) {
 			notification.custom.error(t('errors.fill_all_fields'))
 			setRegisterButtonDisabled(true)
 			return null
 		}
 		axios.post(`${API.baseURL}/users/register`, {
 			login,
+			name,
 			password,
-			social: { phone }
+			phone
 		}).then((response: AxiosResponse) => {
 			if (!response.data.err) {
 				navigate('/login')
@@ -81,15 +93,13 @@ export default function Register() {
 	}
 
 	function handleOnBlurPhoneInput() {
-		if (!phone.includes('+')) {
-			notification.custom.error(t('errors.phone_international'))
-			setRegisterButtonDisabled(true)
-			return
-		}
-		if (phone == '') {
-			notification.custom.error(t('errors.phone_required'))
-			setRegisterButtonDisabled(true)
-			return
+		if (phone) {
+			axios.post(`${API.baseURL}/users/find`, { query: { phone } }).then((res: AxiosResponse) => {
+				if (!res.data.err && res.data.phone == phone) {
+					notification.custom.error('phone in use')
+					setRegisterButtonDisabled(true)
+				}
+			})
 		}
 	}
 
@@ -113,22 +123,26 @@ export default function Register() {
 						</p>
 					</div>
 					<div className="flex flex-end items-center mb-2">
-						<Phone className="mr-2" />
-						<TextField label={t('register.labels.2')} variant="outlined" type="tel" onChange={handlePhoneChange} onBlur={handleOnBlurPhoneInput} />
+						<AccountCircle className="mr-2" />
+						<TextField label={t('register.labels.1')} placeholder={t('register.placeholders.1') || ''} variant="outlined" onChange={handleNameChange} type='text' />
 					</div>
 					<div className="flex flex-end items-center mb-2">
 						<AccountCircle className="mr-2" />
-						<TextField label={t('register.labels.0')} variant="outlined" onChange={handleLoginChange} onBlur={handleOnBlurLoginInput} type='text'/>
+						<TextField label={t('register.labels.0')} placeholder={t('register.placeholders.0') || ''} variant="outlined" onChange={handleLoginChange} onBlur={handleOnBlurLoginInput} type='text' />
+					</div>
+					<div className="flex flex-end items-center mb-2">
+						<Phone className="mr-2" />
+						<PhoneInput international placeholder="+7 123 456 7890" value={phone} onChange={handlePhoneChange} onBlur={handleOnBlurPhoneInput} />
 					</div>
 					<div className="flex flex-end items-center mb-2">
 						<Password className="mr-2" />
-						<TextField label={t('register.labels.1')} variant="outlined" type="password" onChange={handlePasswordChange} onBlur={handleOnBlurPasswordInput} />
+						<TextField label={t('register.labels.2')} variant="outlined" type="password" onChange={handlePasswordChange} onBlur={handleOnBlurPasswordInput} />
 					</div>
 					<div className="flex justify-center items-center" style={{ marginTop: 12 }}>
 						<Button
 							onClick={register}
-							sx={{ color: themeColor[7], borderRadius: 9999, fontWeight: 500, width: '100%', border: `1px solid ${themeColor[12]}`, }}
-							variant="outlined"
+							sx={{ borderRadius: 9999, fontWeight: 500, width: '100%' }}
+							variant='contained'
 							fullWidth
 							disabled={registerButtonDisabled}
 						>

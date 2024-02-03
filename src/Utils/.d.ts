@@ -4,30 +4,63 @@
 
 import { AnimationScope } from "framer-motion"
 
+/*
+
+const petSchema = new mongoose.Schema({
+    name: { type: String }, // name of the pet
+    age: { type: String },
+    type: { type: String, enum: ['Cat', 'Dog', 'Other'] },
+    description: { type: String, default: '' }, // short description of pet
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    imagesPath: [{ type: String }],
+    city: { type: String, default: '' },
+}, { timestamps: true })
+*/
+
 export type Pet_Response = {
     _id: string
 	name: string
     age: string
     type: 'Cat' | 'Dog' | 'Other'
     description: string
-    userID: User_Data["_id"],
-    imagesPath: string[],
+    userID: User_Response["_id"]
+    imagesPath: string[]
     city: string
+    createdAt: string
+    updatedAt: string
 }
+
+/* 
+
+const userSchema = new mongoose.Schema({
+    login: { type: String unique: true }
+    name: { type: String }
+    phone: { type: String unique: true }
+    social: {
+        telegram: { type: String default: '' }
+        instagram: { type: String default: '' }
+    }
+    password: { type: String default: '' }
+    liked: { type: [{ type: mongoose.Schema.Types.ObjectId ref: 'Pet' }] default: [] }
+    skipped: { type: [{ type: mongoose.Schema.Types.ObjectId ref: 'Pet' }] default: [] }
+    token: { type: String default: '' }
+} { timestamps: true })
+*/
 
 export type User_Response = {
     _id: string
-    login: string,
+    login: string
+    name: string
+    phone: string
     social: {
-        telegram: string,
-        instagram: string,
-        phone: string
-    },
-    email: string,
-    password: string,
-    liked: string[],
-    skipped: string[],
+        telegram: string
+        instagram: string
+    }
+    password: string
+    liked: string[]
     token: string
+    createdAt: Date
+    updatedAt: Date
 }
 
 /**
@@ -60,9 +93,11 @@ export type PetCard_props = {
     age: string
     type: 'Cat' | 'Dog' | 'Other'
     description: string
-    userID: User_Data["_id"],
-    imagesPath: string[],
-    city?: string
+    userID: User_Data["_id"]
+    imagesPath: string[]
+    city: string
+    createdAt: string
+    updatedAt: string
 }
 
 export type NavigationBar_Props = {

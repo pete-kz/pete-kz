@@ -8,7 +8,8 @@
     "fill_all_fields": "Fill all fields",
     "invalid_link": "Invalid link",
     "phone_required": "Phone number (Whatsapp) is required!",
-    "phone_international": "Please, use international phone number format (with +)"
+    "phone_international": "Please, use international phone number format (with +)",
+    "no_city": "Set up the city in the settings first!"
   },
   "success": {
     "login_proccess": "You have successfully logged in!",
@@ -17,45 +18,64 @@
   "login": {
     "title": "Login",
     "or_create_new_account": ["Or", "create new account"],
-    "login_placeholder": "Login",
-    "password_placeholder": "Password",
-    "button": "login"
+    "labels": ["Password"],
+    "button": "Login"
   },
   "register": {
     "title": "Register",
     "account_already": ["Already have an account?", "Login"],
-    "labels": ["Login", "Password", "Phone number (Whatsapp)"],
-    "button": "register"
+    "labels": ["Login", "Name", "Password"],
+    "placeholders": ["Login", "Firstname Surname"],
+    "button": "Register"
   },
   "main": {
-    "select_button_city": "city",
-    "select_button_city_everything_option": "all",
-    "search_box_institution": "search...",
     "pet_card": {
-      "star_button": "Favotire",
-      "link_button": "Message",
-      "city_label": "City"
+      "city_label": "City",
+      "more": "More",
+      "last_update": "Last update"
+    },
+    "no_more_pets": "There are no more pets to show for you! Check liked in profile or wait a little while for new ones to come!",
+    "my_profile": "My Profile"
+  },
+  "pet": {
+    "name": "Name",
+    "age": "Age",
+    "type": "Your pet is",
+    "description": "ßDescription",
+    "update_btn": "Update",
+    "contacts": {
+      "name": "Name",
+      "label": "Contacts",
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "phone": "Phone"
+    },
+    "liked": "Liked! Check in your profile later.",
+    "add": {
+      "img": "Upload images",
+      "btn": "Add pet"
     }
   },
-
+  "user": {
+    "name": "Name",
+    "login": "Login",
+    "contacts": {
+      "name": "Name",
+      "label": "Contacts",
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "phone": "Phone"
+    },
+    "password": "Password"
+  },
   "settings": {
     "labels": {
-      "support_project": "Support project",
-      "invite_code_for_friend": "Invite-code for friend",
-      "amount_of_approved_institutions": "Number of approved establishments",
-      "amount_of_requested_institutions": "Number of establishments under consideration",
+      "city": "City",
       "exit_button": "Exit account",
       "language_button": "Language"
-    },
-    "authors": {
-      "developer_and_author_of_the_project": "Developer and author of project",
-      "helper_and_tester_of_the_project": "Helper and tester of the project"
     }
   },
   "navigation_bar": {
-    "pages": ["Home", "Profile", "Settings", "Favourites"]
-  },
-  "system": {
-    "developer_and_author_of_project": "Developer and author of project"
+    "pages": ["Home", "Profile", "Settings"]
   }
 }

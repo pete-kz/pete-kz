@@ -5,11 +5,13 @@ import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'reac
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
-import { User_Response, type Pet_Response } from '@declarations'
-import { axiosAuth as axios, notification, useQuery } from '@utils'
+import { type Pet_Response } from '@declarations'
+import { axiosAuth as axios, notification } from '@utils'
 import { AxiosResponse } from 'axios'
-import { Button, TextField, IconButton } from '@mui/material'
-import { Favorite, ImageOutlined, KeyboardReturn } from '@mui/icons-material'
+import { Button, TextField } from '@mui/material'
+import { ImageOutlined } from '@mui/icons-material'
+import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
+
 import { themeColor } from '@/Utils/colors'
 import ImageGallery from 'react-image-gallery'
 
@@ -26,12 +28,10 @@ export default function AddPetPage() {
     const { t } = useTranslation()
 
     // States
-    const [ownerData, setOwnerData] = useState<User_Response>()
     const [name, setName] = useState<string>('')
     const [age, setAge] = useState<string>('')
     const [type, setType] = useState<Pet_Response['type']>('Cat')
     const [description, setDescription] = useState<string>('')
-    const [location, setLocation] = useState<string>('')
     const [uploadingState, setUploadingState] = useState<boolean>(false)
     const [files, setFiles] = useState<undefined | Blob[]>(undefined)
     const [images, setImages] = useState<any[]>([])
@@ -45,7 +45,7 @@ export default function AddPetPage() {
         formData.append('description', description)
         formData.append('type', type)
         formData.append('userID', user._id)
-        formData.append('city', location)
+        formData.append('city', localStorage.getItem('_city') || 'Almaty')
         formData.append('name', name)
         if (files) {
             for (let i = 0; i < files.length; i++) {
@@ -62,13 +62,6 @@ export default function AddPetPage() {
                 }
             })
         setUploadingState(false)
-        // axios.post(`${API.baseURL}/pets/add`).then((res: AxiosResponse) => {
-        //     if (!res.data.err) {
-
-        //     } else {
-        //         notification.custom.error(res.data.err)
-        //     }
-        // })
     }
 
 
@@ -105,7 +98,6 @@ export default function AddPetPage() {
             navigate('/login')
             return
         }
-
         checkToken()
     }, [])
 
@@ -132,11 +124,26 @@ export default function AddPetPage() {
                 </div>
                 <div className='gap-2 flex flex-col'>
                     <div className='flex gap-2 w-full'>
-                        <TextField defaultValue={name} fullWidth label={'Name'} variant="outlined" onChange={handleNameChange} />
-                        <TextField defaultValue={age} label={'Age'} style={{ width: 60 }} variant="outlined" onChange={handleAgeChange} type='number' />
+                        <TextField defaultValue={name} fullWidth label={t('pet.name')} variant="outlined" onChange={handleNameChange} />
+                        <TextField defaultValue={age} label={t('pet.age')} style={{ width: 60 }} variant="outlined" onChange={handleAgeChange} type='number' />
                     </div>
-                    
-                    <TextField defaultValue={description} label={'Description'} variant="outlined" onChange={handleDescriptionChange} multiline />
+                    <FormControl fullWidth>
+							<InputLabel className="flex justify-center items-center">
+								{t('pet.type')}
+							</InputLabel>
+							<Select
+								value={type}
+								label={t('pet.type')}
+								className="rounded-3xl"
+								onChange={(event: SelectChangeEvent) => {
+									setType(event.target.value as 'Cat' | 'Dog' | 'Other')
+								}}>
+								{['Cat', 'Dog', 'Other'].map((typepet) => (
+									<MenuItem key={typepet} value={typepet}>{typepet}</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+                    <TextField defaultValue={description} label={t('pet.description')} variant="outlined" onChange={handleDescriptionChange} multiline />
                     <Button
                         variant="outlined"
                         className='w-full font-semibold'
@@ -145,8 +152,7 @@ export default function AddPetPage() {
                     >
                         <ImageOutlined sx={{ marginRight: 0.3 }} />
                         <p className="text-xs w-min mr-1">
-                            {t('request.buttons.img.label')}
-                            {' '}
+                            {t('pet.add.img')}
                         </p>
                         <input
                             type="file"
@@ -160,7 +166,7 @@ export default function AddPetPage() {
                         />
                     </Button>
                 </div>
-                <Button className='w-full' style={{ marginTop: 10 }} disabled={uploadingState} variant='contained' onClick={addPet}>Add pet</Button>
+                <Button className='w-full' style={{ marginTop: 10 }} disabled={uploadingState} variant='contained' onClick={addPet}>{t('pet.add.btn')}</Button>
             </m.div>
         </>
     )

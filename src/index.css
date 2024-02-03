@@ -1,4 +1,5 @@
 @import "../node_modules/react-image-gallery/styles/css/image-gallery.css";
+/* @import "../node_modules/react-phone-number-input/style.css"; */
 
 html,
 body {
@@ -30,6 +31,26 @@ div[role="status"] {
     justify-content: start;
 }
 
+.PhoneInputInput {
+    padding: 14px;
+    padding-top: 16.5px;
+    padding-bottom: 16.5px;
+    border-radius: 15px;
+    background-color: #f4e5f5;
+    color: #1d1b20;
+}
+
+.PhoneInputInput::placeholder {
+    color: #4c4852;
+}
+
+.PhoneInputInput:focus {
+    outline: #6750a4 solid 2px;
+}
+
+.PhoneInputCountry {
+    display: none;
+}
 
 @tailwind base;
 @tailwind components;

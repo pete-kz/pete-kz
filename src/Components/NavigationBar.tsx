@@ -9,7 +9,6 @@ import { themeColor } from '@colors'
 const pages: string[][] = [
 	['navigation_bar.pages.1', '/profile'], 
 	['navigation_bar.pages.0', '/'], 
-	
 	['navigation_bar.pages.2', '/settings']
 ]
 const pagesPaths: string[] = ['/profile', '/', '/settings']
