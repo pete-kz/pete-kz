@@ -23,7 +23,7 @@ export default function Settings() {
 		'ru': [],
 		'kz': []
 	})
-	const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || cities[i18n.language as 'ru' | 'kz' | 'en'][0])
+	const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || cities[i18n.language as 'ru' | 'kz' | 'en'][0] || 'Almaty')
 
 	// Functions
 	function getCities() {
