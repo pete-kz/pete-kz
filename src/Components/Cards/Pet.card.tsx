@@ -10,10 +10,10 @@ import { axiosAuth as axios, notification, parseMongoDate } from '@utils'
 import { AxiosResponse } from 'axios'
 import { red } from '@mui/material/colors'
 
-export default function PetCard({ id, name, age, type, description, userID, imagesPath, city, updatedAt, createdAt }: PetCard_props) {
+export default function PetCard({ id, name, age, description, userID, imagesPath, updatedAt }: PetCard_props) {
 
   // Setups
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   // States
   const [owner, setOwner] = useState<User_Response>()

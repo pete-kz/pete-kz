@@ -162,7 +162,7 @@ export default function Main() {
 											name={pet.name}
 											description={pet.description}
 											id={pet._id}
-											userID={user._id}
+											userID={pet.userID}
 											city={pet.city}
 											createdAt={pet.createdAt}
 											updatedAt={pet.updatedAt}
