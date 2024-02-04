@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuthUser } from 'react-auth-kit'
 import { ArrowRight, Edit, AddCircle, Delete, Instagram, AccountCircle, Password, Phone, Telegram, ArrowDownward } from '@mui/icons-material'
-import { Avatar, Typography, IconButton, TextField, Button, Accordion, AccordionSummary, AccordionActions, AccordionDetails } from '@mui/material'
+import { Avatar, Typography, IconButton, TextField, Accordion, AccordionSummary, AccordionActions, AccordionDetails } from '@mui/material'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { axiosAuth as axios, notification } from '@utils'
@@ -11,6 +11,7 @@ import { Pet_Response, User_Response } from '@declarations'
 import { themeColor } from '@/Utils/colors'
 import { red } from '@mui/material/colors'
 import PhoneInput from 'react-phone-number-input'
+import { LoadingButton } from '@mui/lab'
 
 export default function Profile() {
 
@@ -22,7 +23,6 @@ export default function Profile() {
     // States
     const [usersPet, setUsersPet] = useState<Pet_Response[]>()
     const [liked, setLiked] = useState<Pet_Response[]>([])
-    const [userData, setUserData] = useState<User_Response>()
 
     // States for editing
     const [name, setName] = useState<User_Response['name']>('')
@@ -32,6 +32,7 @@ export default function Profile() {
     const [telegram, setTelegram] = useState<User_Response['social']['telegram']>('')
     const [password, setPassword] = useState<User_Response['password']>('')
     const [update, setUpdated] = useState<boolean>(false)
+    const [updatingState, setUpdatingState] = useState<boolean>(false)
 
     // Functions
     function getInfo() {
@@ -44,7 +45,6 @@ export default function Profile() {
                         // need to populate skipped and like => filter out all pets based on skipped ids
                         if (!res.data.err) {
                             const user: User_Response = res.data
-                            setUserData(user)
                             setName(user.name)
                             setLogin(user.login)
                             setPhone(user.phone)
@@ -74,6 +74,7 @@ export default function Profile() {
     }
 
     function updateProfileInfo() {
+        setUpdatingState(true)
         axios.post(`${API.baseURL}/users/update/${user._id}`, { update: {
             name,
             login,
@@ -91,12 +92,18 @@ export default function Profile() {
                 } else {
                     notification.custom.error(res.data.err)
                 }
+                setUpdatingState(false)
             })
     }
 
     useEffect(() => {
         getInfo()
     }, [update])
+
+    useEffect(() => {
+        // @ts-expect-error because it is imported from the web
+		ym(96355513, 'hit', window.origin)
+    }, [])
 
     return (
         <m.div className="block w-screen gap-2 p-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -119,15 +126,15 @@ export default function Profile() {
                 </div>
                 <div className='flex items-center gap-2 mb-2'>
                     <Phone />
-                    <PhoneInput placeholder="Phone" value={phone} label={t('user.phone')} onChange={(e) => setPhone(e as string)} />
+                    <PhoneInput placeholder="Phone" value={phone} label={t('user.contacts.phone')} onChange={(e) => setPhone(e as string)} />
                 </div>
                 <div className='flex items-center gap-2 mb-2'>
                     <Instagram />
-                    <TextField value={instagram} fullWidth label={t('user.instagram')} onChange={(e) => setInstagram(e.target.value)} />
+                    <TextField value={instagram} fullWidth label={t('user.contacts.instagram')} onChange={(e) => setInstagram(e.target.value)} />
                 </div>
                 <div className='flex items-center gap-2 mb-2'>
                     <Telegram />
-                    <TextField value={telegram} fullWidth label={t('user.telegram')} onChange={(e) => setTelegram(e.target.value)} />
+                    <TextField value={telegram} fullWidth label={t('user.contacts.telegram')} onChange={(e) => setTelegram(e.target.value)} />
                 </div>
                 <div className='flex items-center gap-2'>
                     <Password />
@@ -135,16 +142,16 @@ export default function Profile() {
                 </div>
                 </AccordionDetails>
                 <AccordionActions>
-                    <Button variant='contained' fullWidth sx={{ marginTop: 1 }} onClick={updateProfileInfo}>Update</Button>
+                    <LoadingButton loading={updatingState} variant='contained' fullWidth sx={{ marginTop: 1 }} onClick={updateProfileInfo}>Update</LoadingButton>
                 </AccordionActions>
             </Accordion>
             <div className='p-4'>
-                <Typography variant='h6'>My pets</Typography>
+                <Typography variant='h6'>{t('main.my_pets')}</Typography>
                 <div className='grid grid-cols-3 gap-2 mt-2'>
                     {usersPet?.map((pet, index) => (
-                        <div key={index} className='relative flex flex-col items-center p-3' style={{ border: `1px solid ${themeColor.divBorder}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} >
+                        <div key={index} className='relative flex flex-col items-center p-3 gap-2' style={{ border: `1px solid ${themeColor.divBorder}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} >
                             <Avatar src={pet.imagesPath[0]}></Avatar>
-                            <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>
+                            <Typography variant='body1' className='text-center' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>
                             <div className='grid grid-rows-1 grid-cols-2 gap-2'>
                                 <IconButton onClick={() => { window.open(`/pets?id=${pet._id}&edit=true`, '_self') }} sx={{ color: themeColor.iconColor, border: `1px solid ${themeColor.divBorder}` }}>
                                     <Edit fontSize='small' sx={{ color: themeColor.primaryTextLight }} />
@@ -160,7 +167,7 @@ export default function Profile() {
                             <AddCircle fontSize='large' sx={{ color: themeColor.primaryTextLight }} />
                         </IconButton>
                         <div className='text-center'>
-                            <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>Add new pet</Typography>
+                            <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{t('pet.add.btn')}</Typography>
                         </div>
                     </div>
                 </div>

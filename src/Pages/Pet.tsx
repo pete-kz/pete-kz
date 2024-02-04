@@ -104,6 +104,8 @@ export default function PetPage() {
 
         fetchPet()
         checkToken()
+        // @ts-expect-error because it is imported from the web
+		ym(96355513, 'hit', window.origin)
     }, [])
 
     useEffect(() => {

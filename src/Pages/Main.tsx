@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
 import { useAnimate, m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { API, NAME } from '@config'
+import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
 import PetCard from '@/Components/Cards/Pet.card'
 import { themeColor } from '@/Utils/colors'
-import { IconButton } from '@mui/material'
+import { IconButton, Skeleton } from '@mui/material'
 import { ArrowLeft, ArrowRight } from '@mui/icons-material'
 
 export default function Main() {
@@ -29,6 +29,7 @@ export default function Main() {
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
 	const [petIndex, setPet] = useState<number>(0)
+	const [loadingPets, setLoadingPets] = useState<boolean>(true)
 
 	// Handlers
 	function changePet(type: 'n' | 'p') {
@@ -63,6 +64,7 @@ export default function Main() {
 						const userData: User_Response = res.data
 						// if pet already in users skipped or liked, filter them out
 						setAllPets(pets.filter(pet => !(userData.liked.includes(pet._id))))
+						setLoadingPets(false)
 					} else {
 						notification.custom.error(res.data.err)
 					}
@@ -107,14 +109,13 @@ export default function Main() {
 		if (!localStorage.getItem('_city')) {
 			notification.custom.error(t('errors.no_city'))
 		}
+		// @ts-expect-error because it is imported from the web
+		ym(96355513, 'hit', window.origin)
 	}, [])
 
 	return (
 		<>
 			<div className="flex justify-center items-center h-screen">
-				<div className='absolute w-screen flex items-center justify-center top-0 h-32' style={{ backgroundColor: themeColor.cardBackground }}>
-					<p className='text-6xl font-bold uppercase'>{NAME}</p>
-				</div>
 				<div className='absolute w-screen flex items-center justify-center bottom-[6rem]'>
 					<div className='flex items-center gap-3'>
 						{petIndex != 0 && (
@@ -131,7 +132,7 @@ export default function Main() {
 								}}><ArrowLeft /></IconButton>
 							</m.div>
 						)}
-						{petIndex != (allPets.length - 1) && (
+						{petIndex != (allPets.length - 1) && allPets.length > 0 && (
 							<m.div animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
 								<IconButton sx={{
 									color: themeColor.iconButtonColor, background: themeColor.cardBackground,
@@ -151,7 +152,7 @@ export default function Main() {
 					{allPets.length > 0 ? (
 						<>
 							{allPets.map((pet, index: number) => (
-								pet?.city?.includes('') && (
+								pet?.city === localStorage.getItem('_city') && (
 									index === petIndex && (
 										<PetCard
 											key={index}
@@ -167,14 +168,23 @@ export default function Main() {
 											updatedAt={pet.updatedAt}
 										/>
 									))))}
+							{allPets.filter(pet => pet.city === localStorage.getItem('_city')).length < 1 && (
+								<div className='flex justify-center items-center p-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }}>
+									<p>{t('main.no_more_pets_city')}</p>
+								</div>
+							)}
 						</>
-					)
-						:
+					) : loadingPets ?
 						(
-							<div className='w-screen h-screen flex justify-center items-center px-3'>
+							<div className='w-screen p-4'>
+								<Skeleton width={'100%'} height={'900px'}></Skeleton>
+							</div>
+						) : (
+							<div className='flex justify-center items-center p-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }}>
 								<p>{t('main.no_more_pets')}</p>
 							</div>
 						)
+
 					}
 				</div>
 			</div>

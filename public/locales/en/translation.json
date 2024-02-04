@@ -1,4 +1,16 @@
 {
+  "cities": [
+    "Almaty",
+    "Nur-Sultan",
+    "Shymkent",
+    "Karaganda",
+    "Aktobe",
+    "Taraz",
+    "Pavlodar",
+    "Ust-Kamenogorsk",
+    "Semey",
+    "Kostanay"
+  ],
   "errors": {
     "too_many_requests": "Too often! Try again in 5 minutes.",
     "login_already_exists": "This login already exists!",
@@ -17,15 +29,30 @@
   },
   "login": {
     "title": "Login",
-    "or_create_new_account": ["Or", "create new account"],
-    "labels": ["Password"],
+    "or_create_new_account": [
+      "Or",
+      "create new account"
+    ],
+    "labels": [
+      "Password"
+    ],
     "button": "Login"
   },
   "register": {
     "title": "Register",
-    "account_already": ["Already have an account?", "Login"],
-    "labels": ["Login", "Name", "Password"],
-    "placeholders": ["Login", "Firstname Surname"],
+    "account_already": [
+      "Already have an account?",
+      "Login"
+    ],
+    "labels": [
+      "Login",
+      "Name",
+      "Password"
+    ],
+    "placeholders": [
+      "Login",
+      "Firstname Surname"
+    ],
     "button": "Register"
   },
   "main": {
@@ -35,13 +62,15 @@
       "last_update": "Last update"
     },
     "no_more_pets": "There are no more pets to show for you! Check liked in profile or wait a little while for new ones to come!",
-    "my_profile": "My Profile"
+    "no_more_pets_city": "There is no pets available in this city! Check another",
+    "my_profile": "My Profile",
+    "my_pets": "My Pets"
   },
   "pet": {
     "name": "Name",
     "age": "Age",
     "type": "Your pet is",
-    "description": "ßDescription",
+    "description": "Description",
     "update_btn": "Update",
     "contacts": {
       "name": "Name",
@@ -76,6 +105,10 @@
     }
   },
   "navigation_bar": {
-    "pages": ["Home", "Profile", "Settings"]
+    "pages": [
+      "Home",
+      "Profile",
+      "Settings"
+    ]
   }
 }

@@ -5,7 +5,7 @@ import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '@/Components/LanguageSwitcher'
-// import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
+import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
 
 export default function Settings() {
 
@@ -14,39 +14,25 @@ export default function Settings() {
 	const { i18n, t } = useTranslation()
 
 	// States
-	// const [cities, setCities] = useState<{
-	// 	en: string[]
-	// 	ru: string[]
-	// 	kz: string[]
-	// }>({
-	// 	'en': [],
-	// 	'ru': [],
-	// 	'kz': []
-	// })
-	// const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || 'Almaty')
+	const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || '0')
 
-	// // Functions
-	// function getCities() {
-	// 	fetch('locales/cities.json').then((res) => {
-	// 		res.json().then((res) => {
-	// 			setCities(res)
-	// 		})
-	// 	})
-	// }
-
-	// useEffect(() => {
-	// 	localStorage.setItem('_city', currentCity)
-	// }, [currentCity, cities])
+	// Function
 
 	useEffect(() => {
-		localStorage.setItem('_city', '')
+		localStorage.setItem('_city', currentCity)
+	}, [currentCity])
+
+	useEffect(() => {
+		if (!localStorage.getItem('_city')) localStorage.setItem('_city', '0')
+		// @ts-expect-error because it is imported from the web
+		ym(96355513, 'hit', window.origin)
 	}, [])
 
 	return (
 		<m.div className="flex justify-center w-screen px-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 
 				<List className='w-full'>
-					{/* <ListItem className=''>
+					<ListItem className=''>
 						<FormControl fullWidth style={{ marginTop: 16 }}>
 							<InputLabel className="flex justify-center items-center">
 								{t('settings.labels.city')}
@@ -58,12 +44,12 @@ export default function Settings() {
 								onChange={(event: SelectChangeEvent) => {
 									setCurrentCity(event.target.value)
 								}}>
-								{cities[i18n.language as 'ru' | 'kz' | 'en'].map((city) => (
-									<MenuItem key={city} value={city}>{city}</MenuItem>
+								{[...Array(10).keys()].map((city) => (
+									<MenuItem key={city} value={city}>{t(`cities.${city}`)}</MenuItem>
 								))}
 							</Select>
 						</FormControl>
-					</ListItem> */}
+					</ListItem>
 					<ListItem>
 						<LanguageSwitcher />
 					</ListItem>

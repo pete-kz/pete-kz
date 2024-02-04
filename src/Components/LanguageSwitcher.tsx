@@ -3,7 +3,11 @@ import React, { useState, useEffect } from 'react'
 import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
-const languages = [['ru', '🇷🇺 Русский'], ['kz', '🇰🇿 Қазақ тілі'], ['en', '🇬🇧 English']]
+const languages = [
+	['ru', '🇷🇺 Русский'], 
+	// ['kz', '🇰🇿 Қазақ тілі'], 
+	['en', '🇬🇧 English']
+]
 
 export default function LanguageSwitcher() {
 

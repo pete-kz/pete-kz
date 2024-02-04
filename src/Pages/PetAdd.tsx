@@ -11,6 +11,7 @@ import { AxiosResponse } from 'axios'
 import { Button, TextField } from '@mui/material'
 import { ImageOutlined } from '@mui/icons-material'
 import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
 
 import { themeColor } from '@/Utils/colors'
 import ImageGallery from 'react-image-gallery'
@@ -32,20 +33,20 @@ export default function AddPetPage() {
     const [age, setAge] = useState<string>('')
     const [type, setType] = useState<Pet_Response['type']>('Cat')
     const [description, setDescription] = useState<string>('')
-    const [uploadingState, setUploadingState] = useState<boolean>(false)
     const [files, setFiles] = useState<undefined | Blob[]>(undefined)
-    const [images, setImages] = useState<any[]>([])
+    const [images, setImages] = useState<never[]>([])
+    const [uploadState, setUploadState] = useState<boolean>(false)
 
     // Functions
     function addPet() {
-        setUploadingState(true)
+        setUploadState(true)
         const formData = new FormData()
         formData.append('name', name)
         formData.append('age', age)
         formData.append('description', description)
         formData.append('type', type)
         formData.append('userID', user._id)
-        formData.append('city', localStorage.getItem('_city') || 'Almaty')
+        formData.append('city', localStorage.getItem('_city') || '0')
         formData.append('name', name)
         if (files) {
             for (let i = 0; i < files.length; i++) {
@@ -60,8 +61,8 @@ export default function AddPetPage() {
                 } else {
                     notification.custom.error(response.data.err)
                 }
+                setUploadState(false)
             })
-        setUploadingState(false)
     }
 
 
@@ -99,16 +100,18 @@ export default function AddPetPage() {
             return
         }
         checkToken()
+        // @ts-expect-error because it is imported from the web
+		ym(96355513, 'hit', window.origin)
     }, [])
 
     useEffect(() => {
-        const imagesObject: React.SetStateAction<any[]> = []
+        const imagesObject: React.SetStateAction<never[]> = []
         files?.map(file => {
             if (checkImage(file) != '') {
                 imagesObject.push({
                     original: checkImage(file),
                     thumbnain: checkImage(file)
-                }) 
+                } as never) 
             }
         })
         
@@ -166,7 +169,7 @@ export default function AddPetPage() {
                         />
                     </Button>
                 </div>
-                <Button className='w-full' style={{ marginTop: 10 }} disabled={uploadingState} variant='contained' onClick={addPet}>{t('pet.add.btn')}</Button>
+                <LoadingButton loading={uploadState} className='w-full' style={{ marginTop: 10 }} disabled={uploadState} variant='contained' onClick={addPet}>{t('pet.add.btn')}</LoadingButton>
             </m.div>
         </>
     )

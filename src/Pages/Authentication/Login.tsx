@@ -1,6 +1,6 @@
 import React from 'react'
 import { Password, Phone } from '@mui/icons-material'
-import { Button, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useNavigate, Link } from 'react-router-dom'
 import { useSignIn, useIsAuthenticated } from 'react-auth-kit'
 import axios, { AxiosResponse } from 'axios'
@@ -12,6 +12,7 @@ import { API } from '@config'
 import { themeColor } from '@colors'
 import PhoneInput from 'react-phone-number-input'
 import { E164Number } from 'libphonenumber-js/types.cjs'
+import { LoadingButton } from '@mui/lab'
 
 export default function Login() {
 
@@ -24,6 +25,7 @@ export default function Login() {
 	// States
 	const [password, setPassword] = React.useState<string>('')
 	const [phone, setPhone] = React.useState<string>('')
+	const [loadingState, setLoadingState] = React.useState<boolean>(false)
 
 	// Handlers
 	const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +38,7 @@ export default function Login() {
 
 	// Functions
 	const userSignIn = () => {
+		setLoadingState(true)
 		axios.post(`${API.baseURL}/users/login`, {
 			phone,
 			password,
@@ -56,6 +59,7 @@ export default function Login() {
 				const error = response.data.err
 				notification.custom.error(error)
 			}
+			setLoadingState(false)
 		}).catch(() => { notification.custom.error(t('errors.too_many_request')) })
 	}
 
@@ -83,6 +87,8 @@ export default function Login() {
 				loginButton.click()
 			}
 		}
+		// @ts-expect-error because it is imported from the web
+		ym(96355513, 'hit', window.origin)
 		window.addEventListener('keypress', confirmpress)
 		return () => {
 			window.removeEventListener('keypress', confirmpress)
@@ -113,15 +119,16 @@ export default function Login() {
 						<Password className="mr-2" />
 						<TextField label={t('login.labels.0')} variant="outlined" type="password" onChange={handlePasswordChange} />
 					</div>
-					<Button
+					<LoadingButton
 						id="loginbtn"
 						variant='contained'
 						fullWidth
 						sx={{ borderRadius: 9999, fontWeight: 500 }}
 						onClick={userSignIn}
+						loading={loadingState}
 					>
 						{t('login.button')}
-					</Button>
+					</LoadingButton>
 				</div>
 			</m.div>
 		</>

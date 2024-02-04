@@ -1,6 +1,6 @@
 import React from 'react'
 import { AccountCircle, Password, Phone } from '@mui/icons-material'
-import { Button, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useIsAuthenticated } from 'react-auth-kit'
 import { useNavigate, Link } from 'react-router-dom'
 import axios, { AxiosResponse } from 'axios'
@@ -12,6 +12,7 @@ import { API } from '@config'
 import { notification } from '@utils'
 import PhoneInput from 'react-phone-number-input'
 import { E164Number } from 'libphonenumber-js/types.cjs'
+import { LoadingButton } from '@mui/lab'
 
 export default function Register() {
 
@@ -26,6 +27,7 @@ export default function Register() {
 	const [phone, setPhone] = React.useState<string>('')
 	const [name, setName] = React.useState<string>('')
 	const [registerButtonDisabled, setRegisterButtonDisabled] = React.useState<boolean>(false)
+	const [loadingState, setLoadingState] = React.useState<boolean>(false)
 
 	// States
 	const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +59,7 @@ export default function Register() {
 			setRegisterButtonDisabled(true)
 			return null
 		}
+		setLoadingState(true)
 		axios.post(`${API.baseURL}/users/register`, {
 			login,
 			name,
@@ -68,7 +71,8 @@ export default function Register() {
 			} else {
 				notification.custom.error(response.data.err)
 			}
-			return null
+			setLoadingState(false)
+			return
 		}).catch(() => { notification.custom.error(t('errors.too_many_requests')) })
 	}
 
@@ -104,6 +108,8 @@ export default function Register() {
 	}
 
 	React.useEffect(() => {
+		// @ts-expect-error because it is imported from the web
+		ym(96355513, 'hit', window.origin)
 		if (isAuthenticated()) {
 			navigate('/')
 		}
@@ -139,15 +145,16 @@ export default function Register() {
 						<TextField label={t('register.labels.2')} variant="outlined" type="password" onChange={handlePasswordChange} onBlur={handleOnBlurPasswordInput} />
 					</div>
 					<div className="flex justify-center items-center" style={{ marginTop: 12 }}>
-						<Button
+						<LoadingButton
 							onClick={register}
 							sx={{ borderRadius: 9999, fontWeight: 500, width: '100%' }}
 							variant='contained'
 							fullWidth
+							loading={loadingState}
 							disabled={registerButtonDisabled}
 						>
 							{t('register.button')}
-						</Button>
+						</LoadingButton>
 					</div>
 				</div>
 			</m.div>
