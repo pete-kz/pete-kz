@@ -13,6 +13,7 @@ import { notification } from '@utils'
 import PhoneInput from 'react-phone-number-input'
 import { E164Number } from 'libphonenumber-js/types.cjs'
 import { LoadingButton } from '@mui/lab'
+import LanguageSwitcher from '@/Components/LanguageSwitcher'
 
 export default function Register() {
 
@@ -24,7 +25,7 @@ export default function Register() {
 	// States
 	const [login, setLogin] = React.useState<string>('')
 	const [password, setPassword] = React.useState<string>('')
-	const [phone, setPhone] = React.useState<string>('')
+	const [phone, setPhone] = React.useState<string>('+7')
 	const [name, setName] = React.useState<string>('')
 	const [registerButtonDisabled, setRegisterButtonDisabled] = React.useState<boolean>(false)
 	const [loadingState, setLoadingState] = React.useState<boolean>(false)
@@ -156,6 +157,7 @@ export default function Register() {
 							{t('register.button')}
 						</LoadingButton>
 					</div>
+					<LanguageSwitcher />
 				</div>
 			</m.div>
 		</>

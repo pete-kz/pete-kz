@@ -8,8 +8,8 @@ import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
-import { Button, TextField, IconButton, Typography } from '@mui/material'
-import { Favorite, KeyboardReturn } from '@mui/icons-material'
+import { Button, TextField, IconButton, Typography, Link } from '@mui/material'
+import { Favorite, Instagram, KeyboardReturn, Phone, Telegram } from '@mui/icons-material'
 import ReactImageGallery from 'react-image-gallery'
 import { themeColor } from '@/Utils/colors'
 import { red } from '@mui/material/colors'
@@ -33,7 +33,7 @@ export default function PetPage() {
     const [name, setName] = useState<string>('')
     const [age, setAge] = useState<string>('')
     const [description, setDescription] = useState<string>('')
-    const [imageLinks, setImageLinks] = useState<any[]>([])
+    const [imageLinks, setImageLinks] = useState<{ original: string, thumbnail: string }[]>([])
 
     // Functions
     function fetchPet() {
@@ -152,12 +152,11 @@ export default function PetPage() {
                                 <Typography sx={{ wordWrap: 'break-word' }} variant='body2'>{petData.description}</Typography>
                             </div>
                             {query.get('contacts') === 'true' && (
-                                <div>
-                                    <p>{t('pet.contacts.name')}: {ownerData?.name}</p>
-                                    <p>{t('pet.contacts.label')}:</p>
-                                    {ownerData?.social.instagram && (<p> {t('pet.contacts.instagram')}: {ownerData?.social.instagram}</p>)}
-                                    {ownerData?.social.telegram && (<p> {t('pet.contacts.telegram')}: {ownerData?.social.telegram}</p>)}
-                                    {ownerData?.phone && (<p> {t('pet.contacts.phone')}: {ownerData?.phone}</p>)}
+                                <div style={{ border: `1px solid ${themeColor.divBorder}`, borderRadius: 15}} className='p-4 mt-2'>
+                                    <p>{ownerData?.name}</p>
+                                    {ownerData?.social.instagram && (<Link className='flex gap-2' href={`https://instagram.com/${ownerData?.social.instagram}`}><Instagram />{ownerData?.social.instagram}</Link>)}
+                                    {ownerData?.social.telegram && (<Link className='flex gap-2' href={`https://t.me/${ownerData?.social.telegram}`}><Telegram />{ownerData?.social.telegram}</Link>)}
+                                    {ownerData?.phone && (<Link className='flex gap-2' href={`tel:${ownerData?.phone}`}><Phone />{ownerData?.phone}</Link>)}
                                 </div>
                             )}
                         </m.div>

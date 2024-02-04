@@ -106,7 +106,7 @@ export default function Profile() {
     }, [])
 
     return (
-        <m.div className="block w-screen gap-2 p-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Accordion className='mt-2 p-3 m-4' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15 }}>
                 <AccordionSummary
                     expandIcon={<ArrowDownward sx={{ color: themeColor.iconButtonColor }}/>}
@@ -175,9 +175,9 @@ export default function Profile() {
 
             {liked.length > 0 && (
                 <div className='p-4'>
-                    <Typography variant='h6'>Your likes</Typography>
+                    <Typography variant='h6'>{t('main.your_likes')}</Typography>
                     {liked?.map((pet, index) => (
-                        <div key={index} className='flex items-center justify-between mt-2 p-3' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15 }} onClick={() => { window.open(`/pets?id=${pet._id}&contacts=true`, '_self') }}>
+                        <div key={index} className='flex items-center justify-between mt-2 p-3' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} onClick={() => { window.open(`/pets?id=${pet._id}&contacts=true`, '_self') }}>
                             <div className='flex gap-2 items-center'>
                                 <Avatar src={pet.imagesPath[0]}></Avatar>
                                 <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>

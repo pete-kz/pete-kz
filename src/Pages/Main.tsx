@@ -169,7 +169,7 @@ export default function Main() {
 										/>
 									))))}
 							{allPets.filter(pet => pet.city === localStorage.getItem('_city')).length < 1 && (
-								<div className='flex justify-center items-center p-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }}>
+								<div className='flex justify-center items-center p-4 mx-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }}>
 									<p>{t('main.no_more_pets_city')}</p>
 								</div>
 							)}
@@ -180,7 +180,7 @@ export default function Main() {
 								<Skeleton width={'100%'} height={'900px'}></Skeleton>
 							</div>
 						) : (
-							<div className='flex justify-center items-center p-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }}>
+							<div className='flex justify-center items-center p-4 mx-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }}>
 								<p>{t('main.no_more_pets')}</p>
 							</div>
 						)

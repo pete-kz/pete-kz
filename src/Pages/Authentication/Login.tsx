@@ -13,6 +13,7 @@ import { themeColor } from '@colors'
 import PhoneInput from 'react-phone-number-input'
 import { E164Number } from 'libphonenumber-js/types.cjs'
 import { LoadingButton } from '@mui/lab'
+import LanguageSwitcher from '@/Components/LanguageSwitcher'
 
 export default function Login() {
 
@@ -24,7 +25,7 @@ export default function Login() {
 
 	// States
 	const [password, setPassword] = React.useState<string>('')
-	const [phone, setPhone] = React.useState<string>('')
+	const [phone, setPhone] = React.useState<string>('+7')
 	const [loadingState, setLoadingState] = React.useState<boolean>(false)
 
 	// Handlers
@@ -129,6 +130,7 @@ export default function Login() {
 					>
 						{t('login.button')}
 					</LoadingButton>
+					<LanguageSwitcher />
 				</div>
 			</m.div>
 		</>

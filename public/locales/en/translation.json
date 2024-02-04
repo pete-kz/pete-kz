@@ -64,7 +64,8 @@
     "no_more_pets": "There are no more pets to show for you! Check liked in profile or wait a little while for new ones to come!",
     "no_more_pets_city": "There is no pets available in this city! Check another",
     "my_profile": "My Profile",
-    "my_pets": "My Pets"
+    "my_pets": "My Pets",
+    "your_likes": "My likes"
   },
   "pet": {
     "name": "Name",

@@ -8,7 +8,9 @@ import { visualizer } from 'rollup-plugin-visualizer'
 export default defineConfig({
 	plugins: [
 		react(),
-		VitePWA({ injectRegister: 'auto', registerType: 'autoUpdate' }),
+		VitePWA({ injectRegister: 'auto', registerType: 'autoUpdate', workbox: {
+      globPatterns: ['**/*.{js,css,html,ico,png,svg}', '*.{js,css,html,ico,png,svg}', '**/**/*.{js,css,html,ico,png,svg}']
+    } }),
 		tsconfigPaths(),
     visualizer({ open: true }) as unknown as PluginOption
 	],
