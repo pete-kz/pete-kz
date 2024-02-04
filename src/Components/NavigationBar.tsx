@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthUser } from 'react-auth-kit'
 import { useTranslation } from 'react-i18next'
 import { themeColor } from '@colors'
+import { m } from 'framer-motion'
 
 const pages: string[][] = [
 	['navigation_bar.pages.1', '/profile'], 
@@ -47,7 +48,7 @@ export default function NavigationBar() {
 		<header className="fixed bottom-0 left-0 right-0 w-screen z-50 backdrop-blur" style={{ height: 76, backgroundColor: `${themeColor[3]}ef` }}>
 			<div className="flex flex-row items-center justify-around h-full">
 				{pages.map((page: string[], index: number) => (
-					<button key={page[1]} type="button" onClick={() => { navigate(page[1]); setCount(count + 1) }}>
+					<m.button key={page[1]} type="button" onClick={() => { navigate(page[1]); setCount(count + 1) }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
 						<div className="flex flex-col justify-center items-center">
 							<div style={activeStyle(index, currentPageIndex)} className={activeClasses(index, currentPageIndex)}>
 								{index === 1 && <Home />}
@@ -57,7 +58,7 @@ export default function NavigationBar() {
 							</div>
 							<p style={{ color: '#49454f' }}>{t(page[0])}</p>
 						</div>
-					</button>
+					</m.button>
 				))}
 			</div>
 		</header>

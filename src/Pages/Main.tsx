@@ -176,13 +176,13 @@ export default function Main() {
 						</>
 					) : loadingPets ?
 						(
-							<div className='w-screen p-4'>
+							<m.div className='w-screen p-4' animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
 								<Skeleton width={'100%'} height={'900px'}></Skeleton>
-							</div>
+							</m.div>
 						) : (
-							<div className='flex justify-center items-center p-4 mx-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }}>
+							<m.div className='flex justify-center items-center p-4 mx-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
 								<p>{t('main.no_more_pets')}</p>
-							</div>
+							</m.div>
 						)
 
 					}
