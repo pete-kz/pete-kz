@@ -10,6 +10,7 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import { registerSW } from 'virtual:pwa-register'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const updateSW = registerSW({
 	onNeedRefresh() {
@@ -58,6 +59,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 		<Suspense fallback={null}>
 			<ThemeProvider theme={AllyMapTheme}>
 				<CssBaseline />
+				<SpeedInsights />
 				<BrowserRouter>
 					<App />
 				</BrowserRouter>
