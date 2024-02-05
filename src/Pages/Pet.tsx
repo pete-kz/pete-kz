@@ -171,6 +171,7 @@ function LikeReturnBottom(props: { pet: Pet_Response}) {
     // Setups
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
+    const { t } = useTranslation()
 
     // States
     const [userData, setUserData] = useState<User_Response>()
@@ -183,7 +184,7 @@ function LikeReturnBottom(props: { pet: Pet_Response}) {
         userPrevData.password = undefined
         axios.post(`${API.baseURL}/users/update/${userData._id}`, { update: userPrevData }).then((res: AxiosResponse) => {
             if (!res.data.err) {
-                notification.custom.success('Liked! Check in your profile later')
+                notification.custom.success(t('pet.liked'))
             } else {
                 notification.custom.error(res.data.err)
             }

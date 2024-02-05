@@ -21,7 +21,8 @@
     "invalid_link": "Invalid link",
     "phone_required": "Phone number (Whatsapp) is required!",
     "phone_international": "Please, use international phone number format (with +)",
-    "no_city": "Set up the city in the settings first!"
+    "no_city": "Set up the city in the settings first!",
+    "liked_removed": "Liked removed!"
   },
   "success": {
     "login_proccess": "You have successfully logged in!",

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAuthUser } from 'react-auth-kit'
-import { ArrowRight, Edit, AddCircle, Delete, Instagram, AccountCircle, Password, Phone, Telegram, ArrowDownward } from '@mui/icons-material'
+import { Edit, AddCircle, Delete, Instagram, AccountCircle, Password, Phone, Telegram, ArrowDownward } from '@mui/icons-material'
 import { Avatar, Typography, IconButton, TextField, Accordion, AccordionSummary, AccordionActions, AccordionDetails } from '@mui/material'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
@@ -33,6 +33,7 @@ export default function Profile() {
     const [password, setPassword] = useState<User_Response['password']>('')
     const [update, setUpdated] = useState<boolean>(false)
     const [updatingState, setUpdatingState] = useState<boolean>(false)
+    const [userData, setUserData] = useState<User_Response>()
 
     // Functions
     function getInfo() {
@@ -50,6 +51,7 @@ export default function Profile() {
                             setPhone(user.phone)
                             setInstagram(user.social.instagram)
                             setTelegram(user.social.telegram)
+                            setUserData(user)
                             setLiked(allPets?.filter(pet => user.liked.includes(pet._id)) || [])
                         } else {
                             notification.custom.error(res.data.err)
@@ -73,18 +75,37 @@ export default function Profile() {
             })
     }
 
+    function removePetFromLiked(pet_id: string) {
+        if (!userData) return
+        const userPrevData = structuredClone(userData)
+        userPrevData.liked.filter(pet => pet != pet_id)
+        // @ts-expect-error Using interface User_Response that have strict definitions throws error when trying to exclude password from data
+        userPrevData.password = undefined
+        axios.delete(`${API.baseURL}/users/remove/${userData._id}/liked/${pet_id}`).then((res: AxiosResponse) => {
+            if (!res.data.err) {
+                notification.custom.success(t('errors.liked_remove'))
+                setLiked(pets => pets?.filter(userPet => userPet._id != pet_id))
+                setUserData(userPrevData)
+            } else {
+                notification.custom.error(res.data.err)
+            }
+        })
+    }
+
     function updateProfileInfo() {
         setUpdatingState(true)
-        axios.post(`${API.baseURL}/users/update/${user._id}`, { update: {
-            name,
-            login,
-            phone,
-            password: password != '' ? password : undefined,
-            social: {
-                instagram,
-                telegram
+        axios.post(`${API.baseURL}/users/update/${user._id}`, {
+            update: {
+                name,
+                login,
+                phone,
+                password: password != '' ? password : undefined,
+                social: {
+                    instagram,
+                    telegram
+                }
             }
-        } })
+        })
             .then((res: AxiosResponse) => {
                 if (!res.data.err) {
                     notification.custom.success('Profile updated')
@@ -102,44 +123,44 @@ export default function Profile() {
 
     useEffect(() => {
         // @ts-expect-error because it is imported from the web
-		ym(96355513, 'hit', window.origin)
+        ym(96355513, 'hit', window.origin)
     }, [])
 
     return (
         <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Accordion className='mt-2 p-3 m-4' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15 }}>
                 <AccordionSummary
-                    expandIcon={<ArrowDownward sx={{ color: themeColor.iconButtonColor }}/>}
+                    expandIcon={<ArrowDownward sx={{ color: themeColor.iconButtonColor }} />}
                     aria-controls="panel1-content"
                     id="panel1-header"
                 >
                     <Typography>{t('main.my_profile')}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                <div className='flex items-center gap-2 mb-2'>
-                    <AccountCircle />
-                    <TextField value={name} fullWidth label={t('user.name')} onChange={(e) => setName(e.target.value)} />
-                </div>
-                <div className='flex items-center gap-2 mb-2'>
-                    <AccountCircle />
-                    <TextField value={login} fullWidth label={t('user.login')} onChange={(e) => setLogin(e.target.value)} />
-                </div>
-                <div className='flex items-center gap-2 mb-2'>
-                    <Phone />
-                    <PhoneInput placeholder="Phone" value={phone} label={t('user.contacts.phone')} onChange={(e) => setPhone(e as string)} />
-                </div>
-                <div className='flex items-center gap-2 mb-2'>
-                    <Instagram />
-                    <TextField value={instagram} fullWidth label={t('user.contacts.instagram')} onChange={(e) => setInstagram(e.target.value)} />
-                </div>
-                <div className='flex items-center gap-2 mb-2'>
-                    <Telegram />
-                    <TextField value={telegram} fullWidth label={t('user.contacts.telegram')} onChange={(e) => setTelegram(e.target.value)} />
-                </div>
-                <div className='flex items-center gap-2'>
-                    <Password />
-                    <TextField value={password} type="password" fullWidth label={t('user.password')} onChange={(e) => setPassword(e.target.value)} />
-                </div>
+                    <div className='flex items-center gap-2 mb-2'>
+                        <AccountCircle />
+                        <TextField value={name} fullWidth label={t('user.name')} onChange={(e) => setName(e.target.value)} />
+                    </div>
+                    <div className='flex items-center gap-2 mb-2'>
+                        <AccountCircle />
+                        <TextField value={login} fullWidth label={t('user.login')} onChange={(e) => setLogin(e.target.value)} />
+                    </div>
+                    <div className='flex items-center gap-2 mb-2'>
+                        <Phone />
+                        <PhoneInput placeholder="Phone" value={phone} label={t('user.contacts.phone')} onChange={(e) => setPhone(e as string)} />
+                    </div>
+                    <div className='flex items-center gap-2 mb-2'>
+                        <Instagram />
+                        <TextField value={instagram} fullWidth label={t('user.contacts.instagram')} onChange={(e) => setInstagram(e.target.value)} />
+                    </div>
+                    <div className='flex items-center gap-2 mb-2'>
+                        <Telegram />
+                        <TextField value={telegram} fullWidth label={t('user.contacts.telegram')} onChange={(e) => setTelegram(e.target.value)} />
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <Password />
+                        <TextField value={password} type="password" fullWidth label={t('user.password')} onChange={(e) => setPassword(e.target.value)} />
+                    </div>
                 </AccordionDetails>
                 <AccordionActions>
                     <LoadingButton loading={updatingState} variant='contained' fullWidth sx={{ marginTop: 1 }} onClick={updateProfileInfo}>Update</LoadingButton>
@@ -177,15 +198,19 @@ export default function Profile() {
                 <div className='p-4'>
                     <Typography variant='h6'>{t('main.your_likes')}</Typography>
                     {liked?.map((pet, index) => (
-                        <div key={index} className='flex items-center justify-between mt-2 p-3' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} onClick={() => { window.open(`/pets?id=${pet._id}&contacts=true`, '_self') }}>
-                            <div className='flex gap-2 items-center'>
-                                <Avatar src={pet.imagesPath[0]}></Avatar>
-                                <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>
+                        <m.div key={index} className='flex items-center justify-between mt-2 p-3' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <div className='w-full' onClick={() => { window.open(`/pets?id=${pet._id}&contacts=true`, '_self') }}>
+                                <div className='flex gap-2 items-center'>
+                                    <Avatar src={pet.imagesPath[0]}></Avatar>
+                                    <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>
+                                </div>
                             </div>
-                            <div>
-                                <IconButton ><ArrowRight sx={{ color: themeColor.primaryTextLight }} /></IconButton>
+                            <div style={{ width: 38 }}>
+                                <IconButton onClick={() => { removePetFromLiked(pet._id) }} sx={{ color: themeColor.iconColor, border: `1px solid ${themeColor.divBorder}` }}>
+                                    <Delete fontSize='small' sx={{ color: red[500] }} />
+                                </IconButton>
                             </div>
-                        </div>
+                        </m.div>
                     ))}
                 </div>
             )}
