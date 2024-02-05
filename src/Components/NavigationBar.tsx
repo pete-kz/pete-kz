@@ -48,7 +48,7 @@ export default function NavigationBar() {
 		<header className="fixed bottom-0 left-0 right-0 w-screen z-50 backdrop-blur" style={{ height: 76, backgroundColor: `${themeColor[3]}ef` }}>
 			<div className="flex flex-row items-center justify-around h-full">
 				{pages.map((page: string[], index: number) => (
-					<m.div key={page[1]} onClick={() => { navigate(page[1]); setCount(count + 1) }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
+					<m.button id='nav' key={page[1]} onClick={() => { navigate(page[1]); setCount(count + 1) }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
 						<div className="flex flex-col justify-center items-center">
 							<div style={activeStyle(index, currentPageIndex)} className={activeClasses(index, currentPageIndex)}>
 								{index === 1 && <Home />}
@@ -57,7 +57,7 @@ export default function NavigationBar() {
 							</div>
 							<p style={{ color: '#49454f' }}>{t(page[0])}</p>
 						</div>
-					</m.div>
+					</m.button>
 				))}
 			</div>
 		</header>
