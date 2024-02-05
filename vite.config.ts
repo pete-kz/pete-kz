@@ -9,11 +9,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      mode: (process.env.NODE_ENV as 'development' | 'production' | undefined) || 'development',
       injectRegister: 'auto',
       registerType: 'prompt',
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}', '*.{js,css,html,ico,png,svg}', '**/**/*.{js,css,html,ico,png,svg}']
-      },
       devOptions: { enabled: true }
     }),
     tsconfigPaths(),

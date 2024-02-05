@@ -13,14 +13,16 @@ import { registerSW } from 'virtual:pwa-register'
 
 const updateSW = registerSW({
 	onNeedRefresh() {
-		if (confirm('New content available. Reload?')) {
-			console.log('updated!')
+		if (window.confirm('New content available. Reload?')) {
 			updateSW(true)
 		}
 	},
 	onOfflineReady() {
-		console.log('offline ready')
+		window.alert('App has been loaded.')
 	},
+	onRegistered() {
+		console.info('Service worker registered.')
+	}
 })
 
 const AllyMapTheme: ThemeOptions = createTheme({
