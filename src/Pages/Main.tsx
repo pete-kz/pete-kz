@@ -56,14 +56,20 @@ export default function Main() {
 
 	// Functions
 	function fetchAllPets() {
-		axios.post(`${API.baseURL}/pets/find`, {}).then((res: AxiosResponse) => {
+		const cachedPets = localStorage.getItem('_data_allPets')
+		if (cachedPets) {
+			setAllPets(JSON.parse(cachedPets))
+			setLoadingPets(false)
+		}
+		axios.get(`${API.baseURL}/pets/find/all`).then((res: AxiosResponse) => {
 			if (!res.data.err) {
 				const pets: Pet_Response[] = res.data
 				axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
 					if (!res.data.err) {
 						const userData: User_Response = res.data
-						// if pet already in users skipped or liked, filter them out
-						setAllPets(pets.filter(pet => !(userData.liked.includes(pet._id))))
+						const filteredPets = pets.filter(pet => !(userData.liked.includes(pet._id)))
+						localStorage.setItem('_data_allPets', JSON.stringify(filteredPets)) // Cache the filtered list
+						setAllPets(filteredPets)
 						setLoadingPets(false)
 					} else {
 						notification.custom.error(res.data.err)

@@ -52,7 +52,6 @@ export default function NavigationBar() {
 						<div className="flex flex-col justify-center items-center">
 							<div style={activeStyle(index, currentPageIndex)} className={activeClasses(index, currentPageIndex)}>
 								{index === 1 && <Home />}
-								{/* {index === 1 && <StarBorderOutlined />} */}
 								{index === 0 && <Person />}
 								{index === 2 && <Settings />}
 							</div>
