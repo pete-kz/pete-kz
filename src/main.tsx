@@ -9,6 +9,19 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
+import { registerSW } from 'virtual:pwa-register'
+
+const updateSW = registerSW({
+	onNeedRefresh() {
+		if (confirm('New content available. Reload?')) {
+			console.log('updated!')
+			updateSW(true)
+		}
+	},
+	onOfflineReady() {
+		console.log('offline ready')
+	},
+})
 
 const AllyMapTheme: ThemeOptions = createTheme({
 	palette: {

@@ -10,3 +10,4 @@ node_modules/
 stats.html
 *.copy.ts
 dist/
+dev-dist/

@@ -6,14 +6,19 @@ import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [
-		react(),
-		VitePWA({ injectRegister: 'auto', registerType: 'prompt', workbox: {
-      globPatterns: ['**/*.{js,css,html,ico,png,svg}', '*.{js,css,html,ico,png,svg}', '**/**/*.{js,css,html,ico,png,svg}']
-    } }),
-		tsconfigPaths(),
+  plugins: [
+    react(),
+    VitePWA({
+      injectRegister: 'auto',
+      registerType: 'prompt',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}', '*.{js,css,html,ico,png,svg}', '**/**/*.{js,css,html,ico,png,svg}']
+      },
+      devOptions: { enabled: true }
+    }),
+    tsconfigPaths(),
     visualizer({ open: true }) as unknown as PluginOption
-	],
+  ],
   build: {
     rollupOptions: {
       output: {
