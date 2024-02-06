@@ -9,11 +9,13 @@ import { API } from '@config'
 import { axiosAuth as axios, notification, parseMongoDate } from '@utils'
 import { AxiosResponse } from 'axios'
 import { red } from '@mui/material/colors'
+import { useNavigate } from 'react-router-dom'
 
 export default function PetCard({ id, name, age, description, userID, imagesPath, updatedAt }: PetCard_props) {
 
   // Setups
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   // States
   const [owner, setOwner] = useState<User_Response>()
@@ -64,7 +66,7 @@ export default function PetCard({ id, name, age, description, userID, imagesPath
         <div className='w-full flex justify-end mt-3'>
           <Button
             variant='contained'
-            onClick={() => { window.open(`/pets?id=${id}&more=true`, '_self') }}
+            onClick={() => { navigate(`/pets?id=${id}&more=true`) }}
             className='font-semibold'
             sx={{ marginLeft: 1, marginRight: 1, border: `1px solid ${themeColor.iconButtonColor}`, borderRadius: 15, width: '6rem' }}
           >

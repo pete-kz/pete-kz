@@ -77,7 +77,7 @@ export default function Login() {
 
 	React.useEffect(() => {
 		if (isAuthenticated()) {
-			navigate('/')
+			navigate('/p')
 		}
 		function confirmpress(event: Event) {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -17,6 +17,7 @@ import Settings from './Pages/Settings'
 import Profile from './Pages/Profile.js'
 import PetPage from './Pages/Pet.js'
 import AddPetPage from './Pages/PetAdd.js'
+import IndexPage from './Pages/Index.js'
 
 export default function App() {
 
@@ -33,10 +34,14 @@ export default function App() {
 		},
 		{
 			path: '/',
+			element: <IndexPage />,
+		},
+		{
+			path: '/',
 			element: <RequireAuth loginPath={loginPage}><MainLayout /></RequireAuth>,
 			children: [
 				{
-					index: true,
+					path: '/p',
 					element: <Main />,
 				},
 				{

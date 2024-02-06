@@ -172,6 +172,7 @@ function LikeReturnBottom(props: { pet: Pet_Response}) {
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
     const { t } = useTranslation()
+    const navigate = useNavigate()
 
     // States
     const [userData, setUserData] = useState<User_Response>()
@@ -212,7 +213,7 @@ function LikeReturnBottom(props: { pet: Pet_Response}) {
         <>
             <div className='absolute w-screen flex items-center justify-center bottom-[6rem]'>
                 <div className='flex items-center gap-3'>
-                    <IconButton sx={{ backgroundColor: themeColor.cardBackground, color: themeColor.iconButtonColor }} onClick={() => { window.open(`/?start_id=${props.pet._id}`, '_self') }}><KeyboardReturn /></IconButton>
+                    <IconButton sx={{ backgroundColor: themeColor.cardBackground, color: themeColor.iconButtonColor }} onClick={() => { navigate(`/p?start_id=${props.pet._id}`) }}><KeyboardReturn /></IconButton>
                     <IconButton sx={{ backgroundColor: themeColor.cardBackground, color: red[500] }} onClick={addLikedPet}><Favorite /></IconButton>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 @import "../node_modules/react-image-gallery/styles/css/image-gallery.css";
-/* @import "../node_modules/react-phone-number-input/style.css"; */
 
 html,
 body {
@@ -22,6 +21,7 @@ body {
 * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot,
@@ -63,6 +63,11 @@ button#nav:active {
     background-color: transparent;
 }
 
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+button#main_auth_btn {
+    @apply flex items-center justify-center px-3 py-2 bg-purple-700 font-semibold text-white rounded-lg mt-2 hover:bg-purple-600 active:scale-110 transition-all ease-in duration-75
+}

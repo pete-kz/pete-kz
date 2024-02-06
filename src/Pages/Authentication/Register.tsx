@@ -112,7 +112,7 @@ export default function Register() {
 		// @ts-expect-error because it is imported from the web
 		ym(96355513, 'hit', window.origin)
 		if (isAuthenticated()) {
-			navigate('/')
+			navigate('/p')
 		}
 	}, [])
 
