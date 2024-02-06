@@ -5,18 +5,19 @@ import { useTranslation } from 'react-i18next'
 
 const languages = [
 	['ru', '🇷🇺 Русский'], 
-	// ['kz', '🇰🇿 Қазақ тілі'], 
+	['kz', '🇰🇿 Қазақ тілі'], 
 	['en', '🇬🇧 English']
 ]
+const lanaguagesCodes = ['ru', 'kz', 'en']
 
 export default function LanguageSwitcher() {
 
 	// Setups
 	const { t, i18n } = useTranslation()
-	const [currentLanguage, setLanguage] = useState<string>('')
+	const [currentLanguage, setLanguage] = useState<string>('ru')
 
 	useEffect(() => {
-		setLanguage(i18n.language === 'en-US' ? 'en' : i18n.language)
+		setLanguage(lanaguagesCodes.includes(i18n.language) ? i18n.language : 'en')
 		i18n.changeLanguage(currentLanguage)
 	}, [])
 

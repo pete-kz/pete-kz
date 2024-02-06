@@ -8,7 +8,6 @@ import './i18.js'
 
 // Layouts
 import MainLayout from './Layouts/Main.layout'
-import DefaultLayout from './Layouts/Default'
 
 // Pages
 import Main from './Pages/Main'
@@ -26,15 +25,15 @@ export default function App() {
 	const routes: RouteObject[] = [
 		{
 			path: '/login',
-			element: <DefaultLayout><Login /></DefaultLayout>,
+			element: <Login />,
 		},
 		{
 			path: '/register',
-			element: <DefaultLayout><Register /></DefaultLayout>,
+			element: <Register />,
 		},
 		{
 			path: '/',
-			element: <RequireAuth loginPath={loginPage}><DefaultLayout><MainLayout /></DefaultLayout></RequireAuth>,
+			element: <RequireAuth loginPath={loginPage}><MainLayout /></RequireAuth>,
 			children: [
 				{
 					index: true,

@@ -6,7 +6,7 @@ import NavigationBar from '@/Components/NavigationBar'
 export default function MainLayout() {
 	return (
 		<>
-			<Toaster containerStyle={{ marginBottom: 76 }} />
+			<Toaster />
 			<NavigationBar />
 			<main>
 				<Outlet />

@@ -11,7 +11,7 @@ export default function Settings() {
 
 	// Setups
 	const signout = useSignOut()
-	const { i18n, t } = useTranslation()
+	const { t } = useTranslation()
 
 	// States
 	const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || '0')

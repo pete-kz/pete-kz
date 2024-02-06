@@ -12,6 +12,9 @@ export default defineConfig({
       mode: (process.env.NODE_ENV as 'development' | 'production' | undefined) || 'development',
       injectRegister: 'auto',
       registerType: 'prompt',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}', '**/**/*.{js,css,html,ico,png,svg,json}', '*.{js,css,html,ico,png,svg,json}']
+      },
       devOptions: { enabled: true }
     }),
     tsconfigPaths(),
