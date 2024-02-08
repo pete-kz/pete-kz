@@ -10,6 +10,7 @@ import '@fontsource/inter/400.css'
 import '@fontsource/inter/500.css'
 import '@fontsource/inter/700.css'
 import { registerSW } from 'virtual:pwa-register'
+import { ui } from '@config'
 
 const updateSW = registerSW({
 	onNeedRefresh() {
@@ -25,33 +26,7 @@ const updateSW = registerSW({
 	}
 })
 
-const AllyMapTheme: ThemeOptions = createTheme({
-	palette: {
-		mode: 'dark',
-		primary: {
-			main: '#6750a4',
-
-		},
-		secondary: {
-			main: '#625b71',
-			
-		},
-		error: {
-			main: '#b3271e'
-		},
-		background: {
-			default: '#fef7ff',
-			paper: '#fef7ff'
-		},
-		text: {
-			primary: '#1d1b20',
-			secondary: '#49454f'
-		}
-	},
-	shape: {
-		borderRadius: 15,
-	},
-})
+const AllyMapTheme: ThemeOptions = createTheme(ui.mui)
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>

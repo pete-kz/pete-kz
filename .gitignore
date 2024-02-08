@@ -11,3 +11,4 @@ stats.html
 *.copy.ts
 dist/
 dev-dist/
+.DS_store

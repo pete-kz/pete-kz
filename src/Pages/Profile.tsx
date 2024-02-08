@@ -176,7 +176,7 @@ export default function Profile() {
                             <Avatar src={pet.imagesPath[0]}></Avatar>
                             <Typography variant='body1' className='text-center' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>
                             <div className='grid grid-rows-1 grid-cols-2 gap-2'>
-                                <IconButton onClick={() => { navigate(`/pets?id=${pet._id}&edit=true`) }} sx={{ color: themeColor.iconColor, border: `1px solid ${themeColor.divBorder}` }}>
+                                <IconButton onClick={() => { navigate(`/pwa/pets?id=${pet._id}&edit=true`) }} sx={{ color: themeColor.iconColor, border: `1px solid ${themeColor.divBorder}` }}>
                                     <Edit fontSize='small' sx={{ color: themeColor.primaryTextLight }} />
                                 </IconButton>
                                 <IconButton onClick={() => { removePet(pet) }} sx={{ color: themeColor.iconColor, border: `1px solid ${themeColor.divBorder}` }}>
@@ -186,7 +186,7 @@ export default function Profile() {
                         </div>
                     ))}
                     <div className='flex flex-col justify-center items-center p-3' style={{ border: `1px solid ${themeColor.divBorder}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} >
-                        <IconButton onClick={() => { navigate('/pets/add') }} sx={{ color: themeColor[12] }}>
+                        <IconButton onClick={() => { navigate('/pwa/pets/add') }} sx={{ color: themeColor[12] }}>
                             <AddCircle fontSize='large' sx={{ color: themeColor.primaryTextLight }} />
                         </IconButton>
                         <div className='text-center'>
@@ -201,7 +201,7 @@ export default function Profile() {
                     <Typography variant='h6'>{t('main.your_likes')}</Typography>
                     {liked?.map((pet, index) => (
                         <m.div key={index} className='flex items-center justify-between mt-2 p-3' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                            <div className='w-full' onClick={() => { navigate(`/pets?id=${pet._id}&contacts=true`) }}>
+                            <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
                                 <div className='flex gap-2 items-center'>
                                     <Avatar src={pet.imagesPath[0]}></Avatar>
                                     <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>

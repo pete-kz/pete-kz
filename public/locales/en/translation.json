@@ -106,11 +106,18 @@
       "language_button": "Language"
     }
   },
-  "navigation_bar": {
-    "pages": [
-      "Home",
-      "Profile",
-      "Settings"
-    ]
+  "bottom_pwa_bar": {
+    "pages": {
+      "home": "Home",
+      "profile": "Profile",
+      "settings": "Settings"
+    }
+  },
+  "navigation_main_bar": {
+    "pages": {
+      "main": "Main",
+      "contacts": "Contacts",
+      "about_us": "About Us"
+    }
   }
 }

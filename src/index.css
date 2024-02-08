@@ -71,3 +71,7 @@ button#nav:active {
 button#main_auth_btn {
     @apply flex items-center justify-center px-3 py-2 bg-purple-700 font-semibold text-white rounded-lg mt-2 hover:bg-purple-600 active:scale-110 transition-all ease-in duration-75
 }
+
+.MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer[aria-label="PWA Instructions"] {
+    justify-content: center;
+}

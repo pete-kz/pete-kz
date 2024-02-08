@@ -96,7 +96,7 @@ export default function AddPetPage() {
 
     useEffect(() => {
         if (!isAuthenticated()) {
-            navigate('/login')
+            navigate('/auth/login')
             return
         }
         checkToken()

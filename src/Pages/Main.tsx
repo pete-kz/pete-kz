@@ -100,7 +100,7 @@ export default function Main() {
 
 	useEffect(() => {
 		if (!isAuthenticated()) {
-			navigate('/login')
+			navigate('/auth/login')
 		}
 		fetchAllPets()
 		checkToken()

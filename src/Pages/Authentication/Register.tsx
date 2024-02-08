@@ -68,7 +68,7 @@ export default function Register() {
 			phone
 		}).then((response: AxiosResponse) => {
 			if (!response.data.err) {
-				navigate('/login')
+				navigate('/auth/login')
 			} else {
 				notification.custom.error(response.data.err)
 			}
@@ -112,7 +112,7 @@ export default function Register() {
 		// @ts-expect-error because it is imported from the web
 		ym(96355513, 'hit', window.origin)
 		if (isAuthenticated()) {
-			navigate('/p')
+			navigate('/pwa')
 		}
 	}, [])
 
@@ -126,7 +126,7 @@ export default function Register() {
 						<p className="text-sm">
 							{t('register.account_already.0')}
 							{' '}
-							<Link className="" style={{ color: themeColor[7] }} to="/login">{t('register.account_already.1')}</Link>
+							<Link className="" style={{ color: themeColor[7] }} to="/auth/login">{t('register.account_already.1')}</Link>
 						</p>
 					</div>
 					<div className="flex flex-end items-center mb-2">

@@ -77,7 +77,7 @@ export default function Login() {
 
 	React.useEffect(() => {
 		if (isAuthenticated()) {
-			navigate('/p')
+			navigate('/pwa')
 		}
 		function confirmpress(event: Event) {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -109,7 +109,7 @@ export default function Login() {
 						<p className="text-sm">
 							{t('login.or_create_new_account.0')}
 							{' '}
-							<Link className="" style={{ color: themeColor[7] }} to="/register">{t('login.or_create_new_account.1')}</Link>
+							<Link className="" style={{ color: themeColor[7] }} to="/auth/register">{t('login.or_create_new_account.1')}</Link>
 						</p>
 					</div>
 					<div className="flex flex-end items-center mb-2">

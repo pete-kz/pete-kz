@@ -66,7 +66,7 @@ export default function PetCard({ id, name, age, description, userID, imagesPath
         <div className='w-full flex justify-end mt-3'>
           <Button
             variant='contained'
-            onClick={() => { navigate(`/pets?id=${id}&more=true`) }}
+            onClick={() => { navigate(`/pwa/pets?id=${id}&more=true`) }}
             className='font-semibold'
             sx={{ marginLeft: 1, marginRight: 1, border: `1px solid ${themeColor.iconButtonColor}`, borderRadius: 15, width: '6rem' }}
           >

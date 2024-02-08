@@ -21,43 +21,48 @@ import IndexPage from './Pages/Index.js'
 
 export default function App() {
 
-	const loginPage = '/login'
+	const loginPage = '/auth/login'
 
 	const routes: RouteObject[] = [
 		{
-			path: '/login',
-			element: <Login />,
-		},
-		{
-			path: '/register',
-			element: <Register />,
+			path: '/auth',
+			children: [
+				{
+					path: '/auth/login',
+					element: <Login />,
+				},
+				{
+					path: '/auth/register',
+					element: <Register />,
+				},
+			]	
 		},
 		{
 			path: '/',
 			element: <IndexPage />,
 		},
 		{
-			path: '/',
+			path: '/pwa',
 			element: <RequireAuth loginPath={loginPage}><MainLayout /></RequireAuth>,
 			children: [
 				{
-					path: '/p',
+					path: '/pwa',
 					element: <Main />,
 				},
 				{
-					path: '/profile',
+					path: '/pwa/profile',
 					element: <Profile />,
 				},
 				{
-					path: '/pets',
+					path: '/pwa/pets',
 					element: <PetPage />,
 				},
 				{
-					path: '/pets/add',
+					path: '/pwa/pets/add',
 					element: <AddPetPage />
 				},
 				{
-					path: '/settings',
+					path: '/pwa/settings',
 					element: <Settings />,
 				},
 			],

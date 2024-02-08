@@ -2,13 +2,10 @@
 import React, { useState, useEffect } from 'react'
 import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import { main } from '@config'
 
-const languages = [
-	['ru', '🇷🇺 Русский'], 
-	['kz', '🇰🇿 Қазақ тілі'], 
-	['en', '🇬🇧 English']
-]
-const lanaguagesCodes = ['ru', 'kz', 'en']
+const languages = main.languages
+const lanaguagesCodes = languages.map(language => language[0])
 
 export default function LanguageSwitcher() {
 
