@@ -1,6 +1,5 @@
 import React from 'react'
 import NavigationBar from '@/Components/NavigationBar'
-import CoverPetsPicture from '@/Images/cover_pets_picture.webp'
 import HowToInstall from '@/Components/HowToInstall'
 
 export default function IndexPage() {
@@ -8,7 +7,7 @@ export default function IndexPage() {
         <div className='w-screen h-full bg-white'>
             <NavigationBar />
             <div className='bg-purple-500'>
-                <img src={CoverPetsPicture} alt="" />
+                <img src={'/images/cover_pets_picture.webp'} alt="Cover Picture Of Pets" />
             </div>
             <div className='flex flex-col items-center gap-4 mt-5'>
                 <div className='text-center'>
