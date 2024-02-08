@@ -53,7 +53,6 @@ export default function AddPetPage() {
                 formData.append('images', files[i]) // Use the same field name for each file
             }
         }
-        console.log(formData.get('name'), formData.getAll('images'))
         axios.post(`${API.baseURL}/pets/add`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then((response: AxiosResponse) => {
                 if (!response.data.err) {
@@ -63,8 +62,11 @@ export default function AddPetPage() {
                 }
                 setUploadState(false)
             })
+            .catch(err => {
+                notification.custom.error(err)
+                setUploadState(false)
+            })
     }
-
 
     function checkToken() {
         const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
