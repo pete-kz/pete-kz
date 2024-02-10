@@ -36,25 +36,25 @@ export default defineConfig({
         ],
         icons: [
           {
-            src: 'public/icons/manifest-icon-192.maskable.png',
+            src: 'icons/manifest-icon-192.maskable.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'public/icons/manifest-icon-192.maskable.png',
+            src: 'icons/manifest-icon-192.maskable.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'maskable'
           },
           {
-            src: 'public/icons/manifest-icon-512.maskable.png',
+            src: 'icons/manifest-icon-512.maskable.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'public/icons/manifest-icon-512.maskable.png',
+            src: 'icons/manifest-icon-512.maskable.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
@@ -69,10 +69,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('@mui')) return 'mui'
-            return 'vendor'
-          }
+          // if (id.includes('node_modules')) {
+          //   if (id.includes('radix') || id.includes('ui')) return 'UI'
+          //   return 'vendor'
+          // }
+          return 'index'
         }
       }
     }

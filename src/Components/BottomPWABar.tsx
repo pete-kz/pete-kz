@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react'
-import { Home, Person, Settings } from '@mui/icons-material'
+import { Settings, Home, UserRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthUser } from 'react-auth-kit'
 import { useTranslation } from 'react-i18next'
-import { themeColor } from '@colors'
-import { m } from 'framer-motion'
 import { main } from '@config'
+import { cn } from '@/lib/utils'
+import { Separator } from '@/Components/ui/separator'
 
 const pages: string[][] = main.bottomPWABar.pages
 const pagesPaths: string[] = pages.map(page => page[1])
@@ -22,41 +22,37 @@ export default function NavigationBar() {
 	const navigate = useNavigate()
 	const authStateUser = useAuthUser()
 	const user: { _id?: string } | null = authStateUser()
+
+	// Functions
 	if (user == null) {
 		navigate('/auth/login')
 	}
 
-	function activeStyle(index: number, currentIndex: number) {
-		if (index === currentIndex) {
-			return { backgroundColor: themeColor[5], color: '#49454f' }
-		}
-		return { color: '#49454f' }
+	function isActive(index: number, currentIndex: number) {
+		return index === currentIndex
 	}
 
-	function activeClasses(index: number, currentIndex: number) {
-		return `rounded-2xl px-3 transition ease-in-out ${index === currentIndex ? '' : 'bg-none'} text-color-[#49454f]`
-	}
-		
 	React.useEffect(() => {
 		setCurrentPageIndex(pagesPaths.indexOf(location.pathname))
 	}, [count])
 
 	return (
-		<header className="fixed bottom-0 left-0 right-0 w-screen z-50 backdrop-blur" style={{ height: 76, backgroundColor: `${themeColor[3]}ef` }}>
-			<div className="flex flex-row items-center justify-around h-full">
-				{pages.map((page: string[], index: number) => (
-					<m.button id='nav' key={page[1]} onClick={() => { navigate(page[1]); setCount(count + 1) }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
-						<div className="flex flex-col justify-center items-center">
-							<div style={activeStyle(index, currentPageIndex)} className={activeClasses(index, currentPageIndex)}>
-								{index === 1 && <Home />}
-								{index === 0 && <Person />}
-								{index === 2 && <Settings />}
+		<header className='fixed bottom-0 left-0 right-0 z-50'>
+				<Separator />
+				<div className="grid grid-cols-3 grid-rows-1">
+					{pages.map((page: string[], index: number) => (
+						<div key={page[1]} className={cn('rounded-lg', 'p-2 px-3')} onClick={() => { navigate(page[1]); setCount(count + 1) }}>
+							<div className={cn(isActive(index, currentPageIndex) && 'bg-card', 'rounded-lg p-2 text-center', 'transition-all ease-in duration-150')}>
+								<div className='w-full flex justify-center'>
+									{index === 1 && <Home />}
+									{index === 0 && <UserRound />}
+									{index === 2 && <Settings />}
+								</div>
+								<p>{t(page[0])}</p>
 							</div>
-							<p style={{ color: '#49454f' }}>{t(page[0])}</p>
 						</div>
-					</m.button>
-				))}
-			</div>
+					))}
+				</div>
 		</header>
 	)
 }

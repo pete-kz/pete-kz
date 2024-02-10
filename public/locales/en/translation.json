@@ -35,7 +35,8 @@
       "create new account"
     ],
     "labels": [
-      "Password"
+      "Password",
+      "Phone"
     ],
     "button": "Login"
   },
@@ -48,7 +49,8 @@
     "labels": [
       "Login",
       "Name",
-      "Password"
+      "Password",
+      "Phone"
     ],
     "placeholders": [
       "Login",
@@ -70,7 +72,8 @@
   },
   "pet": {
     "name": "Name",
-    "age": "Age",
+    "age": "Date of birth",
+    "month": "Months",
     "type": "Your pet is",
     "description": "Description",
     "update_btn": "Update",

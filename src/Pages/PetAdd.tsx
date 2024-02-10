@@ -8,13 +8,14 @@ import { API } from '@config'
 import { type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification } from '@utils'
 import { AxiosResponse } from 'axios'
-import { Button, TextField } from '@mui/material'
-import { ImageOutlined } from '@mui/icons-material'
-import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
 
-import { themeColor } from '@/Utils/colors'
+// UI
+import { Input } from '@/Components/ui/input'
+import { Label } from '@/Components/ui/label'
+import { Button } from '@/Components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
 import ImageGallery from 'react-image-gallery'
+import { Textarea } from '@/Components/ui/textarea'
 
 
 export default function AddPetPage() {
@@ -42,7 +43,7 @@ export default function AddPetPage() {
         setUploadState(true)
         const formData = new FormData()
         formData.append('name', name)
-        formData.append('age', age)
+        formData.append('age', `${age}`)
         formData.append('description', description)
         formData.append('type', type)
         formData.append('userID', user._id)
@@ -92,7 +93,7 @@ export default function AddPetPage() {
         setAge(event.target.value)
     }
 
-    const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setDescription(event.target.value)
     }
 
@@ -103,7 +104,7 @@ export default function AddPetPage() {
         }
         checkToken()
         // @ts-expect-error because it is imported from the web
-		ym(96355513, 'hit', window.origin)
+        ym(96355513, 'hit', window.origin)
     }, [])
 
     useEffect(() => {
@@ -113,10 +114,9 @@ export default function AddPetPage() {
                 imagesObject.push({
                     original: checkImage(file),
                     thumbnain: checkImage(file)
-                } as never) 
+                } as never)
             }
         })
-        
         setImages(imagesObject)
     }, [files])
 
@@ -124,54 +124,56 @@ export default function AddPetPage() {
     return (
         <>
             <m.div className='m-2 p-2 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div>
+                    <h1 className='text-2xl font-bold'>Adding new pet</h1>
+                </div>
                 <div className='mb-2'>
                     <ImageGallery items={images} showFullscreenButton={false} showPlayButton={false} />
                 </div>
-                <div className='gap-2 flex flex-col'>
-                    <div className='flex gap-2 w-full'>
-                        <TextField defaultValue={name} fullWidth label={t('pet.name')} variant="outlined" onChange={handleNameChange} />
-                        <TextField defaultValue={age} label={t('pet.age')} style={{ width: 60 }} variant="outlined" onChange={handleAgeChange} type='number' />
+                <form onSubmit={addPet} className='gap-2 flex flex-col'>
+                    <div className='grid w-full items-center gap-1.5'>
+                        <Label htmlFor='pet_name'>{t('pet.name')}*</Label>
+                        <Input required value={name} id='pet_name' onChange={handleNameChange} />
                     </div>
-                    <FormControl fullWidth>
-							<InputLabel className="flex justify-center items-center">
-								{t('pet.type')}
-							</InputLabel>
-							<Select
-								value={type}
-								label={t('pet.type')}
-								className="rounded-3xl"
-								onChange={(event: SelectChangeEvent) => {
-									setType(event.target.value as 'Cat' | 'Dog' | 'Other')
-								}}>
-								{['Cat', 'Dog', 'Other'].map((typepet) => (
-									<MenuItem key={typepet} value={typepet}>{typepet}</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-                    <TextField defaultValue={description} label={t('pet.description')} variant="outlined" onChange={handleDescriptionChange} multiline />
-                    <Button
-                        variant="outlined"
-                        className='w-full font-semibold'
-                        sx={{ border: `1px solid ${themeColor.iconButtonColor}` }}
-                        component="label"
-                    >
-                        <ImageOutlined sx={{ marginRight: 0.3 }} />
-                        <p className="text-xs w-min mr-1">
-                            {t('pet.add.img')}
-                        </p>
-                        <input
-                            type="file"
-                            accept="image/png, image/jpeg, image/jpg"
+                    <div className='grid grid-cols-2 grid-rows-1 gap-2 w-full'>
+                        <div className='grid w-full items-center gap-1.5'>
+                            <Label>{t('pet.type')}*</Label>
+                            <Select required value={type} onValueChange={(value) => {
+                                setType(value as 'Cat' | 'Dog' | 'Other')
+                            }}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t('pet.type')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {['Cat', 'Dog', 'Other'].map((typepet) => (
+                                        <SelectItem key={typepet} value={typepet}>{typepet}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className='grid w-full items-center gap-1.5'>
+                            <Label htmlFor='pet_age'>{t('pet.age')}*</Label>
+                            <Input required className='w-full' value={age} defaultValue={0} id='pet_age' onChange={handleAgeChange} type='date' />
+                        </div>
+                    </div>
+                    <div className='grid w-full items-center gap-1.5'>
+                        <Label htmlFor='pet_description'>{t('pet.description')}*</Label>
+                        <Textarea required value={description} id='pet_description' onChange={handleDescriptionChange} />
+                    </div>
+                    <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="picture">{t('pet.add.img')}*</Label>
+                        <Input id="picture" type="file" accept="image/png, image/jpeg, image/jpg"
                             multiple
+                            required
                             onChange={(event) => {
                                 const files = event.target.files ? Array.from(event.target.files) : []
                                 setFiles(files)
-                            }}
-                            hidden
-                        />
-                    </Button>
-                </div>
-                <LoadingButton loading={uploadState} className='w-full' style={{ marginTop: 10 }} disabled={uploadState} variant='contained' onClick={addPet}>{t('pet.add.btn')}</LoadingButton>
+                            }} />
+                    </div>
+                    <Button className='w-full mt-2' disabled={uploadState} type='submit'>{uploadState ? 'Loading...' : t('pet.add.btn')}</Button>
+
+                </form>
+
             </m.div>
         </>
     )

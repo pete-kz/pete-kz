@@ -1,5 +1,3 @@
-import { type ThemeOptions } from '@mui/material'
-
 const API: { baseURL: string } = { baseURL: 'https://pete-api-yklft.ondigitalocean.app' } //http://localhost:3000
 
 const main = {
@@ -21,37 +19,4 @@ const main = {
     ]
 }
 
-interface uiType {
-    mui: ThemeOptions
-}
-
-const ui: uiType = {
-    mui: {
-        palette: {
-            mode: 'dark',
-            primary: {
-                main: '#6750a4',
-    
-            },
-            secondary: {
-                main: '#625b71',
-                
-            },
-            error: {
-                main: '#b3271e'
-            },
-            background: {
-                default: '#fef7ff',
-                paper: '#fef7ff'
-            },
-            text: {
-                primary: '#1d1b20',
-                secondary: '#49454f'
-            }
-        },
-        shape: {
-            borderRadius: 15,
-        },
-    }
-}
-export { API, main, ui }
+export { API, main }

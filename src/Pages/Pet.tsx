@@ -2,18 +2,21 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
-import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
-import { Button, TextField, IconButton, Typography, Link } from '@mui/material'
-import { Favorite, Instagram, KeyboardReturn, Phone, Telegram } from '@mui/icons-material'
-import ReactImageGallery from 'react-image-gallery'
-import { themeColor } from '@/Utils/colors'
-import { red } from '@mui/material/colors'
 
+// UI
+import { Card } from '@/Components/ui/card'
+import { Button } from '@/Components/ui/button'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
+import { Input } from '@/Components/ui/input'
+import { Label } from '@/Components/ui/label'
+import { Heart, Instagram, CornerDownLeft, Phone, Send } from 'lucide-react'
+import ReactImageGallery from 'react-image-gallery'
+import { formatAge } from '@/lib/utils'
 
 export default function PetPage() {
 
@@ -105,7 +108,7 @@ export default function PetPage() {
         fetchPet()
         checkToken()
         // @ts-expect-error because it is imported from the web
-		ym(96355513, 'hit', window.origin)
+        ym(96355513, 'hit', window.origin)
     }, [])
 
     useEffect(() => {
@@ -125,41 +128,67 @@ export default function PetPage() {
         <>
             {petData && (
                 (query.get('edit') === 'true' && ownerData?._id == user._id) ? (
-                    <m.div className='m-2 p-4 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ backgroundColor: themeColor.cardBackground, borderRadius: 15,border: `1px solid ${themeColor.divBorder}`}}>
+                    <Card className='m-2 p-4 mb-20'>
                         <div className='mb-3'>
                             <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
                         </div>
                         <div className='gap-2 flex flex-col'>
                             <div className='flex gap-2 w-full'>
-                                <TextField defaultValue={name} fullWidth label={t('pet.name')} variant="outlined" onChange={handleNameChange} />
-                                <TextField defaultValue={age} label={t('pet.age')} style={{ width: 60 }} variant="outlined" onChange={handleAgeChange} type='number' />
+                                <div className='grid w-full items-center gap-1.5'>
+                                    <Label htmlFor='pet_name'>{t('pet.name')}</Label>
+                                    <Input id='pet_name' defaultValue={name} onChange={handleNameChange} />
+                                </div>
+                                <div className='grid w-full items-center gap-1.5'>
+                                    <Label htmlFor='pet_age'>{t('pet.age')}</Label>
+                                    <Input id='pet_age' defaultValue={age} onChange={handleAgeChange} type='number' />
+                                </div>
                             </div>
-                            <TextField defaultValue={description} label={t('pet.description')} variant="outlined" onChange={handleDescriptionChange} multiline />
+                            <div className='grid w-full items-center gap-1.5'>
+                                <Label htmlFor='pet_description'>{t('pet.description')}</Label>
+                                <Input id='pet_description' defaultValue={description} onChange={handleDescriptionChange} multiple />
+                            </div>
                         </div>
-                        <Button className='w-full' style={{ marginTop: 10 }} variant='contained' onClick={updatePetInfo}>{t('pet.update_btn')}</Button>
-                    </m.div>
+                        <Button className='w-full' onClick={updatePetInfo}>{t('pet.update_btn')}</Button>
+                    </Card>
                 ) : (
                     <>
                         {query.get('more') === 'true' && (
                             <LikeReturnBottom pet={petData} />
                         )}
-                        <m.div className='m-2 p-4 mb-20' style={{ backgroundColor: themeColor.cardBackground, borderRadius: 15,border: `1px solid ${themeColor.divBorder}`}} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                        <div className='m-2 p-4 mb-20'>
                             <div>
                                 <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
                             </div>
-                            <div>
-                                <Typography variant='h6'>{petData.name}, {petData.age}</Typography>
-                                <Typography sx={{ wordWrap: 'break-word' }} variant='body2'>{petData.description}</Typography>
+                            <div className='mt-2'>
+                                <p className='text-2xl font-bold'>{petData.name}, {formatAge(petData.age)}</p>
+                                <p>{petData.description}</p>
                             </div>
                             {query.get('contacts') === 'true' && (
-                                <div style={{ border: `1px solid ${themeColor.divBorder}`, borderRadius: 15}} className='p-4 mt-2'>
-                                    <p>{ownerData?.name}</p>
-                                    {ownerData?.social.instagram && (<Link className='flex gap-2' href={`https://instagram.com/${ownerData?.social.instagram}`}><Instagram />{ownerData?.social.instagram}</Link>)}
-                                    {ownerData?.social.telegram && (<Link className='flex gap-2' href={`https://t.me/${ownerData?.social.telegram}`}><Telegram />{ownerData?.social.telegram}</Link>)}
-                                    {ownerData?.phone && (<Link className='flex gap-2' href={`tel:${ownerData?.phone}`}><Phone />{ownerData?.phone}</Link>)}
-                                </div>
+                                <Accordion type='single' collapsible>
+                                    <AccordionItem value={`${petData._id}_owner_contacts`}>
+                                        <AccordionTrigger>Contacts</AccordionTrigger>
+                                        <AccordionContent>
+                                            <p>{ownerData?.name}</p>
+                                            {ownerData?.social.instagram && (
+                                                <Button variant={'link'} className='flex gap-2' onClick={() => { window.open(`https://instagram.com/${ownerData?.social.instagram}`, '_blank') }}>
+                                                    <Instagram />{ownerData?.social.instagram}
+                                                </Button>
+                                            )}
+                                            {ownerData?.social.telegram && (
+                                                <Button className='flex gap-2' onClick={() => { window.open(`https://t.me/${ownerData?.social.telegram}`, '_blank') }}>
+                                                    <Send />{ownerData?.social.telegram}
+                                                </Button>
+                                            )}
+                                            {ownerData?.phone && (
+                                                <Button className='flex gap-2' variant={'link'} onClick={() => { window.open(`tel:${ownerData?.phone}`, '_blank') }}>
+                                                    <Phone />{ownerData?.phone}
+                                                </Button>
+                                            )}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
                             )}
-                        </m.div>
+                        </div>
                     </>
                 )
             )}
@@ -167,7 +196,7 @@ export default function PetPage() {
     )
 }
 
-function LikeReturnBottom(props: { pet: Pet_Response}) {
+function LikeReturnBottom(props: { pet: Pet_Response }) {
     // Setups
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
@@ -176,6 +205,7 @@ function LikeReturnBottom(props: { pet: Pet_Response}) {
 
     // States
     const [userData, setUserData] = useState<User_Response>()
+    const [liked, setLiked] = useState<boolean>(false)
 
     function addLikedPet() {
         if (!userData) return
@@ -186,6 +216,7 @@ function LikeReturnBottom(props: { pet: Pet_Response}) {
         axios.post(`${API.baseURL}/users/update/${userData._id}`, { update: userPrevData }).then((res: AxiosResponse) => {
             if (!res.data.err) {
                 notification.custom.success(t('pet.liked'))
+                setLiked(true)
             } else {
                 notification.custom.error(res.data.err)
             }
@@ -206,15 +237,15 @@ function LikeReturnBottom(props: { pet: Pet_Response}) {
     useEffect(() => {
         getUser()
         // @ts-expect-error because it is imported from the web
-		ym(96355513, 'hit', window.origin)
+        ym(96355513, 'hit', window.origin)
     }, [])
 
     return (
         <>
             <div className='absolute w-screen flex items-center justify-center bottom-[6rem]'>
                 <div className='flex items-center gap-3'>
-                    <IconButton sx={{ backgroundColor: themeColor.cardBackground, color: themeColor.iconButtonColor }} onClick={() => { navigate(`/pwa?start_id=${props.pet._id}`) }}><KeyboardReturn /></IconButton>
-                    <IconButton sx={{ backgroundColor: themeColor.cardBackground, color: red[500] }} onClick={addLikedPet}><Favorite /></IconButton>
+                    <Button onClick={() => { navigate(`/pwa?start_id=${props.pet._id}&type=${props.pet.type}`) }}><CornerDownLeft /></Button>
+                    <Button style={{ color: '#FF0000' }} onClick={addLikedPet}><Heart fill={liked ? '#FF0000' : 'transparent'} /></Button>
                 </div>
             </div>
         </>

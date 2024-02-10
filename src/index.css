@@ -1,77 +1,162 @@
-@import "../node_modules/react-image-gallery/styles/css/image-gallery.css";
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #EDE7F6 !important;
-    /* Light purple background */
-    background: -moz-linear-gradient(45deg, #D1C4E9 0%, #EDE7F6 100%);
-    /* Gradient for Mozilla */
-    background: -webkit-linear-gradient(45deg, #D1C4E9 0%, #EDE7F6 100%);
-    /* Gradient for WebKit */
-    background: linear-gradient(45deg, #D1C4E9 0%, #EDE7F6 100%);
-    /* Standard gradient syntax */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#D1C4E9", endColorstr="#EDE7F6", GradientType=1);
-    /* For IE */
-    height: 100%;
-    overflow: auto;
-}
-
-* {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot,
-.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm,
-.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-formControl,
-.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-multiline {
-    border-radius: 15px !important;
-    background-color: #F3E5F5 !important;
-    /* Very light purple for elements like inputs and dialogs */
-}
-
-div[role="status"] {
-    justify-content: start;
-}
-
-.PhoneInputInput {
-    padding: 14px;
-    padding-top: 16.5px;
-    padding-bottom: 16.5px;
-    border-radius: 15px;
-    background-color: #f4e5f5;
-    color: #1d1b20;
-}
-
-.PhoneInputInput::placeholder {
-    color: #4c4852;
-}
-
-.PhoneInputInput:focus {
-    outline: #6750a4 solid 2px;
-}
-
-.PhoneInputCountry {
-    display: none;
-}
-
-button#nav:active {
-    -webkit-tap-highlight-color: transparent;
-    background-color: transparent;
-}
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-button#main_auth_btn {
-    @apply flex items-center justify-center px-3 py-2 bg-purple-700 font-semibold text-white rounded-lg mt-2 hover:bg-purple-600 active:scale-110 transition-all ease-in duration-75
+/* @layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+ 
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+ 
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+ 
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+ 
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+ 
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+ 
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+ 
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+ 
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+ 
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+ 
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+ 
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+} */
+
+@layer base {
+  :root {
+    --background: 270 20% 10%;
+    /* Darker purple background */
+    --foreground: 270 15% 90%;
+    /* Lighter purple foreground for contrast */
+
+    --card: 270 15% 15%;
+    /* Slightly lighter card background */
+    --card-foreground: 270 15% 90%;
+    /* Lighter text on cards */
+
+    --popover: 270 15% 15%;
+    /* Matching card and popover backgrounds */
+    --popover-foreground: 270 15% 90%;
+    /* Consistent foreground color */
+
+    --primary: 290 50% 70%;
+    /* Soft pastel purple for primary elements */
+    --primary-foreground: 270 15% 20%;
+    /* Dark text on pastel for contrast */
+
+    --secondary: 260 45% 65%;
+    /* Secondary pastel, a bit more subdued */
+    --secondary-foreground: 270 15% 20%;
+    /* Dark purple foreground */
+
+    --muted: 270 10% 75%;
+    /* Very muted purple for less emphasis */
+    --muted-foreground: 270 30% 80%;
+    /* Lightened for better readability against card background */
+
+    --accent: 285 60% 75%;
+    /* Lighter, pastel-like purple for accent elements */
+    --accent-foreground: 270 15% 20%;
+    /* Dark text for contrast */
+
+    --destructive: 345 65% 70%;
+    /* Softer, pastel reddish-purple for destructive actions */
+    --destructive-foreground: 270 15% 98%;
+    /* Very light text for contrast */
+
+    --border: 270 15% 30%;
+    /* Soft purple borders for differentiation */
+    --input: 270 15% 25%;
+    /* Dark but soft purple input fields for contrast */
+    --ring: 270 30% 60%;
+    /* Distinctive but softer purple focus ring */
+
+    --radius: 0.5rem;
+    /* Keeping the border-radius the same */
+  }
+
+  .dark {
+    --background: 270 20% 10%;
+    --foreground: 270 15% 90%;
+
+    --card: 270 15% 15%;
+    --card-foreground: 270 15% 90%;
+
+    --popover: 270 15% 15%;
+    --popover-foreground: 270 15% 90%;
+
+    --primary: 290 50% 70%;
+    --primary-foreground: 270 15% 20%;
+
+    --secondary: 260 45% 65%;
+    --secondary-foreground: 270 15% 20%;
+
+    --muted: 270 10% 75%;
+    --muted-foreground: 270 30% 80%;
+    /* Adjusted for better readability */
+
+    --accent: 285 60% 75%;
+    --accent-foreground: 270 15% 20%;
+
+    --destructive: 345 65% 70%;
+    --destructive-foreground: 270 15% 98%;
+
+    --border: 270 15% 30%;
+    --input: 270 15% 25%;
+    --ring: 270 30% 60%;
+  }
 }
 
-.MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer[aria-label="PWA Instructions"] {
-    justify-content: center;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
 }

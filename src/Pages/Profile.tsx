@@ -1,18 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import { useAuthUser } from 'react-auth-kit'
-import { Edit, AddCircle, Delete, Instagram, AccountCircle, Password, Phone, Telegram, ArrowDownward } from '@mui/icons-material'
-import { Avatar, Typography, IconButton, TextField, Accordion, AccordionSummary, AccordionActions, AccordionDetails } from '@mui/material'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { axiosAuth as axios, notification } from '@utils'
 import { API } from '@config'
 import { AxiosResponse } from 'axios'
 import { Pet_Response, User_Response } from '@declarations'
-import { themeColor } from '@/Utils/colors'
-import { red } from '@mui/material/colors'
-import PhoneInput from 'react-phone-number-input'
-import { LoadingButton } from '@mui/lab'
 import { useNavigate } from 'react-router-dom'
+
+// UI
+import { themeColor } from '@/Utils/colors'
+import { HeartOff, Trash, Pencil, Plus } from 'lucide-react'
+import { Card } from '@/Components/ui/card'
+import { Button } from '@/Components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
+import { Input } from '@/Components/ui/input'
+import { Label } from '@/Components/ui/label'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/Components/ui/alert-dialog'
 
 export default function Profile() {
 
@@ -130,92 +145,128 @@ export default function Profile() {
 
     return (
         <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <Accordion className='mt-2 p-3 m-4' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15 }}>
-                <AccordionSummary
-                    expandIcon={<ArrowDownward sx={{ color: themeColor.iconButtonColor }} />}
-                    aria-controls="panel1-content"
-                    id="panel1-header"
-                >
-                    <Typography>{t('main.my_profile')}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <div className='flex items-center gap-2 mb-2'>
-                        <AccountCircle />
-                        <TextField value={name} fullWidth label={t('user.name')} onChange={(e) => setName(e.target.value)} />
-                    </div>
-                    <div className='flex items-center gap-2 mb-2'>
-                        <AccountCircle />
-                        <TextField value={login} fullWidth label={t('user.login')} onChange={(e) => setLogin(e.target.value)} />
-                    </div>
-                    <div className='flex items-center gap-2 mb-2'>
-                        <Phone />
-                        <PhoneInput placeholder="Phone" value={phone} label={t('user.contacts.phone')} onChange={(e) => setPhone(e as string)} />
-                    </div>
-                    <div className='flex items-center gap-2 mb-2'>
-                        <Instagram />
-                        <TextField value={instagram} fullWidth label={t('user.contacts.instagram')} onChange={(e) => setInstagram(e.target.value)} />
-                    </div>
-                    <div className='flex items-center gap-2 mb-2'>
-                        <Telegram />
-                        <TextField value={telegram} fullWidth label={t('user.contacts.telegram')} onChange={(e) => setTelegram(e.target.value)} />
-                    </div>
-                    <div className='flex items-center gap-2'>
-                        <Password />
-                        <TextField value={password} type="password" fullWidth label={t('user.password')} onChange={(e) => setPassword(e.target.value)} />
-                    </div>
-                </AccordionDetails>
-                <AccordionActions>
-                    <LoadingButton loading={updatingState} variant='contained' fullWidth sx={{ marginTop: 1 }} onClick={updateProfileInfo}>Update</LoadingButton>
-                </AccordionActions>
+            <Accordion type='single' collapsible>
+                <AccordionItem value='my_profile' className='m-4'>
+                    <AccordionTrigger>{t('main.my_profile')}</AccordionTrigger>
+                    <AccordionContent className='flex flex-col p-2 gap-3'>
+                        <div className='grid w-full items-center gap-1.5'>
+                            <Label htmlFor='user_name'>{t('user.name')}</Label>
+                            <Input id='user_name' value={name} onChange={(e) => setName(e.target.value)} />
+                        </div>
+                        <div className='grid w-full items-center gap-1.5'>
+                            <Label htmlFor='user_login'>{t('user.login')}</Label>
+                            <Input id='user_login' value={login} onChange={(e) => setLogin(e.target.value)} />
+                        </div>
+                        <div className='grid w-full items-center gap-1.5'>
+                            <Label>{t('user.contacts.phone')}</Label>
+                            <Input placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value as string)} />
+                        </div>
+                        <div className='grid w-full items-center gap-1.5'>
+                            <Label htmlFor='user_instagram'>{t('user.contacts.instagram')}</Label>
+                            <Input id='user_instagram' value={instagram} onChange={(e) => setInstagram(e.target.value)} />
+                        </div>
+                        <div className='grid w-full items-center gap-1.5'>
+                            <Label htmlFor='user_telegram'>{t('user.contacts.telegram')}</Label>
+                            <Input id='user_telegram' value={telegram} onChange={(e) => setTelegram(e.target.value)} />
+                        </div>
+                        <div className='grid w-full items-center gap-1.5'>
+                            <Label htmlFor='user_password'>{t('user.password')}</Label>
+                            <Input id='user_password' value={password} type="password" onChange={(e) => setPassword(e.target.value)} />
+                        </div>
+                        <Button onClick={updateProfileInfo}>{updatingState ? 'Loading...' : 'Update'}</Button>
+                    </AccordionContent>
+                </AccordionItem>
+                {liked.length > 0 && (
+                    <AccordionItem value='my_likes' className='m-4'>
+                        <AccordionTrigger>{t('main.your_likes')}</AccordionTrigger>
+                        <AccordionContent className='flex flex-col p-2 gap-3'>
+                            {liked?.map((pet, index) => (
+                                <Card key={index} className='flex items-center justify-between mt-2 p-3' >
+                                    <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
+                                        <div className='flex gap-2 items-center'>
+                                            <Avatar>
+                                                <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
+                                                <AvatarFallback>{pet.name[0]}</AvatarFallback>
+                                            </Avatar>
+                                            <p>{pet.name}</p>
+                                        </div>
+                                    </div>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button variant={'ghost'}>
+                                                <HeartOff size="20" style={{ color: '#FF0000' }} />
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action will delete pet from your liked!
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>Continue</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+
+                                </Card>
+                            ))}
+                        </AccordionContent>
+                    </AccordionItem>
+                )}
             </Accordion>
             <div className='p-4'>
-                <Typography variant='h6'>{t('main.my_pets')}</Typography>
+                <p>{t('main.my_pets')}</p>
                 <div className='grid grid-cols-3 gap-2 mt-2'>
                     {usersPet?.map((pet, index) => (
-                        <div key={index} className='relative flex flex-col items-center p-3 gap-2' style={{ border: `1px solid ${themeColor.divBorder}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} >
-                            <Avatar src={pet.imagesPath[0]}></Avatar>
-                            <Typography variant='body1' className='text-center' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>
+                        <Card key={index} className='flex flex-col items-center p-3 gap-2' >
+                            <Avatar>
+                                <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
+                                <AvatarFallback>{pet.name[0]}</AvatarFallback>
+                            </Avatar>
+                            <p className='text-center'>{pet.name}</p>
                             <div className='grid grid-rows-1 grid-cols-2 gap-2'>
-                                <IconButton onClick={() => { navigate(`/pwa/pets?id=${pet._id}&edit=true`) }} sx={{ color: themeColor.iconColor, border: `1px solid ${themeColor.divBorder}` }}>
-                                    <Edit fontSize='small' sx={{ color: themeColor.primaryTextLight }} />
-                                </IconButton>
-                                <IconButton onClick={() => { removePet(pet) }} sx={{ color: themeColor.iconColor, border: `1px solid ${themeColor.divBorder}` }}>
-                                    <Delete fontSize='small' sx={{ color: red[500] }} />
-                                </IconButton>
+                                <Button className='p-2' variant={'outline'} onClick={() => { navigate(`/pwa/pets?id=${pet._id}&edit=true`) }}>
+                                    <Pencil size={14} />
+                                </Button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button className='p-2' variant={'outline'}>
+                                            <Trash size={14} style={{ color: '#FF0000' }} />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete your
+                                                pet from your account.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>No, take me back</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => { removePet(pet) }}>I am sure</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+
                             </div>
-                        </div>
+                        </Card>
                     ))}
-                    <div className='flex flex-col justify-center items-center p-3' style={{ border: `1px solid ${themeColor.divBorder}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} >
-                        <IconButton onClick={() => { navigate('/pwa/pets/add') }} sx={{ color: themeColor[12] }}>
-                            <AddCircle fontSize='large' sx={{ color: themeColor.primaryTextLight }} />
-                        </IconButton>
-                        <div className='text-center'>
-                            <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{t('pet.add.btn')}</Typography>
+                    <Card className='flex flex-col justify-center items-center p-3 gap-3' onClick={() => { navigate('/pwa/pets/add') }}>
+                        <div style={{ color: themeColor[12] }}>
+                            <Plus fontSize='large' />
                         </div>
-                    </div>
+                        <div className='text-center'>
+                            <p>{t('pet.add.btn')}</p>
+                        </div>
+                    </Card>
                 </div>
             </div>
 
-            {liked.length > 0 && (
-                <div className='p-4'>
-                    <Typography variant='h6'>{t('main.your_likes')}</Typography>
-                    {liked?.map((pet, index) => (
-                        <m.div key={index} className='flex items-center justify-between mt-2 p-3' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                            <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
-                                <div className='flex gap-2 items-center'>
-                                    <Avatar src={pet.imagesPath[0]}></Avatar>
-                                    <Typography variant='body1' sx={{ color: themeColor.primaryTextLight }}>{pet.name}</Typography>
-                                </div>
-                            </div>
-                            <div style={{ width: 38 }}>
-                                <IconButton onClick={() => { removePetFromLiked(pet._id) }} sx={{ color: themeColor.iconColor, border: `1px solid ${themeColor.divBorder}` }}>
-                                    <Delete fontSize='small' sx={{ color: red[500] }} />
-                                </IconButton>
-                            </div>
-                        </m.div>
-                    ))}
-                </div>
-            )}
+
         </m.div>
     )
 }

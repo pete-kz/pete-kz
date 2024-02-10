@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState } from 'react'
-import { Avatar, Button, Typography, Skeleton } from '@mui/material'
-import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { themeColor } from '@colors'
 import type { User_Response, PetCard_props } from '@declarations'
 import { API } from '@config'
 import { axiosAuth as axios, notification, parseMongoDate } from '@utils'
 import { AxiosResponse } from 'axios'
-import { red } from '@mui/material/colors'
 import { useNavigate } from 'react-router-dom'
+import { formatAge } from '@/lib/utils'
 
-export default function PetCard({ id, name, age, description, userID, imagesPath, updatedAt }: PetCard_props) {
+// UI
+import { Card, CardHeader, CardContent, CardDescription, CardFooter, CardTitle } from '@/Components/ui/card'
+import { Button } from '@/Components/ui/button'
+
+export default function PetCard({ id, name, description, age, userID, imagesPath, updatedAt }: PetCard_props) {
 
   // Setups
   const { t } = useTranslation()
@@ -41,40 +42,28 @@ export default function PetCard({ id, name, age, description, userID, imagesPath
   }, [])
 
   return (
-    <div className='m-4 block shadow-lg' style={{ border: `1px solid ${themeColor.iconColor}`, borderRadius: 15, backgroundColor: themeColor.cardBackground }}>
-      <div className='flex justify-between p-3 items-center'>
-        <div className='flex gap-2 items-center'>
-          <div>
-            <Avatar sx={{ bgcolor: red[500] }} sizes='40' aria-label="recipe">
-              {owner?.name[0] || 'P'}
-            </Avatar>
-          </div>
-          <div className='block'>
-            {owner ? (<Typography variant='h6'>{owner?.name}</Typography>) : (<Skeleton height={32} width={250}></Skeleton>)}
-            <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Typography variant='subtitle1'>{`${t('main.pet_card.last_update')}: ${parseMongoDate(updatedAt).date.day}.${parseMongoDate(updatedAt).date.month}.${parseMongoDate(updatedAt).date.year}`}</Typography></m.div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <img className='placeholder_img' loading='eager' src={imagesPath[0]} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} />
-      </div>
-      <div className='p-3'>
+    <Card className='m-2'>
+      <CardHeader>
+        <CardTitle>{owner?.name}</CardTitle>
+        <CardDescription>
+          {`${t('main.pet_card.last_update')}: ${parseMongoDate(updatedAt).date.day}.${parseMongoDate(updatedAt).date.month}.${parseMongoDate(updatedAt).date.year}`}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <div>
-          <Typography variant='h6'>{name}, {age}</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }} maxHeight={20}>{description}...</Typography>
+          <img src={imagesPath[0]} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} />
         </div>
-        <div className='w-full flex justify-end mt-3'>
-          <Button
-            variant='contained'
-            onClick={() => { navigate(`/pwa/pets?id=${id}&more=true`) }}
-            className='font-semibold'
-            sx={{ marginLeft: 1, marginRight: 1, border: `1px solid ${themeColor.iconButtonColor}`, borderRadius: 15, width: '6rem' }}
-          >
-            {t('main.pet_card.more')}
-          </Button>
+        <div className='mt-3'>
+          <p className='text-2xl font-bold'>{name}, {formatAge(age)}</p>
+          <p className='text-muted-foreground h-16 overflow-hidden'>{description}</p>
         </div>
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter>
+        <Button className='w-full' onClick={() => { navigate(`/pwa/pets?id=${id}&more=true`) }}>
+          {t('main.pet_card.more')}
+        </Button>
+      </CardFooter>
+    </Card>
 
   )
 }

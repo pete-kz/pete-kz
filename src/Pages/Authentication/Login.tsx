@@ -1,7 +1,5 @@
 import React from 'react'
-import { Password, Phone } from '@mui/icons-material'
-import { TextField } from '@mui/material'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSignIn, useIsAuthenticated } from 'react-auth-kit'
 import axios, { AxiosResponse } from 'axios'
 import { Toaster } from 'react-hot-toast'
@@ -9,11 +7,11 @@ import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { notification } from '@utils'
 import { API } from '@config'
-import { themeColor } from '@colors'
-import PhoneInput from 'react-phone-number-input'
-import { E164Number } from 'libphonenumber-js/types.cjs'
-import { LoadingButton } from '@mui/lab'
 import LanguageSwitcher from '@/Components/LanguageSwitcher'
+
+import { Input } from '@/Components/ui/input'
+import { Label } from '@/Components/ui/label'
+import { Button } from '@/Components/ui/button'
 
 export default function Login() {
 
@@ -33,8 +31,8 @@ export default function Login() {
 		setPassword(event.target.value)
 	}
 
-	const handlePhoneChange = (type: E164Number | React.ChangeEvent<HTMLInputElement> | undefined) => {
-		setPhone(typeof type === typeof {} ? (type as React.ChangeEvent<HTMLInputElement>).target.value : (type as E164Number))
+	const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement> | undefined) => {
+		e && setPhone(e.target.value)
 	}
 
 	// Functions
@@ -103,33 +101,30 @@ export default function Login() {
 				initial={{ opacity: 0.1 }}
 				animate={{ opacity: 1 }}
 			>
-				<div>
-					<div className="mb-2">
+				<div className='flex flex-col gap-2'>
+					<div>
 						<h1 className="text-2xl">{t('login.title')}</h1>
 						<p className="text-sm">
 							{t('login.or_create_new_account.0')}
 							{' '}
-							<Link className="" style={{ color: themeColor[7] }} to="/auth/register">{t('login.or_create_new_account.1')}</Link>
+							<Button className='p-0' variant={'link'} onClick={() => { navigate('/auth/register') }}>{t('login.or_create_new_account.1')}</Button>
 						</p>
 					</div>
-					<div className="flex flex-end items-center mb-2">
-						<Phone className="mr-2" />
-						<PhoneInput international placeholder="+7 123 456 7890" value={phone} onChange={handlePhoneChange} onBlur={handleOnBlurPhoneInput} />
+					<div className="grid w-full items-center gap-1.5">
+						<Label>{t('login.labels.1')}</Label>
+						<Input placeholder="+7 123 456 7890" value={phone} onChange={handlePhoneChange} onBlur={handleOnBlurPhoneInput} />
 					</div>
-					<div className="flex flex-end items-center mb-4">
-						<Password className="mr-2" />
-						<TextField label={t('login.labels.0')} variant="outlined" type="password" onChange={handlePasswordChange} />
+					<div className="grid w-full items-center gap-1.5">
+						<Label htmlFor='user_password'>{t('login.labels.0')}</Label>
+						<Input id='user_password' type="password" onChange={handlePasswordChange} />
 					</div>
-					<LoadingButton
+					<Button
 						id="loginbtn"
-						variant='contained'
-						fullWidth
-						sx={{ borderRadius: 9999, fontWeight: 500 }}
 						onClick={userSignIn}
-						loading={loadingState}
+						className='w-full'
 					>
-						{t('login.button')}
-					</LoadingButton>
+						{loadingState ? 'Loading...' :t('login.button')}
+					</Button>
 					<LanguageSwitcher />
 				</div>
 			</m.div>

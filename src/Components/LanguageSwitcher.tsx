@@ -1,8 +1,9 @@
 /* eslint-disable linebreak-style */
 import React, { useState, useEffect } from 'react'
-import { Select, type SelectChangeEvent, InputLabel, MenuItem, FormControl } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { main } from '@config'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Label } from './ui/label'
 
 const languages = main.languages
 const lanaguagesCodes = languages.map(language => language[0])
@@ -19,22 +20,25 @@ export default function LanguageSwitcher() {
 	}, [])
 
 	return (
-		<FormControl fullWidth style={{ marginTop: 16 }}>
-			<InputLabel className="flex justify-center items-center">
+		<div className='grid w-full items-center gap-1.5'>
+			<Label>
 				{t('settings.labels.language_button')}
-			</InputLabel>
+			</Label>
 			<Select
 				value={currentLanguage}
-				label={t('settings.labels.language_button')}
-				className="rounded-3xl"
-				onChange={(event: SelectChangeEvent) => {
-					i18n.changeLanguage(event.target.value)
-					setLanguage(event.target.value)
+				onValueChange={(value) => {
+					i18n.changeLanguage(value)
+					setLanguage(value)
 				}}>
-				{languages.map((language) => (
-					<MenuItem key={language[0]} value={language[0]}>{language[1]}</MenuItem>
-				))}
+				<SelectTrigger>
+					<SelectValue placeholder={t('settings.labels.language_button')} />
+					<SelectContent>
+						{languages.map((language) => (
+							<SelectItem key={language[0]} value={language[0]}>{language[1]}</SelectItem>
+						))}
+					</SelectContent>
+				</SelectTrigger>
 			</Select>
-		</FormControl>
+		</div>
 	)
 }

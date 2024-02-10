@@ -1,0 +1,15 @@
+@import "../node_modules/react-image-gallery/styles/css/image-gallery.css";
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+}

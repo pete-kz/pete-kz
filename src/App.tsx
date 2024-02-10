@@ -5,7 +5,7 @@ import { useRoutes } from 'react-router-dom'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import type { RouteObject } from 'react-router-dom'
 import './i18.js'
-
+import { ThemeProvider } from '@/Components/theme-provder.js'
 // Layouts
 import MainLayout from './Layouts/Main.layout'
 
@@ -35,7 +35,7 @@ export default function App() {
 					path: '/auth/register',
 					element: <Register />,
 				},
-			]	
+			]
 		},
 		{
 			path: '/',
@@ -72,10 +72,12 @@ export default function App() {
 	const router = useRoutes(routes)
 
 	return (
-		<LazyMotion features={domAnimation}>
-			<AuthProvider authType="localstorage" authName="_auth">
-				{router}
-			</AuthProvider>
-		</LazyMotion>
+		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+			<LazyMotion features={domAnimation}>
+				<AuthProvider authType="localstorage" authName="_auth">
+					{router}
+				</AuthProvider>
+			</LazyMotion>
+		</ThemeProvider>
 	)
 }

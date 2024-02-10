@@ -1,19 +1,17 @@
 import React from 'react'
-import { AccountCircle, Password, Phone } from '@mui/icons-material'
-import { TextField } from '@mui/material'
 import { useIsAuthenticated } from 'react-auth-kit'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios, { AxiosResponse } from 'axios'
 import { Toaster } from 'react-hot-toast'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { themeColor } from '@colors'
 import { API } from '@config'
 import { notification } from '@utils'
-import PhoneInput from 'react-phone-number-input'
-import { E164Number } from 'libphonenumber-js/types.cjs'
-import { LoadingButton } from '@mui/lab'
 import LanguageSwitcher from '@/Components/LanguageSwitcher'
+
+import { Input } from '@/Components/ui/input'
+import { Label } from '@/Components/ui/label'
+import { Button } from '@/Components/ui/button'
 
 export default function Register() {
 
@@ -46,11 +44,9 @@ export default function Register() {
 		setRegisterButtonDisabled(false)
 	}
 
-	const handlePhoneChange = (type: E164Number | React.ChangeEvent<HTMLInputElement> | undefined) => {
-		if (type !== undefined) {
-			setPhone(typeof type === typeof {} ? (type as React.ChangeEvent<HTMLInputElement>).target.value : (type as E164Number))
-			setRegisterButtonDisabled(false)
-		}
+	const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		e && setPhone(e.target.value)
+		setRegisterButtonDisabled(false)
 	}
 
 	// Functions
@@ -120,42 +116,39 @@ export default function Register() {
 		<>
 			<Toaster />
 			<m.div className="flex justify-center items-center h-screen flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-				<div>
-					<div className="mb-2">
+				<div className='flex flex-col gap-2'>
+					<div>
 						<h1 className="text-2xl">{t('register.title')}</h1>
 						<p className="text-sm">
 							{t('register.account_already.0')}
 							{' '}
-							<Link className="" style={{ color: themeColor[7] }} to="/auth/login">{t('register.account_already.1')}</Link>
+							<Button className='p-0' variant={'link'} onClick={() => { navigate('/auth/login') }}>{t('register.account_already.1')}</Button>
 						</p>
 					</div>
-					<div className="flex flex-end items-center mb-2">
-						<AccountCircle className="mr-2" />
-						<TextField label={t('register.labels.1')} placeholder={t('register.placeholders.1') || ''} variant="outlined" onChange={handleNameChange} type='text' />
+					<div className="grid w-full items-center gap-1.5">
+						<Label htmlFor='register_name'>{t('register.labels.1')}</Label>
+						<Input id='register_name' placeholder={t('register.placeholders.1') || ''} onChange={handleNameChange} type='text' />
 					</div>
-					<div className="flex flex-end items-center mb-2">
-						<AccountCircle className="mr-2" />
-						<TextField label={t('register.labels.0')} placeholder={t('register.placeholders.0') || ''} variant="outlined" onChange={handleLoginChange} onBlur={handleOnBlurLoginInput} type='text' />
+					<div className="grid w-full items-center gap-1.5">
+						<Label htmlFor='register_login'>{t('register.labels.0')}</Label>
+						<Input id='register_login' placeholder={t('register.placeholders.0') || ''} onChange={handleLoginChange} onBlur={handleOnBlurLoginInput} type='text' />
 					</div>
-					<div className="flex flex-end items-center mb-2">
-						<Phone className="mr-2" />
-						<PhoneInput international placeholder="+7 123 456 7890" value={phone} onChange={handlePhoneChange} onBlur={handleOnBlurPhoneInput} />
+					<div className="grid w-full items-center gap-1.5">
+						<Label>{t('register.labels.3')}</Label>
+						<Input placeholder="+7 123 456 7890" value={phone} onChange={handlePhoneChange} onBlur={handleOnBlurPhoneInput} />
 					</div>
-					<div className="flex flex-end items-center mb-2">
-						<Password className="mr-2" />
-						<TextField label={t('register.labels.2')} variant="outlined" type="password" onChange={handlePasswordChange} onBlur={handleOnBlurPasswordInput} />
+					<div className="grid w-full items-center gap-1.5">
+						<Label htmlFor='register_password'>{t('register.labels.2')}</Label>
+						<Input id='register_password' type="password" onChange={handlePasswordChange} onBlur={handleOnBlurPasswordInput} />
 					</div>
-					<div className="flex justify-center items-center" style={{ marginTop: 12 }}>
-						<LoadingButton
+					<div className="flex justify-center items-center">
+						<Button
 							onClick={register}
-							sx={{ borderRadius: 9999, fontWeight: 500, width: '100%' }}
-							variant='contained'
-							fullWidth
-							loading={loadingState}
+							className='w-full'
 							disabled={registerButtonDisabled}
 						>
-							{t('register.button')}
-						</LoadingButton>
+							{loadingState ? 'Loading...' : t('register.button')}
+						</Button>
 					</div>
 					<LanguageSwitcher />
 				</div>

@@ -2,16 +2,20 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
-import { useAnimate, m } from 'framer-motion'
+import { useAnimate } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
 import PetCard from '@/Components/Cards/Pet.card'
-import { themeColor } from '@/Utils/colors'
-import { IconButton, Skeleton } from '@mui/material'
-import { ArrowLeft, ArrowRight } from '@mui/icons-material'
+
+// UI 
+import { Card } from '@/Components/ui/card'
+import { Button } from '@/Components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+
 
 export default function Main() {
 
@@ -30,15 +34,16 @@ export default function Main() {
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
 	const [petIndex, setPet] = useState<number>(0)
 	const [loadingPets, setLoadingPets] = useState<boolean>(true)
-
+	const [petType, setPetType] = useState<'Cat' | 'Dog' | 'Other'>('Cat')
 	// Handlers
 	function changePet(type: 'n' | 'p') {
 		const pet_id = query.get('start_id')
-		if (pet_id) {
+		const _pet_type = query.get('type')
+		if (pet_id || _pet_type) {
 			query.delete('start_id')
+			query.delete('type')
 		}
-		if (type === 'n' && petIndex != (allPets.length - 1)) {
-			console.log(1)
+		if (type === 'n' && petIndex != (allPets.filter(pet => pet.type === _pet_type).length - 1)) {
 			return animate(scope.current, { opacity: 0, x: -400 }, { duration: .45 }).then(() => {
 				animate(scope.current, { x: 400 }, { duration: 0 }).then(() => {
 					setPet(pet => pet + 1)
@@ -90,10 +95,14 @@ export default function Main() {
 	}
 
 	function checkQuery() {
-		const pet_id = query.get('start_id')
-		if (allPets && pet_id) {
+		const _pet_id = query.get('start_id')
+		const _pet_type = query.get('type')
+		if (allPets && _pet_id && _pet_type) {
 			allPets.map((pet) => {
-				if (pet._id === pet_id) setPet(allPets.indexOf(pet))
+				if (pet._id === _pet_id) {
+					setPetType(_pet_type as 'Cat' | 'Dog' | 'Other')
+					setPet(allPets.filter(pet => pet.type === _pet_type).indexOf(pet))
+				}
 			})
 		}
 	}
@@ -121,43 +130,26 @@ export default function Main() {
 
 	return (
 		<>
-			<div className="flex justify-center items-center h-screen">
-				<div className='absolute w-screen flex items-center justify-center bottom-[6rem]'>
-					<div className='flex items-center gap-3'>
-						{petIndex != 0 && (
-							<m.div animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
-								<IconButton sx={{
-									color: themeColor.iconButtonColor, background: themeColor.cardBackground,
-									':active': {
-										background: themeColor.cardBackground
-									}, ':hover': {
-										background: themeColor.cardBackground
-									},
-								}} onClick={() => {
-									changePet('p')
-								}}><ArrowLeft /></IconButton>
-							</m.div>
-						)}
-						{petIndex != (allPets.length - 1) && allPets.length > 0 && (
-							<m.div animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
-								<IconButton sx={{
-									color: themeColor.iconButtonColor, background: themeColor.cardBackground,
-									':active': {
-										background: themeColor.cardBackground
-									}, ':hover': {
-										background: themeColor.cardBackground
-									}
-								}} onClick={() => {
-									changePet('n')
-								}}><ArrowRight /></IconButton>
-							</m.div>
-						)}
-					</div>
-				</div>
+			<div className='p-3'>
+				<Select value={petType} onValueChange={(value) => {
+					setPetType(value as 'Cat' | 'Dog' | 'Other')
+					setPet(0)
+				}}>
+					<SelectTrigger>
+						<SelectValue placeholder={t('pet.type')} />
+					</SelectTrigger>
+					<SelectContent>
+						{['Cat', 'Dog', 'Other'].map((typepet) => (
+							<SelectItem key={typepet} value={typepet}>{typepet}</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			</div>
+			<div className="flex justify-center h-screen">
 				<div id='pet_card' style={{ maxWidth: '98vw' }} ref={scope}>
 					{allPets.length > 0 ? (
 						<>
-							{allPets.map((pet, index: number) => (
+							{allPets.filter(pet => petType === pet.type).map((pet, index: number) => (
 								pet?.city === localStorage.getItem('_city') && (
 									index === petIndex && (
 										<PetCard
@@ -175,23 +167,29 @@ export default function Main() {
 										/>
 									))))}
 							{allPets.filter(pet => pet.city === localStorage.getItem('_city')).length < 1 && (
-								<div className='flex justify-center items-center p-4 mx-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }}>
+								<Card className='flex justify-center items-center p-4 mx-4'>
 									<p>{t('main.no_more_pets_city')}</p>
-								</div>
+								</Card>
 							)}
 						</>
 					) : loadingPets ?
 						(
-							<m.div className='w-screen p-4' animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
-								<Skeleton width={'100%'} height={'900px'}></Skeleton>
-							</m.div>
+							<Card>
+								Loading...
+							</Card>
 						) : (
-							<m.div className='flex justify-center items-center p-4 mx-4' style={{ backgroundColor: themeColor.cardBackground, border: `1px solid ${themeColor.divBorder}`, borderRadius: 15 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
+							<Card className='flex justify-center items-center p-4 mx-4'>
 								<p>{t('main.no_more_pets')}</p>
-							</m.div>
+							</Card>
 						)
 
 					}
+				</div>
+			</div>
+			<div className='absolute w-screen flex items-center justify-center bottom-[6rem]'>
+				<div className='flex items-center gap-3'>
+					<Button disabled={petIndex == 0} onClick={() => { changePet('p') }}><ArrowLeft /></Button>
+					<Button disabled={petIndex == (allPets.filter(pet => petType === pet.type).length - 1) && allPets.filter(pet => petType === pet.type).length > 0} onClick={() => { changePet('n') }}><ArrowRight /></Button>
 				</div>
 			</div>
 		</>
