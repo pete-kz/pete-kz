@@ -23,7 +23,6 @@ export default defineConfig({
         display: 'standalone',
         background_color: '#ffffff',
         lang: 'ru',
-        scope: '/pwa',
         theme_color: '#a485d6',
         id: 'pete_pwa_app',
         description: 'Find a loving home for your pets!',
