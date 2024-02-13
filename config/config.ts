@@ -1,4 +1,4 @@
-const API: { baseURL: string } = { baseURL: 'http://https://pete-api-yklft.ondigitalocean.app' } //http://192.168.1.156:3000
+const API: { baseURL: string } = { baseURL: 'https://pete-api-yklft.ondigitalocean.app' } //http://192.168.1.156:3000
 
 const main = {
     navLinks: [['navigation_main_bar.pages.main', '/'], ['navigation_main_bar.pages.contacts', '/contacts'], ['navigation_main_bar.pages.about_us', '/about']],
