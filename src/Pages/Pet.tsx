@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
+import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
@@ -21,12 +21,8 @@ import { formatAge } from '@/lib/utils'
 export default function PetPage() {
 
     // Setups
-    const isAuthenticated = useIsAuthenticated()
-    const navigate = useNavigate()
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
-    const signout = useSignOut()
-    const authHeader = useAuthHeader()
     const { t } = useTranslation()
     const query = useQuery()
 
@@ -65,14 +61,6 @@ export default function PetPage() {
         }
     }
 
-    function checkToken() {
-        const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
-        const isEqualTokens = authHeader() == token
-        if (!isEqualTokens) {
-            signout()
-        }
-    }
-
     function updatePetInfo() {
         notification.custom.promise(
             axios.post(`${API.baseURL}/pets/edit`, {
@@ -100,13 +88,7 @@ export default function PetPage() {
     }
 
     useEffect(() => {
-        if (!isAuthenticated()) {
-            navigate('/auth/login')
-            return
-        }
-
         fetchPet()
-        checkToken()
         // @ts-expect-error because it is imported from the web
         ym(96355513, 'hit', window.origin)
     }, [])
@@ -160,13 +142,13 @@ export default function PetPage() {
                                 <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
                             </div>
                             <div className='mt-2'>
-                                <p className='text-2xl font-bold'>{petData.name}, {formatAge(petData.age)}</p>
+                                <p className='text-2xl font-bold'>{petData.name}, {formatAge(petData.age, t('pet.year'), t('pet.month'))}</p>
                                 <p>{petData.description}</p>
                             </div>
                             {query.get('contacts') === 'true' && (
                                 <Accordion type='single' collapsible>
                                     <AccordionItem value={`${petData._id}_owner_contacts`}>
-                                        <AccordionTrigger>Contacts</AccordionTrigger>
+                                        <AccordionTrigger>{t('pet.contacts.label')}</AccordionTrigger>
                                         <AccordionContent>
                                             <p>{ownerData?.name}</p>
                                             {ownerData?.social.instagram && (
@@ -175,7 +157,7 @@ export default function PetPage() {
                                                 </Button>
                                             )}
                                             {ownerData?.social.telegram && (
-                                                <Button className='flex gap-2' onClick={() => { window.open(`https://t.me/${ownerData?.social.telegram}`, '_blank') }}>
+                                                <Button className='flex gap-2' variant={'link'} onClick={() => { window.open(`https://t.me/${ownerData?.social.telegram}`, '_blank') }}>
                                                     <Send />{ownerData?.social.telegram}
                                                 </Button>
                                             )}
@@ -202,13 +184,21 @@ function LikeReturnBottom(props: { pet: Pet_Response }) {
     const user = authStateUser() || {}
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const isAuthenticated = useIsAuthenticated()
 
     // States
     const [userData, setUserData] = useState<User_Response>()
     const [liked, setLiked] = useState<boolean>(false)
 
     function addLikedPet() {
-        if (!userData) return
+        if (!isAuthenticated() || !userData) {
+            const browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
+            browserLiked.push(props.pet._id)
+            localStorage.setItem('_data_offline_liked', JSON.stringify(browserLiked))
+            notification.custom.success(t('pet.liked'))
+            setLiked(true)
+            return
+        }
         const userPrevData = structuredClone(userData)
         userPrevData.liked.push(props.pet._id)
         // @ts-expect-error Using interface User_Response that have strict definitions throws error when trying to exclude password from data
@@ -225,13 +215,15 @@ function LikeReturnBottom(props: { pet: Pet_Response }) {
     }
 
     function getUser() {
-        axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
-            if (!res.data.err) {
-                setUserData(res.data)
-            } else {
-                notification.custom.error(res.data.err)
-            }
-        })
+        if (isAuthenticated()) {
+            axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
+                if (!res.data.err) {
+                    setUserData(res.data)
+                } else {
+                    notification.custom.error(res.data.err)
+                }
+            })
+        }
     }
 
     useEffect(() => {

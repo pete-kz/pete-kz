@@ -74,7 +74,13 @@
     "name": "Name",
     "age": "Date of birth",
     "month": "Months",
+    "year": "Years",
     "type": "Your pet is",
+    "types": [
+      "Cat",
+      "Dog",
+      "Other"
+    ],
     "description": "Description",
     "update_btn": "Update",
     "contacts": {
@@ -89,6 +95,11 @@
       "img": "Upload images",
       "btn": "Add pet"
     }
+  },
+  "index": {
+    "welcome_to": "Welcome to",
+    "description": "Find a loving home for your pets fast!",
+    "proceed_PWA": "Let's go!"
   },
   "user": {
     "name": "Name",
@@ -106,7 +117,8 @@
     "labels": {
       "city": "City",
       "exit_button": "Exit account",
-      "language_button": "Language"
+      "language_button": "Language",
+      "login": "Login"
     }
   },
   "bottom_pwa_bar": {

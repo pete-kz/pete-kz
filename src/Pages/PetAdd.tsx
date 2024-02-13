@@ -146,7 +146,7 @@ export default function AddPetPage() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {['Cat', 'Dog', 'Other'].map((typepet) => (
-                                        <SelectItem key={typepet} value={typepet}>{typepet}</SelectItem>
+                                        <SelectItem key={typepet} value={typepet}>{t(`pet.types.${['Cat', 'Dog', 'Other'].indexOf(typepet)}`)}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>

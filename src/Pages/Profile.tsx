@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useAuthUser } from 'react-auth-kit'
+import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { axiosAuth as axios, notification } from '@utils'
@@ -36,6 +36,7 @@ export default function Profile() {
     const user = authStateUser() || {}
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const isAuthenticated = useIsAuthenticated()
 
     // States
     const [usersPet, setUsersPet] = useState<Pet_Response[]>()
@@ -54,6 +55,24 @@ export default function Profile() {
 
     // Functions
     function getInfo() {
+        if (!isAuthenticated()) {
+            const likedIDS = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
+            if (likedIDS.length > 0) {
+                axios.post(`${API.baseURL}/pets/find`)
+                    .then((res: AxiosResponse) => {
+                        if (!res.data.err) {
+                            const allPets: Pet_Response[] = res.data
+                            const likedPets = allPets.filter(pet => {
+                                return likedIDS.includes(pet._id)
+                            })
+                            setLiked(likedPets)
+                        } else {
+                            notification.custom.error(res.data.err)
+                        }
+                    })
+            }
+            return
+        }
         axios.post(`${API.baseURL}/pets/find`)
             .then((res: AxiosResponse) => {
                 if (!res.data.err) {
@@ -81,6 +100,7 @@ export default function Profile() {
     }
 
     function removePet(pet: Pet_Response) {
+        if (!isAuthenticated()) return
         axios.post(`${API.baseURL}/pets/remove`, { query: { _id: pet._id } })
             .then((res: AxiosResponse) => {
                 if (!res.data.err) {
@@ -93,7 +113,26 @@ export default function Profile() {
     }
 
     function removePetFromLiked(pet_id: string) {
-        if (!userData) return
+        if (!isAuthenticated || !userData) {
+            let browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
+            browserLiked = browserLiked.filter(likedPet => likedPet != pet_id)
+            axios.post(`${API.baseURL}/pets/find`)
+                .then((res: AxiosResponse) => {
+                    if (!res.data.err) {
+                        const allPets: Pet_Response[] = res.data
+                        const likedPets = allPets.filter(pet => {
+                            return browserLiked.includes(pet._id)
+                        })
+                        setLiked(likedPets)
+                        localStorage.setItem('_data_offline_liked', JSON.stringify(browserLiked))
+                        notification.custom.success(t('errors.liked_remove'))
+                    } else {
+                        notification.custom.error(res.data.err)
+                    }
+                })
+
+            return
+        }
         const userPrevData = structuredClone(userData)
         userPrevData.liked.filter(pet => pet != pet_id)
         // @ts-expect-error Using interface User_Response that have strict definitions throws error when trying to exclude password from data
@@ -146,36 +185,38 @@ export default function Profile() {
     return (
         <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Accordion type='single' collapsible>
-                <AccordionItem value='my_profile' className='m-4'>
-                    <AccordionTrigger>{t('main.my_profile')}</AccordionTrigger>
-                    <AccordionContent className='flex flex-col p-2 gap-3'>
-                        <div className='grid w-full items-center gap-1.5'>
-                            <Label htmlFor='user_name'>{t('user.name')}</Label>
-                            <Input id='user_name' value={name} onChange={(e) => setName(e.target.value)} />
-                        </div>
-                        <div className='grid w-full items-center gap-1.5'>
-                            <Label htmlFor='user_login'>{t('user.login')}</Label>
-                            <Input id='user_login' value={login} onChange={(e) => setLogin(e.target.value)} />
-                        </div>
-                        <div className='grid w-full items-center gap-1.5'>
-                            <Label>{t('user.contacts.phone')}</Label>
-                            <Input placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value as string)} />
-                        </div>
-                        <div className='grid w-full items-center gap-1.5'>
-                            <Label htmlFor='user_instagram'>{t('user.contacts.instagram')}</Label>
-                            <Input id='user_instagram' value={instagram} onChange={(e) => setInstagram(e.target.value)} />
-                        </div>
-                        <div className='grid w-full items-center gap-1.5'>
-                            <Label htmlFor='user_telegram'>{t('user.contacts.telegram')}</Label>
-                            <Input id='user_telegram' value={telegram} onChange={(e) => setTelegram(e.target.value)} />
-                        </div>
-                        <div className='grid w-full items-center gap-1.5'>
-                            <Label htmlFor='user_password'>{t('user.password')}</Label>
-                            <Input id='user_password' value={password} type="password" onChange={(e) => setPassword(e.target.value)} />
-                        </div>
-                        <Button onClick={updateProfileInfo}>{updatingState ? 'Loading...' : 'Update'}</Button>
-                    </AccordionContent>
-                </AccordionItem>
+                {user._id && (
+                    <AccordionItem value='my_profile' className='m-4'>
+                        <AccordionTrigger>{t('main.my_profile')}</AccordionTrigger>
+                        <AccordionContent className='flex flex-col p-2 gap-3'>
+                            <div className='grid w-full items-center gap-1.5'>
+                                <Label htmlFor='user_name'>{t('user.name')}</Label>
+                                <Input id='user_name' value={name} onChange={(e) => setName(e.target.value)} />
+                            </div>
+                            <div className='grid w-full items-center gap-1.5'>
+                                <Label htmlFor='user_login'>{t('user.login')}</Label>
+                                <Input id='user_login' value={login} onChange={(e) => setLogin(e.target.value)} />
+                            </div>
+                            <div className='grid w-full items-center gap-1.5'>
+                                <Label>{t('user.contacts.phone')}</Label>
+                                <Input placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value as string)} />
+                            </div>
+                            <div className='grid w-full items-center gap-1.5'>
+                                <Label htmlFor='user_instagram'>{t('user.contacts.instagram')}</Label>
+                                <Input id='user_instagram' value={instagram} onChange={(e) => setInstagram(e.target.value)} />
+                            </div>
+                            <div className='grid w-full items-center gap-1.5'>
+                                <Label htmlFor='user_telegram'>{t('user.contacts.telegram')}</Label>
+                                <Input id='user_telegram' value={telegram} onChange={(e) => setTelegram(e.target.value)} />
+                            </div>
+                            <div className='grid w-full items-center gap-1.5'>
+                                <Label htmlFor='user_password'>{t('user.password')}</Label>
+                                <Input id='user_password' value={password} type="password" onChange={(e) => setPassword(e.target.value)} />
+                            </div>
+                            <Button onClick={updateProfileInfo}>{updatingState ? 'Loading...' : 'Update'}</Button>
+                        </AccordionContent>
+                    </AccordionItem>
+                )}
                 {liked.length > 0 && (
                     <AccordionItem value='my_likes' className='m-4'>
                         <AccordionTrigger>{t('main.your_likes')}</AccordionTrigger>

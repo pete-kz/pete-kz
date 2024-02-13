@@ -2,16 +2,20 @@
 import React from 'react'
 import { Settings, Home, UserRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useAuthUser } from 'react-auth-kit'
 import { useTranslation } from 'react-i18next'
 import { main } from '@config'
 import { cn } from '@/lib/utils'
+import { useAuthHeader, useSignOut } from 'react-auth-kit'
+
 import { Separator } from '@/Components/ui/separator'
 
 const pages: string[][] = main.bottomPWABar.pages
 const pagesPaths: string[] = pages.map(page => page[1])
 
 export default function NavigationBar() {
+	// Setup
+	const signout = useSignOut()
+    const authHeader = useAuthHeader()
 
 	// States
 	const [currentPageIndex, setCurrentPageIndex] = React.useState<number>(0)
@@ -20,20 +24,24 @@ export default function NavigationBar() {
 
 	// Setups
 	const navigate = useNavigate()
-	const authStateUser = useAuthUser()
-	const user: { _id?: string } | null = authStateUser()
 
 	// Functions
-	if (user == null) {
-		navigate('/auth/login')
-	}
 
 	function isActive(index: number, currentIndex: number) {
 		return index === currentIndex
 	}
 
+	function checkToken() {
+        const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
+        const isEqualTokens = authHeader() == token
+        if (!isEqualTokens) {
+            signout()
+        }
+    }
+
 	React.useEffect(() => {
 		setCurrentPageIndex(pagesPaths.indexOf(location.pathname))
+		checkToken
 	}, [count])
 
 	return (

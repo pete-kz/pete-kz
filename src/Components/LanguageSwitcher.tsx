@@ -12,7 +12,7 @@ export default function LanguageSwitcher() {
 
 	// Setups
 	const { t, i18n } = useTranslation()
-	const [currentLanguage, setLanguage] = useState<string>('ru')
+	const [currentLanguage, setLanguage] = useState<string>()
 
 	useEffect(() => {
 		setLanguage(lanaguagesCodes.includes(i18n.language) ? i18n.language : 'en')

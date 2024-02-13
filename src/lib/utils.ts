@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatAge(age: string) {
+export function formatAge(age: string, i18_years: string, i18_months: string) {
   // Parse the given date string to a Date object
   const birthDate = new Date(age)
   
@@ -37,5 +37,5 @@ export function formatAge(age: string) {
   }
   
   // Return the formatted age string
-  return `${years} years, ${months} months`
+  return `${years} ${i18_years}, ${months} ${i18_months}`
 }

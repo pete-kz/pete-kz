@@ -15,51 +15,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json}', '**/**/*.{js,css,html,ico,png,svg,json}', '*.{js,css,html,ico,png,svg,json}']
       },
-      devOptions: { enabled: true },
-      manifest: {
-        name: 'Pete',
-        short_name: 'Pete',
-        start_url: '/pwa',
-        display: 'standalone',
-        background_color: '#ffffff',
-        lang: 'ru',
-        theme_color: '#a485d6',
-        id: 'pete_pwa_app',
-        description: 'Find a loving home for your pets!',
-        dir: 'ltr',
-        orientation: 'portrait',
-        categories: [
-          'business',
-          'lifestyle',
-          'utilities'
-        ],
-        icons: [
-          {
-            src: 'icons/manifest-icon-192.maskable.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: 'icons/manifest-icon-192.maskable.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'maskable'
-          },
-          {
-            src: 'icons/manifest-icon-512.maskable.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: 'icons/manifest-icon-512.maskable.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
-          }
-        ]
-      }
+      devOptions: { enabled: true }
     }),
     tsconfigPaths(),
     visualizer({ open: true }) as unknown as PluginOption

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
+import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
 import { useAnimate } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
@@ -20,15 +19,12 @@ import { ArrowLeft, ArrowRight } from 'lucide-react'
 export default function Main() {
 
 	// Setups
-	const isAuthenticated = useIsAuthenticated()
-	const navigate = useNavigate()
 	const authStateUser = useAuthUser()
 	const user = authStateUser() || {}
-	const signout = useSignOut()
-	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
 	const query = useQuery()
 	const [scope, animate] = useAnimate()
+	const isAuthenticated = useIsAuthenticated()
 
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
@@ -68,30 +64,27 @@ export default function Main() {
 		}
 		axios.get(`${API.baseURL}/pets/find/all`).then((res: AxiosResponse) => {
 			if (!res.data.err) {
-				const pets: Pet_Response[] = res.data
-				axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
-					if (!res.data.err) {
-						const userData: User_Response = res.data
-						const filteredPets = pets.filter(pet => !(userData.liked.includes(pet._id)))
-						localStorage.setItem('_data_allPets', JSON.stringify(filteredPets)) // Cache the filtered list
-						setAllPets(filteredPets)
-						setLoadingPets(false)
-					} else {
-						notification.custom.error(res.data.err)
-					}
-				})
+				let pets: Pet_Response[] = res.data
+				if (isAuthenticated()) {
+					axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
+						if (!res.data.err) {
+							const userData: User_Response = res.data
+							pets = pets.filter(pet => !(userData.liked.includes(pet._id)))
+						} else {
+							notification.custom.error(res.data.err)
+						}
+					})
+				} else {
+					const browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
+					pets = pets.filter(pet => !(browserLiked.includes(pet._id)))
+				}
+				localStorage.setItem('_data_allPets', JSON.stringify(pets))
+				setAllPets(pets)
+				setLoadingPets(false)
 			} else {
 				notification.custom.error(res.data.err)
 			}
 		})
-	}
-
-	function checkToken() {
-		const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
-		const isEqualTokens = authHeader() == token
-		if (!isEqualTokens) {
-			signout()
-		}
 	}
 
 	function checkQuery() {
@@ -108,11 +101,7 @@ export default function Main() {
 	}
 
 	useEffect(() => {
-		if (!isAuthenticated()) {
-			navigate('/auth/login')
-		}
 		fetchAllPets()
-		checkToken()
 		animate(scope.current, { opacity: 1, x: 0 }, { duration: .45 })
 	}, [petIndex])
 
@@ -140,7 +129,7 @@ export default function Main() {
 					</SelectTrigger>
 					<SelectContent>
 						{['Cat', 'Dog', 'Other'].map((typepet) => (
-							<SelectItem key={typepet} value={typepet}>{typepet}</SelectItem>
+							<SelectItem key={typepet} value={typepet}>{t(`pet.types.${['Cat', 'Dog', 'Other'].indexOf(typepet)}`)}</SelectItem>
 						))}
 					</SelectContent>
 				</Select>

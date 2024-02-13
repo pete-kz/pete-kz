@@ -43,29 +43,24 @@ export default function App() {
 		},
 		{
 			path: '/pwa',
-			element: <RequireAuth loginPath={loginPage}><MainLayout /></RequireAuth>,
-			children: [
-				{
-					path: '/pwa',
-					element: <Main />,
-				},
-				{
-					path: '/pwa/profile',
-					element: <Profile />,
-				},
-				{
-					path: '/pwa/pets',
-					element: <PetPage />,
-				},
-				{
-					path: '/pwa/pets/add',
-					element: <AddPetPage />
-				},
-				{
-					path: '/pwa/settings',
-					element: <Settings />,
-				},
-			],
+			element: <MainLayout><Main /></MainLayout>,
+		},
+		{
+			path: '/pwa/profile',
+			element: <MainLayout><Profile /></MainLayout>,
+		},
+		{
+			path: '/pwa/pets',
+			element: <MainLayout><PetPage /></MainLayout>,
+		},
+		{
+			path: '/pwa/settings',
+			element: <MainLayout><Settings /></MainLayout>,
+		},
+		{
+			path: '/pwa/pets/add',
+			element: <RequireAuth loginPath={loginPage}><MainLayout>
+				<AddPetPage /></MainLayout></RequireAuth>,
 		}
 	]
 
