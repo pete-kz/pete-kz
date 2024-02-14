@@ -21,12 +21,14 @@
         "invalid_link": "Жарамсыз сілтеме",
         "phone_required": "Телефон нөмірі (Whatsapp) қажет!",
         "phone_international": "Халықаралық телефон нөмірі форматын пайдаланыңыз (+ белгісімен)",
+        "phone_in_use": "Account with this phone number already exists!",
         "no_city": "Алдымен параметрлерде қаланы орнатыңыз!",
         "liked_removed": "Ұнату алынып тасталды!"
     },
     "success": {
         "login_proccess": "Сіз сәтті түрде жүйеге кірдіңіз!",
-        "register_proccess": "Сіз сәтті түрде тіркелдіңіз!"
+        "register_proccess": "Сіз сәтті түрде тіркелдіңіз!",
+        "label": "Success!"
     },
     "login": {
         "title": "Кіру",
@@ -91,6 +93,7 @@
             "phone": "Телефон"
         },
         "liked": "Ұнады! Кейінірек профиліңізде тексеріңіз.",
+        "goodbye": "Goodbye",
         "add": {
             "img": "Суреттерді жүктеңіз",
             "btn": "Үй жануарын қосу"
@@ -111,7 +114,8 @@
             "telegram": "Telegram",
             "phone": "Телефон"
         },
-        "password": "Құпия сөз"
+        "password": "Құпия сөз",
+        "profile_updated": "Profile updated!"
     },
     "settings": {
         "labels": {

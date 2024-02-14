@@ -14,6 +14,7 @@ import { Card } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
+import LoadingSpinner from '@/Components/loading-spinner'
 
 
 export default function Main() {
@@ -163,9 +164,7 @@ export default function Main() {
 						</>
 					) : loadingPets ?
 						(
-							<Card>
-								Loading...
-							</Card>
+							<LoadingSpinner />
 						) : (
 							<Card className='flex justify-center items-center p-4 mx-4'>
 								<p>{t('main.no_more_pets')}</p>

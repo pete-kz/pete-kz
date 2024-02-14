@@ -31,9 +31,6 @@
       "@utils": [
         "src/Utils/index.ts"
       ],
-      "@colors": [
-        "./src/Utils/colors.ts"
-      ],
       "@config": [
         "./config/config.ts"
       ]

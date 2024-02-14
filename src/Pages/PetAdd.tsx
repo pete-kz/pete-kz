@@ -16,6 +16,7 @@ import { Button } from '@/Components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
 import ImageGallery from 'react-image-gallery'
 import { Textarea } from '@/Components/ui/textarea'
+import LoadingSpinner from '@/Components/loading-spinner'
 
 
 export default function AddPetPage() {
@@ -57,7 +58,7 @@ export default function AddPetPage() {
         axios.post(`${API.baseURL}/pets/add`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then((response: AxiosResponse) => {
                 if (!response.data.err) {
-                    notification.custom.success('Success!')
+                    notification.custom.success(t('success.label'))
                 } else {
                     notification.custom.error(response.data.err)
                 }
@@ -170,7 +171,7 @@ export default function AddPetPage() {
                                 setFiles(files)
                             }} />
                     </div>
-                    <Button className='w-full mt-2' disabled={uploadState} type='submit'>{uploadState ? 'Loading...' : t('pet.add.btn')}</Button>
+                    <Button className='w-full mt-2' disabled={uploadState} type='submit'>{uploadState ? <LoadingSpinner /> : t('pet.add.btn')}</Button>
 
                 </form>
 

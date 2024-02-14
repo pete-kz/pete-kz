@@ -21,12 +21,14 @@
     "invalid_link": "Invalid link",
     "phone_required": "Phone number (Whatsapp) is required!",
     "phone_international": "Please, use international phone number format (with +)",
+    "phone_in_use": "Account with this phone number already exists!",
     "no_city": "Set up the city in the settings first!",
     "liked_removed": "Liked removed!"
   },
   "success": {
     "login_proccess": "You have successfully logged in!",
-    "register_proccess": "You have successfully logged in!"
+    "register_proccess": "You have successfully logged in!",
+    "label": "Success!"
   },
   "login": {
     "title": "Login",
@@ -91,6 +93,7 @@
       "phone": "Phone"
     },
     "liked": "Liked! Check in your profile later.",
+    "goodbye": "Goodbye",
     "add": {
       "img": "Upload images",
       "btn": "Add pet"
@@ -111,7 +114,8 @@
       "telegram": "Telegram",
       "phone": "Phone"
     },
-    "password": "Password"
+    "password": "Password",
+    "profile_updated": "Profile updated!"
   },
   "settings": {
     "labels": {

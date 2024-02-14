@@ -12,7 +12,7 @@ import { formatAge } from '@/lib/utils'
 import { Card, CardHeader, CardContent, CardDescription, CardFooter, CardTitle } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
 
-export default function PetCard({ id, name, description, age, userID, imagesPath, updatedAt }: PetCard_props) {
+export default function PetCard({ id, name, age, userID, imagesPath, updatedAt }: PetCard_props) {
 
   // Setups
   const { t } = useTranslation()
@@ -54,8 +54,7 @@ export default function PetCard({ id, name, description, age, userID, imagesPath
           <img src={imagesPath[0]} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} />
         </div>
         <div className='mt-3'>
-          <p className='text-2xl font-bold'>{name}, {formatAge(age)}</p>
-          <p className='text-muted-foreground h-16 overflow-hidden'>{description}</p>
+          <p className='text-2xl font-bold'>{name}, {formatAge(age, t('pet.year'), t('pet.month'))}</p>
         </div>
       </CardContent>
       <CardFooter>

@@ -9,7 +9,6 @@ import { Pet_Response, User_Response } from '@declarations'
 import { useNavigate } from 'react-router-dom'
 
 // UI
-import { themeColor } from '@/Utils/colors'
 import { HeartOff, Trash, Pencil, Plus } from 'lucide-react'
 import { Card } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
@@ -104,7 +103,7 @@ export default function Profile() {
         axios.post(`${API.baseURL}/pets/remove`, { query: { _id: pet._id } })
             .then((res: AxiosResponse) => {
                 if (!res.data.err) {
-                    notification.custom.success(`Goodbye, ${pet.name}!`)
+                    notification.custom.success(`${t('pet.goodbye')}, ${pet.name}!`)
                     setUsersPet(pets => pets?.filter(userPet => userPet._id != pet._id))
                 } else {
                     notification.custom.error(res.data.err)
@@ -164,7 +163,7 @@ export default function Profile() {
         })
             .then((res: AxiosResponse) => {
                 if (!res.data.err) {
-                    notification.custom.success('Profile updated')
+                    notification.custom.success(t('user.profile_updated'))
                     setUpdated(update => !update)
                 } else {
                     notification.custom.error(res.data.err)
@@ -240,18 +239,17 @@ export default function Profile() {
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
                                             <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    This action will delete pet from your liked!
+                                                    {t('alert.remove_like')}
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>Continue</AlertDialogAction>
+                                                <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>{t('alert.sure')}</AlertDialogAction>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>
                                     </AlertDialog>
-
                                 </Card>
                             ))}
                         </AccordionContent>
@@ -280,15 +278,14 @@ export default function Profile() {
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
                                             <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently delete your
-                                                pet from your account.
+                                                {t('alert.delete_pet_profile')}
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                            <AlertDialogCancel>No, take me back</AlertDialogCancel>
-                                            <AlertDialogAction onClick={() => { removePet(pet) }}>I am sure</AlertDialogAction>
+                                            <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => { removePet(pet) }}>{t('alert.sure')}</AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
@@ -297,7 +294,7 @@ export default function Profile() {
                         </Card>
                     ))}
                     <Card className='flex flex-col justify-center items-center p-3 gap-3' onClick={() => { navigate('/pwa/pets/add') }}>
-                        <div style={{ color: themeColor[12] }}>
+                        <div className='text-zinc-400'>
                             <Plus fontSize='large' />
                         </div>
                         <div className='text-center'>

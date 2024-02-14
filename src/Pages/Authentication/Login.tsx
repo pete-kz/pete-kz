@@ -12,6 +12,7 @@ import LanguageSwitcher from '@/Components/LanguageSwitcher'
 import { Input } from '@/Components/ui/input'
 import { Label } from '@/Components/ui/label'
 import { Button } from '@/Components/ui/button'
+import LoadingSpinner from '@/Components/loading-spinner'
 
 export default function Login() {
 
@@ -123,7 +124,7 @@ export default function Login() {
 						onClick={userSignIn}
 						className='w-full'
 					>
-						{loadingState ? 'Loading...' :t('login.button')}
+						{loadingState ? <LoadingSpinner /> :t('login.button')}
 					</Button>
 					<LanguageSwitcher />
 				</div>

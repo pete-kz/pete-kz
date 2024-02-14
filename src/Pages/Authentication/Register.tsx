@@ -12,6 +12,7 @@ import LanguageSwitcher from '@/Components/LanguageSwitcher'
 import { Input } from '@/Components/ui/input'
 import { Label } from '@/Components/ui/label'
 import { Button } from '@/Components/ui/button'
+import LoadingSpinner from '@/Components/loading-spinner'
 
 export default function Register() {
 
@@ -97,7 +98,7 @@ export default function Register() {
 		if (phone) {
 			axios.post(`${API.baseURL}/users/find`, { query: { phone } }).then((res: AxiosResponse) => {
 				if (!res.data.err && res.data.phone == phone) {
-					notification.custom.error('phone in use')
+					notification.custom.error(t('errors.phone_in_use'))
 					setRegisterButtonDisabled(true)
 				}
 			})
@@ -147,7 +148,7 @@ export default function Register() {
 							className='w-full'
 							disabled={registerButtonDisabled}
 						>
-							{loadingState ? 'Loading...' : t('register.button')}
+							{loadingState ? <LoadingSpinner /> : t('register.button')}
 						</Button>
 					</div>
 					<LanguageSwitcher />
