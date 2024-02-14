@@ -30,6 +30,13 @@
     "register_proccess": "You have successfully logged in!",
     "label": "Success!"
   },
+  "alert": {
+    "you_sure": "Are you absolutely sure?",
+    "delete_pet_profile": "This action cannot be undone. This will permanently delete your pet from your account.",
+    "remove_like": "This action will delete pet from your liked!",
+    "back": "No, take me back",
+    "sure": "I am sure"
+  },
   "login": {
     "title": "Login",
     "or_create_new_account": [
