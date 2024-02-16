@@ -3,7 +3,7 @@ import React from 'react'
 import { Toaster } from 'react-hot-toast'
 import BottomPWABar from '@/Components/BottomPWABar'
 
-export default function MainLayout({ children }: { children: React.ReactNode}) {
+export default function PwaLayout({ children }: { children: React.ReactNode}) {
 	return (
 		<>
 			<Toaster />

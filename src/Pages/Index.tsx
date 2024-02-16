@@ -1,5 +1,4 @@
 import React from 'react'
-import NavigationBar from '@/Components/NavigationBar'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/Components/ui/button'
 import { useTranslation } from 'react-i18next'
@@ -9,11 +8,10 @@ import { Label } from '@/Components/ui/label'
 export default function IndexPage() {
     // Setups
     const navigate = useNavigate()
-	const { t } = useTranslation()
+    const { t } = useTranslation()
 
     return (
-        <div className='w-screen h-full mb-20'>
-            <NavigationBar />
+        <>
             <div className='bg-purple-500'>
                 <img src={'/images/cover_pets_picture.webp'} alt="Cover Picture Of Pets" />
             </div>
@@ -23,13 +21,13 @@ export default function IndexPage() {
                     <p className='text-muted-foreground'>{t('index.description')}</p>
                 </div>
                 <div className='grid grid-cols-2 grid-rows-1 gap-1.5'>
-                <LanguageSwitcher />
-                <div className='grid w-full items-center gap-1.5'>
-                    <Label>PWA</Label>
-                <Button onClick={() => { navigate('/pwa') }}>{t('index.proceed_PWA')}</Button>
-                </div>
+                    <LanguageSwitcher />
+                    <div className='grid w-full items-center gap-1.5'>
+                        <Label>PWA</Label>
+                        <Button onClick={() => { navigate('/pwa') }}>{t('index.proceed_PWA')}</Button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
