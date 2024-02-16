@@ -22,7 +22,7 @@ export default function MainNavigationBar() {
             </div>
             <div className='flex flex-row gap-3'>
                 {main.navLinks.map((link, index) => (
-                    <Button variant={'ghost'} className={`transition-all ease-in duration-75 ${isActive(link[1]) ? 'font-bold underline' : ''}`} key={index} onClick={() => { navigate(link[1]) }}>{t(link[0])}</Button>
+                    <Button variant={'link'} className={`transition-all ease-in duration-75 ${isActive(link[1]) ? 'font-bold underline' : ''}`} key={index} onClick={() => { navigate(link[1]) }}>{t(link[0])}</Button>
                 ))}
             </div>
         </header>
