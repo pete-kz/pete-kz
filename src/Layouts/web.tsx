@@ -5,7 +5,7 @@ export default function WebLayout({ children }: { children: React.ReactNode}) {
 	return (
 		<>
 			<MainNavigationBar />
-			<main>
+			<main className='p-4'>
 				{children}
 			</main>
 		</>

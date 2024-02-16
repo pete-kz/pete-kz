@@ -16,7 +16,7 @@ export default function MainNavigationBar() {
     }
 
     return (
-        <header className='h-16 flex items-center justify-between px-5 w-screen ' style={{ zIndex: 9999 }}>
+        <header className='h-16 flex items-center justify-between px-5 w-screen bg-card border-b ' style={{ zIndex: 9999 }}>
             <div>
                 <img src={Icon} alt="" className='h-10 w-10' />
             </div>

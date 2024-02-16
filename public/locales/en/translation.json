@@ -111,6 +111,10 @@
     "description": "Find a loving home for your pets fast!",
     "proceed_PWA": "Let's go!"
   },
+  "support": {
+    "text": "You can support us by donating us via",
+    "more_soon": "More ways to support us will be here soon."
+  },
   "user": {
     "name": "Name",
     "login": "Login",
