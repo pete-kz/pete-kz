@@ -37,5 +37,5 @@ export function formatAge(age: string, i18_years: string, i18_months: string) {
   }
   
   // Return the formatted age string
-  return `${years} ${i18_years}, ${months} ${i18_months}`
+  return `${years} ${i18_years}${Number(months) > 0 && `, ${months} ${i18_months}`}`
 }
