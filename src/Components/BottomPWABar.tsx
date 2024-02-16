@@ -45,7 +45,7 @@ export default function NavigationBar() {
 	}, [count])
 
 	return (
-		<header className='fixed bottom-0 left-0 right-0 z-50'>
+		<header className='fixed bottom-0 left-0 right-0 z-50 bg-background'>
 				<Separator />
 				<div className="grid grid-cols-3 grid-rows-1">
 					{pages.map((page: string[], index: number) => (

@@ -1,7 +1,7 @@
 const API: { baseURL: string } = { baseURL: 'https://pete-api-yklft.ondigitalocean.app' } //http://192.168.1.156:3000
 
 const main = {
-    navLinks: [['navigation_main_bar.pages.main', '/'], ['navigation_main_bar.pages.contacts', '/contacts'], ['navigation_main_bar.pages.about_us', '/about']],
+    navLinks: [['navigation_main_bar.pages.main', '/'], ['navigation_main_bar.pages.support', '/support'], ['navigation_main_bar.pages.about_us', '/about']],
     howToInstallPictures: {
         IOS: [{ original: '/images/pwa/ios/1.jpeg' }, { original: '/images/pwa/ios/2.jpeg' }, { original: '/images/pwa/ios/3.jpeg' }]
     },

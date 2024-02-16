@@ -7,7 +7,7 @@ import type { RouteObject } from 'react-router-dom'
 import './i18.js'
 import { ThemeProvider } from '@/Components/theme-provder.js'
 // Layouts
-import MainLayout from './Layouts/Main.layout'
+import PWALayout from './Layouts/pwa.js'
 
 // Pages
 import Main from './Pages/Main'
@@ -18,6 +18,8 @@ import Profile from './Pages/Profile.js'
 import PetPage from './Pages/Pet.js'
 import AddPetPage from './Pages/PetAdd.js'
 import IndexPage from './Pages/Index.js'
+import SupportPage from './Pages/Support.js'
+import WebLayout from './Layouts/web.js'
 
 export default function App() {
 
@@ -38,29 +40,33 @@ export default function App() {
 			]
 		},
 		{
+			path: '/support',
+			element: <WebLayout><SupportPage /></WebLayout>
+		},
+		{
 			path: '/',
-			element: <IndexPage />,
+			element: <WebLayout><IndexPage /></WebLayout>
 		},
 		{
 			path: '/pwa',
-			element: <MainLayout><Main /></MainLayout>,
+			element: <PWALayout><Main /></PWALayout>,
 		},
 		{
 			path: '/pwa/profile',
-			element: <MainLayout><Profile /></MainLayout>,
+			element: <PWALayout><Profile /></PWALayout>,
 		},
 		{
 			path: '/pwa/pets',
-			element: <MainLayout><PetPage /></MainLayout>,
+			element: <PWALayout><PetPage /></PWALayout>,
 		},
 		{
 			path: '/pwa/settings',
-			element: <MainLayout><Settings /></MainLayout>,
+			element: <PWALayout><Settings /></PWALayout>,
 		},
 		{
 			path: '/pwa/pets/add',
-			element: <RequireAuth loginPath={loginPage}><MainLayout>
-				<AddPetPage /></MainLayout></RequireAuth>,
+			element: <RequireAuth loginPath={loginPage}><PWALayout>
+				<AddPetPage /></PWALayout></RequireAuth>,
 		}
 	]
 

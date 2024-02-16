@@ -11,6 +11,7 @@ import { formatAge } from '@/lib/utils'
 // UI
 import { Card, CardHeader, CardContent, CardDescription, CardFooter, CardTitle } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
+import { Skeleton } from '@/Components/ui/skeleton'
 
 export default function PetCard({ id, name, age, userID, imagesPath, updatedAt }: PetCard_props) {
 
@@ -44,16 +45,16 @@ export default function PetCard({ id, name, age, userID, imagesPath, updatedAt }
   return (
     <Card className='m-2'>
       <CardHeader>
-        <CardTitle>{owner?.name}</CardTitle>
+        <CardTitle>{owner ? owner.name : <Skeleton className='h-[24px] w-[100px] rounded-lg' />}</CardTitle>
         <CardDescription>
           {`${t('main.pet_card.last_update')}: ${parseMongoDate(updatedAt).date.day}.${parseMongoDate(updatedAt).date.month}.${parseMongoDate(updatedAt).date.year}`}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className='p-0'>
         <div>
-          <img src={imagesPath[0]} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} />
+          <img src={'https://placehold.co/1000x1000'} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} onLoad={(e) => { e.currentTarget.src = imagesPath[0] ? imagesPath[0] : 'https://placehold.co/1000x1000' }} />
         </div>
-        <div className='mt-3'>
+        <div className='p-6'>
           <p className='text-2xl font-bold'>{name}, {formatAge(age, t('pet.year'), t('pet.month'))}</p>
         </div>
       </CardContent>
