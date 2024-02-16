@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/Components/ui/button'
 import { useTranslation } from 'react-i18next'

@@ -82,8 +82,8 @@
   "pet": {
     "name": "Name",
     "age": "Date of birth",
-    "month": "Months",
-    "year": "Years",
+    "month": "months",
+    "year": "years",
     "type": "Your pet is",
     "types": [
       "Cat",
@@ -112,8 +112,8 @@
     "proceed_PWA": "Let's go!"
   },
   "support": {
-    "text": "You can support us by donating us via",
-    "more_soon": "More ways to support us will be here soon."
+    "text": "You can support us by donating via",
+    "more_soon": "More ways to support soon."
   },
   "user": {
     "name": "Name",

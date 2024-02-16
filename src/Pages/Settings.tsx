@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import LanguageSwitcher from '@/Components/LanguageSwitcher'
 import { Button } from '@/Components/ui/button'
 import ChangeCity from '@/Components/change-city'
+import { m } from 'framer-motion'
+import SupportCard from '@/Components/Cards/support'
 
 export default function Settings() {
 	// Setups
@@ -19,7 +21,7 @@ export default function Settings() {
 	}, [])
 
 	return (
-		<div className="grid grid-rows-3 grid-cols-1 p-4 gap-3">
+		<m.div className="grid grid-rows-3 grid-cols-1 p-4 gap-3" animate={{ opacity: 1, y: 0, x: 0 }} initial={{ opacity: 0, y: 100, x: 0 }} exit={{ opacity: 0, x: -100 }}>
 			{!isAuthenticated() && (
 				<Button className='gap-2 w-full' onClick={() => { navigate('/auth/login') }}>
 					{t('settings.labels.login')}
@@ -38,6 +40,7 @@ export default function Settings() {
 				</Button>
 			)}
 
-		</div>
+			<SupportCard />
+		</m.div>
 	)
 }

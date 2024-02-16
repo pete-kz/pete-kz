@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useState, useEffect } from 'react'
 import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
-import { useAnimate } from 'framer-motion'
+import { useAnimate, motion as m, PanInfo } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
@@ -11,9 +11,7 @@ import PetCard from '@/Components/Cards/Pet.card'
 
 // UI 
 import { Card } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
 import LoadingSpinner from '@/Components/loading-spinner'
 
 
@@ -101,6 +99,11 @@ export default function Main() {
 		}
 	}
 
+	function checkDrag(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo): void {
+		if (info.point.x >= 450 && !(petIndex == 0)) changePet('p')
+		if (info.point.x <= 100 && !(petIndex == (allPets.filter(pet => petType === pet.type).length - 1) && allPets.filter(pet => petType === pet.type).length > 0) ) changePet('n')
+	}
+
 	useEffect(() => {
 		fetchAllPets()
 		animate(scope.current, { opacity: 1, x: 0 }, { duration: .45 })
@@ -136,7 +139,7 @@ export default function Main() {
 				</Select>
 			</div>
 			<div className="flex justify-center h-screen">
-				<div id='pet_card' style={{ maxWidth: '98vw' }} ref={scope}>
+				<m.div id='pet_card' drag onDragEnd={checkDrag} dragConstraints={{ top: 0, bottom: 0, left: 30, right: 30 }} dragSnapToOrigin className='h-fit' ref={scope} dragElastic={0.2} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 					{allPets.length > 0 ? (
 						<>
 							{allPets.filter(pet => petType === pet.type).map((pet, index: number) => (
@@ -172,13 +175,7 @@ export default function Main() {
 						)
 
 					}
-				</div>
-			</div>
-			<div className='absolute w-screen flex items-center justify-center bottom-[6rem]'>
-				<div className='flex items-center gap-3'>
-					<Button disabled={petIndex == 0} onClick={() => { changePet('p') }}><ArrowLeft /></Button>
-					<Button disabled={petIndex == (allPets.filter(pet => petType === pet.type).length - 1) && allPets.filter(pet => petType === pet.type).length > 0} onClick={() => { changePet('n') }}><ArrowRight /></Button>
-				</div>
+				</m.div>
 			</div>
 		</>
 	)

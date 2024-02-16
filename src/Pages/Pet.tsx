@@ -9,7 +9,7 @@ import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
 
 // UI
-import { Card } from '@/Components/ui/card'
+import { Card, CardContent, CardTitle, CardDescription } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
 import { Input } from '@/Components/ui/input'
@@ -137,18 +137,22 @@ export default function PetPage() {
                         {query.get('more') === 'true' && (
                             <LikeReturnBottom pet={petData} />
                         )}
-                        <div className='m-2 p-4 mb-20'>
-                            <div>
+                        <Card className='m-2 flex flex-col gap-3'>
+                            <CardTitle className='p-6 pb-2'>
+                                {petData.name}, {formatAge(petData.age, t('pet.year'), t('pet.month'))}
+                            </CardTitle>
+                            <CardContent className="p-0">
                                 <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
-                            </div>
-                            <div className='mt-2'>
-                                <p className='text-2xl font-bold'>{petData.name}, {formatAge(petData.age, t('pet.year'), t('pet.month'))}</p>
-                                <p>{petData.description}</p>
-                            </div>
-                            {query.get('contacts') === 'true' && (
+                            </CardContent>
+                            <CardDescription className='p-6 pt-2'>
+                                {petData.description}
+                            </CardDescription>
+                        </Card>
+                        {query.get('contacts') === 'true' && (
+                            <Card className='p-6 m-2'>
                                 <Accordion type='single' collapsible>
                                     <AccordionItem value={`${petData._id}_owner_contacts`}>
-                                        <AccordionTrigger>{t('pet.contacts.label')}</AccordionTrigger>
+                                        <AccordionTrigger className='p-0'>{t('pet.contacts.label')}</AccordionTrigger>
                                         <AccordionContent>
                                             <p>{ownerData?.name}</p>
                                             {ownerData?.social.instagram && (
@@ -169,8 +173,8 @@ export default function PetPage() {
                                         </AccordionContent>
                                     </AccordionItem>
                                 </Accordion>
-                            )}
-                        </div>
+                            </Card>
+                        )}
                     </>
                 )
             )}
