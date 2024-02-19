@@ -133,7 +133,13 @@
       "city": "City",
       "exit_button": "Exit account",
       "language_button": "Language",
-      "login": "Login"
+      "login": "Login",
+      "mode": "Theme",
+      "theme": {
+        "dark": "Dark",
+        "light": "Light",
+        "system": "System"
+      }
     }
   },
   "bottom_pwa_bar": {

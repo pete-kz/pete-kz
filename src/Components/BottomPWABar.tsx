@@ -50,7 +50,7 @@ export default function NavigationBar() {
 				<div className="grid grid-cols-3 grid-rows-1">
 					{pages.map((page: string[], index: number) => (
 						<div key={page[1]} className={cn('rounded-lg', 'p-2 px-3')} onClick={() => { navigate(page[1]); setCount(count + 1) }}>
-							<div className={cn(isActive(index, currentPageIndex) && 'bg-card', 'rounded-lg p-2 text-center', 'transition-all ease-in duration-150')}>
+							<div className={cn(isActive(index, currentPageIndex) && 'bg-primary', 'rounded-md p-2 text-center', 'transition-all ease-in duration-150')}>
 								<div className='w-full flex justify-center'>
 									{index === 1 && <Home />}
 									{index === 0 && <UserRound />}

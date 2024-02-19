@@ -7,7 +7,7 @@ import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
-import PetCard from '@/Components/Cards/Pet.card'
+import PetCard from '@/Components/Cards/pet'
 
 // UI 
 import { Card } from '@/Components/ui/card'
@@ -100,8 +100,8 @@ export default function Main() {
 	}
 
 	function checkDrag(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo): void {
-		if (info.point.x >= 450 && !(petIndex == 0)) changePet('p')
-		if (info.point.x <= 100 && !(petIndex == (allPets.filter(pet => petType === pet.type).length - 1) && allPets.filter(pet => petType === pet.type).length > 0) ) changePet('n')
+		if (info.point.x >= 400 && !(petIndex == 0)) changePet('p')
+		if (info.point.x <= 150 && !(petIndex == (allPets.filter(pet => petType === pet.type).length - 1) && allPets.filter(pet => petType === pet.type).length > 0) ) changePet('n')
 	}
 
 	useEffect(() => {
@@ -139,7 +139,7 @@ export default function Main() {
 				</Select>
 			</div>
 			<div className="flex justify-center h-screen">
-				<m.div id='pet_card' drag onDragEnd={checkDrag} dragConstraints={{ top: 0, bottom: 0, left: 30, right: 30 }} dragSnapToOrigin className='h-fit' ref={scope} dragElastic={0.2} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+				<m.div id='pet_card' drag='x' onDragEnd={checkDrag} dragConstraints={{ top: 0, bottom: 0, left: 30, right: 30 }} dragSnapToOrigin className='h-fit' ref={scope} dragElastic={0.2} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 					{allPets.length > 0 ? (
 						<>
 							{allPets.filter(pet => petType === pet.type).map((pet, index: number) => (
