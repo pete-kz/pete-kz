@@ -69,54 +69,33 @@
 @layer base {
   :root {
     --background: 270 20% 10%;
-    /* Darker purple background */
     --foreground: 270 15% 90%;
-    /* Lighter purple foreground for contrast */
-
     --card: 270 15% 15%;
-    /* Slightly lighter card background */
     --card-foreground: 270 15% 90%;
-    /* Lighter text on cards */
 
     --popover: 270 15% 15%;
-    /* Matching card and popover backgrounds */
     --popover-foreground: 270 15% 90%;
-    /* Consistent foreground color */
 
     --primary: 290 50% 70%;
-    /* Soft pastel purple for primary elements */
     --primary-foreground: 270 15% 20%;
-    /* Dark text on pastel for contrast */
 
     --secondary: 260 45% 65%;
-    /* Secondary pastel, a bit more subdued */
     --secondary-foreground: 270 15% 20%;
-    /* Dark purple foreground */
-
+  
     --muted: 270 10% 75%;
-    /* Very muted purple for less emphasis */
     --muted-foreground: 270 30% 80%;
-    /* Lightened for better readability against card background */
 
     --accent: 285 60% 75%;
-    /* Lighter, pastel-like purple for accent elements */
     --accent-foreground: 270 15% 20%;
-    /* Dark text for contrast */
 
     --destructive: 345 65% 70%;
-    /* Softer, pastel reddish-purple for destructive actions */
     --destructive-foreground: 270 15% 98%;
-    /* Very light text for contrast */
 
     --border: 270 15% 30%;
-    /* Soft purple borders for differentiation */
     --input: 270 15% 25%;
-    /* Dark but soft purple input fields for contrast */
     --ring: 270 30% 60%;
-    /* Distinctive but softer purple focus ring */
 
-    --radius: 0.5rem;
-    /* Keeping the border-radius the same */
+    --radius: 1rem;
   }
 
   .dark {
@@ -137,7 +116,6 @@
 
     --muted: 270 10% 75%;
     --muted-foreground: 270 30% 80%;
-    /* Adjusted for better readability */
 
     --accent: 285 60% 75%;
     --accent-foreground: 270 15% 20%;
