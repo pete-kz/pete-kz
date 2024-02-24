@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { AddPetForm } from '@/Components/forms/add-pet'
+import { AddPetForm } from '@/components/forms/add-pet'
 
 export default function AddPetPage() {
 

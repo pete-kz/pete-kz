@@ -4,35 +4,23 @@ import { useForm } from 'react-hook-form'
 import { useSignIn } from 'react-auth-kit'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/Components/ui/button'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/Components/ui/form'
-import { Input } from '@/Components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import axios, { AxiosResponse } from 'axios'
 import { notification } from '@utils'
 import { API } from '@config'
-import LoadingSpinner from '@/Components/loading-spinner'
+import LoadingSpinner from '@/components/loading-spinner'
 
 export function LoginForm() {
+
     // Setups
     const { t } = useTranslation()
     const signIn = useSignIn()
-
-    // States
-    const [loadingState, setLoadingState] = useState<boolean>(false)
-
     const formSchema = z.object({
         phone: z.string().min(7, { message: t('errors.phone_length') }).includes('+', { message: t('errors.phone_international') }),
         password: z.string().min(8, { message: t('errors.password_length') })
     })
-
-    // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -41,7 +29,10 @@ export function LoginForm() {
         },
     })
 
-    // 2. Define a submit handler.
+    // States
+    const [loadingState, setLoadingState] = useState<boolean>(false)
+
+    // Functions
     function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values)
         setLoadingState(true)

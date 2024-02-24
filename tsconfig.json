@@ -26,10 +26,10 @@
         "./src/*"
       ],
       "@declarations": [
-        "./src/Utils/.d.ts"
+        "./src/lib/declarations.d.ts"
       ],
       "@utils": [
-        "src/Utils/index.ts"
+        "./src/lib/utils.ts"
       ],
       "@config": [
         "./config/config.ts"

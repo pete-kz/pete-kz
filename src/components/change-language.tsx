@@ -8,7 +8,7 @@ import { Label } from './ui/label'
 const languages = main.languages
 const lanaguagesCodes = languages.map(language => language[0])
 
-export default function LanguageSwitcher() {
+export default function ChangeLanguage() {
 
 	// Setups
 	const { t, i18n } = useTranslation()

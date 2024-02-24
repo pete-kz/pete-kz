@@ -10,12 +10,12 @@ import { useNavigate } from 'react-router-dom'
 
 // UI
 import { HeartOff, Trash, Pencil, Plus } from 'lucide-react'
-import { Card } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -26,7 +26,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/Components/ui/alert-dialog'
+} from '@/components/ui/alert-dialog'
 
 export default function Profile() {
 

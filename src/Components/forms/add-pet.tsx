@@ -4,36 +4,25 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useAuthUser } from 'react-auth-kit'
-import { Button } from '@/Components/ui/button'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/Components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
-import { Input } from '@/Components/ui/input'
-import axios, { AxiosResponse } from 'axios'
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { AxiosResponse } from 'axios'
+import { axiosAuth as axios } from '@utils'
 import { notification } from '@utils'
 import { API } from '@config'
-import LoadingSpinner from '@/Components/loading-spinner'
-import { Textarea } from '@/Components/ui/textarea'
+import LoadingSpinner from '@/components/loading-spinner'
+import { Textarea } from '@/components/ui/textarea'
 import ReactImageGallery from 'react-image-gallery'
 
 
 export function AddPetForm() {
+
     // Setups
     const { t } = useTranslation()
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
-
-    // States
-    const [loadingState, setLoadingState] = useState<boolean>(false)
-    const [files, setFiles] = useState<undefined | Blob[]>(undefined)
-    const [images, setImages] = useState<never[]>([])
-
     const formSchema = z.object({
         name: z
             .string()
@@ -44,11 +33,7 @@ export function AddPetForm() {
             .enum(['Cat', 'Dog', 'Other']),
         description: z
             .string({ required_error: 'Description is required!' }),
-        files: z
-            .instanceof(FileList)
-            .refine((val) => val.length > 0, 'File is required'),
     })
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -59,6 +44,12 @@ export function AddPetForm() {
         },
     })
 
+    // States
+    const [loadingState, setLoadingState] = useState<boolean>(false)
+    const [files, setFiles] = useState<undefined | Blob[]>(undefined)
+    const [images, setImages] = useState<never[]>([])
+
+    // Functions
     function onSubmit(values: z.infer<typeof formSchema>) {
         setLoadingState(true)
         const formData = new FormData()
@@ -101,7 +92,7 @@ export function AddPetForm() {
             if (checkImage(file) != '') {
                 imagesObject.push({
                     original: checkImage(file),
-                    thumbnain: checkImage(file)
+                    thumbnail: checkImage(file)
                 } as never)
             }
         })
@@ -187,7 +178,7 @@ export function AddPetForm() {
                             setFiles(files)
                         }} />
                 </div>
-                <Button className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('pet.add.btn')}</Button>
+                <Button onClick={() => { console.log(form.formState.errors)}} className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('pet.add.btn')}</Button>
             </form>
         </Form>
     )

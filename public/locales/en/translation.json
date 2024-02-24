@@ -30,7 +30,7 @@
   },
   "success": {
     "login_proccess": "You have successfully logged in!",
-    "register_proccess": "You have successfully logged in!",
+    "register_proccess": "You have successfully registered! Now, login!",
     "label": "Success!"
   },
   "alert": {
