@@ -26,7 +26,7 @@
     "phone_international": "Please, use international phone number format (with +)",
     "phone_in_use": "Account with this phone number already exists!",
     "no_city": "Set up the city in the settings first!",
-    "liked_removed": "Liked removed!"
+    "liked_remove": "Liked removed!"
   },
   "success": {
     "login_proccess": "You have successfully logged in!",

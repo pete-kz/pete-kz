@@ -7,8 +7,6 @@ import { API } from '@config'
 import { AxiosResponse } from 'axios'
 import { Pet_Response, User_Response } from '@declarations'
 import { useNavigate } from 'react-router-dom'
-
-// UI
 import { HeartOff, Trash, Pencil, Plus } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
