@@ -18,8 +18,11 @@
     "password_length": "Password is too short",
     "internal_error": "An error has occurred. Try again later.",
     "fill_all_fields": "Fill all fields",
+    "firstName_req": "Firstname required!",
+    "lastName_req": "Lastname required!",
     "invalid_link": "Invalid link",
     "phone_required": "Phone number (Whatsapp) is required!",
+    "phone_length": "Phone number must be at least 7 characters.",
     "phone_international": "Please, use international phone number format (with +)",
     "phone_in_use": "Account with this phone number already exists!",
     "no_city": "Set up the city in the settings first!",
@@ -56,10 +59,10 @@
       "Login"
     ],
     "labels": [
-      "Login",
-      "Name",
-      "Password",
-      "Phone"
+      "First name",
+      "Last name",
+      "Phone",
+      "Password"
     ],
     "placeholders": [
       "Login",
@@ -81,14 +84,14 @@
   },
   "pet": {
     "name": "Name",
-    "age": "Date of birth",
+    "date": "Date of birth",
     "month": "months",
     "year": "years",
     "type": "Your pet is",
     "types": [
-      "Cat",
-      "Dog",
-      "Other"
+      "Cats",
+      "Dogs",
+      "Others"
     ],
     "description": "Description",
     "update_btn": "Update",
@@ -102,6 +105,7 @@
     "liked": "Liked! Check in your profile later.",
     "goodbye": "Goodbye",
     "add": {
+      "label": "Add new pet",
       "img": "Upload images",
       "btn": "Add pet"
     }
