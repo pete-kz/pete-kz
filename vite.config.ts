@@ -36,28 +36,40 @@ export default defineConfig({
         ],
         'icons': [
           {
-            'src': 'icons/manifest-icon-192.maskable.png',
+            'src': '/icons/android-chrome-192x192.png',
             'sizes': '192x192',
-            'type': 'image/png',
-            'purpose': 'any'
+            'type': 'image/png'
           },
           {
-            'src': 'icons/manifest-icon-192.maskable.png',
+            'src': '/icons/android-chrome-512x512.png',
+            'sizes': '512x512',
+            'type': 'image/png',
+          },
+          {
+            'src': '/icons/android-chrome-maskable-192x192.png',
             'sizes': '192x192',
             'type': 'image/png',
             'purpose': 'maskable'
           },
           {
-            'src': 'icons/manifest-icon-512.maskable.png',
-            'sizes': '512x512',
-            'type': 'image/png',
-            'purpose': 'any'
-          },
-          {
-            'src': 'icons/manifest-icon-512.maskable.png',
+            'src': '/icons/android-chrome-maskable-512x512.png',
             'sizes': '512x512',
             'type': 'image/png',
             'purpose': 'maskable'
+          }
+        ],
+        'shortcuts' : [
+          {
+            'name': 'Add new pet',
+            'url': '/pwa/pets/add'
+          },
+          {
+            'name': 'PETE',
+            'url': '/pwa'
+          },
+          {
+            'name': 'Settings',
+            'url': '/pwa/settings'
           }
         ]
       }
