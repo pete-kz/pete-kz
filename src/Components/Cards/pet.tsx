@@ -52,7 +52,7 @@ export default function PetCard({ id, name, age, userID, imagesPath, updatedAt }
       </CardHeader>
       <CardContent className='p-0'>
         <div>
-          <img src={'https://placehold.co/1000x1000'} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} onLoad={(e) => { e.currentTarget.src = imagesPath[0] ? imagesPath[0] : 'https://placehold.co/1000x1000' }} />
+          <img src={'/images/1000.svg'} alt={name} style={{ aspectRatio: '1/1', objectFit: 'cover', overflow: 'hidden', minWidth: '100%' }} onLoad={(e) => { e.currentTarget.src = imagesPath[0] ? imagesPath[0] : '/images/1000.svg' }} />
         </div>
         <div className='p-6'>
           <p className='text-2xl font-bold'>{name}, {formatAge(age, t('pet.year'), t('pet.month'))}</p>

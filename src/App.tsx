@@ -5,7 +5,7 @@ import { useRoutes } from 'react-router-dom'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import type { RouteObject } from 'react-router-dom'
 import './i18.js'
-import { ThemeProvider } from '@/Components/theme-provder.js'
+import { ThemeProvider } from '@/Components/theme-provider.js'
 // Layouts
 import PWALayout from './Layouts/pwa.js'
 

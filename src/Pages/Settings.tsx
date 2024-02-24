@@ -7,6 +7,7 @@ import { Button } from '@/Components/ui/button'
 import ChangeCity from '@/Components/change-city'
 import { m } from 'framer-motion'
 import SupportCard from '@/Components/Cards/support'
+import { ModeToggle } from '@/Components/mode-toggle'
 
 export default function Settings() {
 	// Setups
@@ -27,8 +28,9 @@ export default function Settings() {
 					{t('settings.labels.login')}
 				</Button>
 			)}
-			<div>
+			<div className='flex gap-1.5'>
 				<ChangeCity />
+				<ModeToggle />
 			</div>
 			<div>
 				<LanguageSwitcher />
