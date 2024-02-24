@@ -7,7 +7,7 @@ import { main } from '@config'
 import { cn } from '@/lib/utils'
 import { useAuthHeader, useSignOut } from 'react-auth-kit'
 
-import { Separator } from '@/Components/ui/separator'
+import { Separator } from '@/components/ui/separator'
 
 const pages: string[][] = main.bottomPWABar.pages
 const pagesPaths: string[] = pages.map(page => page[1])

@@ -9,9 +9,9 @@ import { useNavigate } from 'react-router-dom'
 import { formatAge } from '@/lib/utils'
 
 // UI
-import { Card, CardHeader, CardContent, CardDescription, CardFooter, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Skeleton } from '@/Components/ui/skeleton'
+import { Card, CardHeader, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function PetCard({ id, name, age, userID, imagesPath, updatedAt }: PetCard_props) {
 

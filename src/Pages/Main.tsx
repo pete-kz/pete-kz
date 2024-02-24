@@ -7,12 +7,12 @@ import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
-import PetCard from '@/Components/Cards/pet'
+import PetCard from '@/components/Cards/pet'
 
 // UI 
-import { Card } from '@/Components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
-import LoadingSpinner from '@/Components/loading-spinner'
+import { Card } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import LoadingSpinner from '@/components/loading-spinner'
 
 
 export default function Main() {

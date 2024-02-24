@@ -1,7 +1,7 @@
 import React from 'react'
 // import { Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
-import BottomPWABar from '@/Components/BottomPWABar'
+import BottomPWABar from '@/components/BottomPWABar'
 import { m } from 'framer-motion'
 
 export default function PwaLayout({ children }: { children: React.ReactNode}) {

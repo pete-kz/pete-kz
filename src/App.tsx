@@ -4,22 +4,22 @@ import { AuthProvider, RequireAuth } from 'react-auth-kit'
 import { useRoutes } from 'react-router-dom'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import type { RouteObject } from 'react-router-dom'
-import './i18.js'
-import { ThemeProvider } from '@/Components/theme-provider.js'
+import './i18'
+import { ThemeProvider } from '@/components/theme-provider'
 // Layouts
-import PWALayout from './Layouts/pwa.js'
+import PwaLayout from './layouts/pwa'
+import WebLayout from './layouts/web'
 
-// Pages
-import Main from './Pages/Main'
-import Login from './Pages/Authentication/Login.js'
-import Register from './Pages/Authentication/Register'
-import Settings from './Pages/Settings'
-import Profile from './Pages/Profile.js'
-import PetPage from './Pages/Pet.js'
-import AddPetPage from './Pages/PetAdd.js'
-import IndexPage from './Pages/Index.js'
-import SupportPage from './Pages/Support.js'
-import WebLayout from './Layouts/web.js'
+// pages
+import Main from './pages/Main'
+import Login from './pages/Authentication/Login'
+import Register from './pages/Authentication/Register'
+import Settings from './pages/Settings'
+import Profile from './pages/Profile'
+import PetPage from './pages/Pet'
+import AddPetPage from './pages/PetAdd'
+import IndexPage from './pages/Index'
+import SupportPage from './pages/Support'
 
 export default function App() {
 
@@ -49,24 +49,24 @@ export default function App() {
 		},
 		{
 			path: '/pwa',
-			element: <PWALayout><Main /></PWALayout>,
+			element: <PwaLayout><Main /></PwaLayout>,
 		},
 		{
 			path: '/pwa/profile',
-			element: <PWALayout><Profile /></PWALayout>,
+			element: <PwaLayout><Profile /></PwaLayout>,
 		},
 		{
 			path: '/pwa/pets',
-			element: <PWALayout><PetPage /></PWALayout>,
+			element: <PwaLayout><PetPage /></PwaLayout>,
 		},
 		{
 			path: '/pwa/settings',
-			element: <PWALayout><Settings /></PWALayout>,
+			element: <PwaLayout><Settings /></PwaLayout>,
 		},
 		{
 			path: '/pwa/pets/add',
-			element: <RequireAuth loginPath={loginPage}><PWALayout>
-				<AddPetPage /></PWALayout></RequireAuth>,
+			element: <RequireAuth loginPath={loginPage}><PwaLayout>
+				<AddPetPage /></PwaLayout></RequireAuth>,
 		}
 	]
 

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useAuthUser } from 'react-auth-kit'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
     Form,
     FormControl,
@@ -12,14 +12,14 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/Components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select'
-import { Input } from '@/Components/ui/input'
+} from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
 import axios, { AxiosResponse } from 'axios'
 import { notification } from '@utils'
 import { API } from '@config'
-import LoadingSpinner from '@/Components/loading-spinner'
-import { Textarea } from '@/Components/ui/textarea'
+import LoadingSpinner from '@/components/loading-spinner'
+import { Textarea } from '@/components/ui/textarea'
 import ReactImageGallery from 'react-image-gallery'
 
 

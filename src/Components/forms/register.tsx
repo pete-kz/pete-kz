@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
     Form,
     FormControl,
@@ -12,12 +12,12 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/Components/ui/form'
-import { Input } from '@/Components/ui/input'
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import axios, { AxiosResponse } from 'axios'
 import { notification } from '@utils'
 import { API } from '@config'
-import LoadingSpinner from '@/Components/loading-spinner'
+import LoadingSpinner from '@/components/loading-spinner'
 
 export function RegisterForm() {
     // Setups

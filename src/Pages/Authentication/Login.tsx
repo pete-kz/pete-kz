@@ -5,8 +5,8 @@ import { Toaster } from 'react-hot-toast'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/Components/ui/button'
-import { LoginForm } from '@/Components/forms/login'
+import { Button } from '@/components/ui/button'
+import { LoginForm } from '@/components/forms/login'
 
 export default function Login() {
 

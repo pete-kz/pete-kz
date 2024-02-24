@@ -1,5 +1,5 @@
 import React from 'react'
-import MainNavigationBar from '@/Components/NavigationBar'
+import MainNavigationBar from '@/components/NavigationBar'
 
 export default function WebLayout({ children }: { children: React.ReactNode}) {
 	return (

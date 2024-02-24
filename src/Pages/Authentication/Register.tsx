@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/Components/ui/button'
-import { RegisterForm } from '@/Components/forms/register'
+import { Button } from '@/components/ui/button'
+import { RegisterForm } from '@/components/forms/register'
 
 export default function Register() {
 

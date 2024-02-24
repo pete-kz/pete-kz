@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { main } from '@config'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 
 export default function MainNavigationBar() {
     // Setups
