@@ -33,11 +33,6 @@ export default function PetCard({ id, name, age, userID, imagesPath, updatedAt }
     })
   }
 
-  if (userID == null) {
-    localStorage.removeItem('token')
-    location.reload()
-  }
-
   useEffect(() => {
     getOwner()
   }, [])

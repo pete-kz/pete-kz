@@ -1,12 +1,10 @@
-import { AnimationScope } from "framer-motion"
-
 export type Pet_Response = {
     _id: string
 	name: string
     age: string
     type: 'Cat' | 'Dog' | 'Other'
     description: string
-    userID: User_Response["_id"]
+    userID: User_Response['_id']
     imagesPath: string[]
     city: string
     createdAt: string
@@ -35,7 +33,7 @@ export type PetCard_props = {
     age: string
     type: 'Cat' | 'Dog' | 'Other'
     description: string
-    userID: User_Data["_id"]
+    userID: User_Data['_id']
     imagesPath: string[]
     city: string
     createdAt: string

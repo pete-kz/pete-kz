@@ -12,9 +12,10 @@ import { useTheme } from '@/components/theme-provider'
 import { Label } from './ui/label'
 
 export function ModeToggle() {
+    
+    // Setups
     const { setTheme } = useTheme()
     const { t } = useTranslation()
-
 
     return (
         <div className='grid w-fit h-fit items-center gap-1.5'>

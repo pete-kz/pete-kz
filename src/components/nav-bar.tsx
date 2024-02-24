@@ -4,12 +4,13 @@ import { main } from '@config'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 
-export default function MainNavigationBar() {
+export default function NavigationBar() {
+
     // Setups
     const navigate = useNavigate()
     const { t } = useTranslation()
 
-    // Function
+    // Functions
     function isActive(page: string): boolean {
         return page === window.location.pathname
     }

@@ -7,7 +7,7 @@ import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
-import PetCard from '@/components/Cards/pet'
+import PetCard from '@/components/cards/pet'
 
 // UI 
 import { Card } from '@/components/ui/card'
@@ -30,6 +30,7 @@ export default function Main() {
 	const [petIndex, setPet] = useState<number>(0)
 	const [loadingPets, setLoadingPets] = useState<boolean>(true)
 	const [petType, setPetType] = useState<'Cat' | 'Dog' | 'Other'>('Cat')
+
 	// Handlers
 	function changePet(type: 'n' | 'p') {
 		const pet_id = query.get('start_id')
@@ -101,7 +102,7 @@ export default function Main() {
 
 	function checkDrag(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo): void {
 		if (info.point.x >= 400 && !(petIndex == 0)) changePet('p')
-		if (info.point.x <= 150 && !(petIndex == (allPets.filter(pet => petType === pet.type).length - 1) && allPets.filter(pet => petType === pet.type).length > 0) ) changePet('n')
+		if (info.point.x <= 150 && !(petIndex == (allPets.filter(pet => petType === pet.type).length - 1) && allPets.filter(pet => petType === pet.type).length > 0)) changePet('n')
 	}
 
 	useEffect(() => {

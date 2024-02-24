@@ -2,14 +2,15 @@ import React, { useEffect } from 'react'
 import { useSignOut, useIsAuthenticated } from 'react-auth-kit'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
+import ChangeLanguage from '@/components/change-language'
 import { Button } from '@/components/ui/button'
 import ChangeCity from '@/components/change-city'
 import { m } from 'framer-motion'
-import SupportCard from '@/components/Cards/support'
+import SupportCard from '@/components/cards/support'
 import { ModeToggle } from '@/components/mode-toggle'
 
 export default function Settings() {
+
 	// Setups
 	const signout = useSignOut()
 	const { t } = useTranslation()
@@ -33,7 +34,7 @@ export default function Settings() {
 				<ModeToggle />
 			</div>
 			<div>
-				<LanguageSwitcher />
+				<ChangeLanguage />
 			</div>
 
 			{isAuthenticated() && (

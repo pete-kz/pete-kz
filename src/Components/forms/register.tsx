@@ -5,14 +5,7 @@ import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import axios, { AxiosResponse } from 'axios'
 import { notification } from '@utils'
@@ -20,14 +13,10 @@ import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 
 export function RegisterForm() {
+
     // Setups
     const { t } = useTranslation()
     const navigate = useNavigate()
-
-
-    // States
-    const [loadingState, setLoadingState] = useState<boolean>(false)
-
     const formSchema = z.object({
         firstName: z.string().min(1, { message: t('errors.firstName_req') }).optional(),
         lastName: z.string().min(1, { message: t('errors.lastName_req') }).optional(),
@@ -35,7 +24,6 @@ export function RegisterForm() {
         password: z.string().min(8, { message: t('errors.password_length') }),
         name: z.string().optional()
     })
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -46,6 +34,10 @@ export function RegisterForm() {
         },
     })
 
+    // States
+    const [loadingState, setLoadingState] = useState<boolean>(false)
+
+    // Functions
     function onSubmit(values: z.infer<typeof formSchema>) {
         values.name = values.firstName + ' ' + values.lastName
         values.firstName = undefined

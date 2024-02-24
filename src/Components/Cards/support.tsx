@@ -1,9 +1,10 @@
 import React from 'react'
 import { Card, CardContent, CardTitle } from '../ui/card'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
 
 export default function SupportCard() {
+
     // Setups
     const { t } = useTranslation()
 

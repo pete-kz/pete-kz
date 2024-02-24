@@ -17,10 +17,11 @@ const updateSW = registerSW({
 		}
 	},
 	onOfflineReady() {
-		window.alert('App has been loaded.')
+		// window.alert('App has been loaded.')
+		console.info('[PWA] App has been loaded')
 	},
 	onRegistered() {
-		console.info('Service worker registered.')
+		console.info('[PWA] Service worker registered.')
 	}
 })
 
