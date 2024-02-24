@@ -1,47 +1,32 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Settings, Home, UserRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { main } from '@config'
 import { cn } from '@/lib/utils'
-import { useAuthHeader, useSignOut } from 'react-auth-kit'
-
-import { Separator } from '@/Components/ui/separator'
+import { Separator } from '@/components/ui/separator'
 
 const pages: string[][] = main.bottomPWABar.pages
 const pagesPaths: string[] = pages.map(page => page[1])
 
-export default function NavigationBar() {
-	// Setup
-	const signout = useSignOut()
-    const authHeader = useAuthHeader()
+export default function BottomBar() {
+
+	// Setups
+	const navigate = useNavigate()
 
 	// States
 	const [currentPageIndex, setCurrentPageIndex] = React.useState<number>(0)
 	const [count, setCount] = React.useState<number>(0)
 	const { t } = useTranslation()
 
-	// Setups
-	const navigate = useNavigate()
-
 	// Functions
-
 	function isActive(index: number, currentIndex: number) {
 		return index === currentIndex
 	}
 
-	function checkToken() {
-        const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
-        const isEqualTokens = authHeader() == token
-        if (!isEqualTokens) {
-            signout()
-        }
-    }
-
-	React.useEffect(() => {
+	useEffect(() => {
 		setCurrentPageIndex(pagesPaths.indexOf(location.pathname))
-		checkToken
 	}, [count])
 
 	return (

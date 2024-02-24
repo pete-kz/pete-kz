@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactImageGallery from 'react-image-gallery'
 import { main } from '@config'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 
 export default function HowToInstall() {

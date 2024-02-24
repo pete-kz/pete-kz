@@ -1,18 +1,20 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
-import LanguageSwitcher from '@/Components/LanguageSwitcher'
-import { Label } from '@/Components/ui/label'
-import { Card } from '@/Components/ui/card'
+import ChangeLanguage from '@/components/change-language'
+import { Label } from '@/components/ui/label'
+import { Card } from '@/components/ui/card'
 import { m, useAnimate } from 'framer-motion'
 
 export default function IndexPage() {
+
     // Setups
     const navigate = useNavigate()
     const { t } = useTranslation()
 	const [scope, animate] = useAnimate()
 
+    // Functions
     function go() {
         animate(scope.current, { y: 0, display: 'block', position: 'absolute', opacity: 1, x: 0, top: 0 }, { duration: 1 }).then(() => {
             navigate('/pwa')
@@ -31,7 +33,7 @@ export default function IndexPage() {
                     <p className='text-muted-foreground'>{t('index.description')}</p>
                 </div>
                 <div className='grid grid-cols-2 grid-rows-1 gap-1.5'>
-                    <LanguageSwitcher />
+                    <ChangeLanguage />
                     <div className='grid w-full items-center gap-1.5'>
                         <Label>PWA</Label>
                         <Button onClick={go}>{t('index.proceed_PWA')}</Button>

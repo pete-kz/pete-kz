@@ -1,20 +1,21 @@
 import React from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from '@/Components/ui/dropdown-menu'
-import { useTheme } from '@/Components/theme-provider'
+} from '@/components/ui/dropdown-menu'
+import { useTheme } from '@/components/theme-provider'
 import { Label } from './ui/label'
 
 export function ModeToggle() {
+    
+    // Setups
     const { setTheme } = useTheme()
     const { t } = useTranslation()
-
 
     return (
         <div className='grid w-fit h-fit items-center gap-1.5'>

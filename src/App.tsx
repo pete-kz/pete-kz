@@ -5,21 +5,21 @@ import { useRoutes } from 'react-router-dom'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import type { RouteObject } from 'react-router-dom'
 import './i18.js'
-import { ThemeProvider } from '@/Components/theme-provider.js'
+import { ThemeProvider } from '@/components/theme-provider.js'
 // Layouts
-import PWALayout from './Layouts/pwa.js'
+import PWALayout from './layouts/pwa.js'
 
-// Pages
-import Main from './Pages/Main'
-import Login from './Pages/Authentication/Login.js'
-import Register from './Pages/Authentication/Register'
-import Settings from './Pages/Settings'
-import Profile from './Pages/Profile.js'
-import PetPage from './Pages/Pet.js'
-import AddPetPage from './Pages/PetAdd.js'
-import IndexPage from './Pages/Index.js'
-import SupportPage from './Pages/Support.js'
-import WebLayout from './Layouts/web.js'
+// pages
+import Main from './pages/Main'
+import Login from './pages/Authentication/Login.js'
+import Register from './pages/Authentication/Register'
+import Settings from './pages/Settings'
+import Profile from './pages/Profile.js'
+import PetPage from './pages/Pet.js'
+import AddPetPage from './pages/PetAdd.js'
+import IndexPage from './pages/Index.js'
+import SupportPage from './pages/Support.js'
+import WebLayout from './layouts/web.js'
 
 export default function App() {
 
