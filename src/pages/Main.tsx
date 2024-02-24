@@ -100,7 +100,7 @@ export default function Main() {
 		}
 	}
 
-	function checkDrag(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo): void {
+	function checkDrag(_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo): void {
 		if (info.point.x >= 400 && !(petIndex == 0)) changePet('p')
 		if (info.point.x <= 150 && !(petIndex == (allPets.filter(pet => petType === pet.type).length - 1) && allPets.filter(pet => petType === pet.type).length > 0)) changePet('n')
 	}
@@ -125,7 +125,7 @@ export default function Main() {
 	return (
 		<>
 			<div className='p-3'>
-				<Select value={petType} onValueChange={(value) => {
+				<Select value={petType} onValueChange={(value: string) => {
 					setPetType(value as 'Cat' | 'Dog' | 'Other')
 					setPet(0)
 				}}>
@@ -139,7 +139,7 @@ export default function Main() {
 					</SelectContent>
 				</Select>
 			</div>
-			<div className="flex justify-center h-screen">
+			
 				<m.div id='pet_card' drag='x' onDragEnd={checkDrag} dragConstraints={{ top: 0, bottom: 0, left: 30, right: 30 }} dragSnapToOrigin className='h-fit' ref={scope} dragElastic={0.2} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 					{allPets.length > 0 ? (
 						<>
@@ -177,7 +177,7 @@ export default function Main() {
 
 					}
 				</m.div>
-			</div>
+			
 		</>
 	)
 

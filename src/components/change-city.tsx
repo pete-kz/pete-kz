@@ -10,10 +10,10 @@ export default function ChangeCity() {
     const { t } = useTranslation()
 
     // States
-    const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || '0')
+    const [currentCity, setCurrentCity] = useState<string>(localStorage.getItem('_city') || '-')
 
     useEffect(() => {
-        localStorage.setItem('_city', currentCity)
+        if (currentCity != '-') localStorage.setItem('_city', currentCity)
     }, [currentCity])
 
     return (
@@ -23,12 +23,13 @@ export default function ChangeCity() {
             </Label>
             <Select
                 value={currentCity}
-                onValueChange={(value) => {
+                onValueChange={(value: React.SetStateAction<string>) => {
                     setCurrentCity(value)
                 }}>
                 <SelectTrigger>
                     <SelectValue placeholder={t('settings.labels.city')} />
                     <SelectContent>
+                        <SelectItem  value={'-'}>{'-'}</SelectItem>
                         {[...Array(10).keys()].map((city) => (
                             <SelectItem key={city} value={String(city)}>{t(`cities.${city}`)}</SelectItem>
                         ))}
