@@ -4,22 +4,22 @@ import { AuthProvider, RequireAuth } from 'react-auth-kit'
 import { useRoutes } from 'react-router-dom'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import type { RouteObject } from 'react-router-dom'
-import './i18.js'
-import { ThemeProvider } from '@/components/theme-provider.js'
+import './i18'
+import { ThemeProvider } from '@/components/theme-provider'
 // Layouts
-import PWALayout from './layouts/pwa.js'
+import PWALayout from './layouts/pwa'
 
 // pages
 import Main from './pages/Main'
-import Login from './pages/Authentication/Login.js'
+import Login from './pages/Authentication/Login'
 import Register from './pages/Authentication/Register'
 import Settings from './pages/Settings'
-import Profile from './pages/Profile.js'
-import PetPage from './pages/Pet.js'
-import AddPetPage from './pages/PetAdd.js'
-import IndexPage from './pages/Index.js'
-import SupportPage from './pages/Support.js'
-import WebLayout from './layouts/web.js'
+import Profile from './pages/Profile'
+import PetPage from './pages/Pet'
+import AddPetPage from './pages/PetAdd'
+import IndexPage from './pages/Index'
+import SupportPage from './pages/Support'
+import WebLayout from './layouts/web'
 
 export default function App() {
 
