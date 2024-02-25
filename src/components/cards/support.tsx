@@ -10,7 +10,7 @@ export default function SupportCard() {
 
     return (
         <Card className='p-4'>
-				<CardTitle>Support</CardTitle>
+				<CardTitle>{t('support.label')}</CardTitle>
 				<CardContent className='mt-2 p-0'>
 					{t('support.text')}
 					<ul className='list-disc ml-4'>
