@@ -149,7 +149,7 @@ export default function Main() {
 						<Button onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
 					</div>
 					{allPets.filter(pet => pet.city === localStorage.getItem('_city')).length < 1 && (
-						<Card className='flex justify-center items-center p-4 mx-4'>
+						<Card className='flex justify-center items-center p-4 mx-3 mt-1'>
 							<p>{t('main.no_more_pets_city')}</p>
 						</Card>
 					)}
@@ -158,7 +158,7 @@ export default function Main() {
 				(
 					<LoadingSpinner />
 				) : (
-					<Card className='flex justify-center items-center p-4 mx-4'>
+					<Card className='flex justify-center items-center p-4 mx-3 mt-1'>
 						<p>{t('main.no_more_pets')}</p>
 					</Card>
 				)

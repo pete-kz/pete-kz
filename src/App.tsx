@@ -8,6 +8,7 @@ import './i18'
 import { ThemeProvider } from '@/components/theme-provider'
 // Layouts
 import PwaLayout from './layouts/pwa'
+import AuthLayout from './layouts/auth'
 import WebLayout from './layouts/web'
 
 // pages
@@ -20,6 +21,7 @@ import PetPage from './pages/Pet'
 import AddPetPage from './pages/PetAdd'
 import IndexPage from './pages/Index'
 import SupportPage from './pages/Support'
+import AboutUsPage from './pages/AboutUs'
 
 export default function App() {
 
@@ -28,6 +30,7 @@ export default function App() {
 	const routes: RouteObject[] = [
 		{
 			path: '/auth',
+			element: <AuthLayout />,
 			children: [
 				{
 					path: '/auth/login',
@@ -40,34 +43,49 @@ export default function App() {
 			]
 		},
 		{
-			path: '/support',
-			element: <WebLayout><SupportPage /></WebLayout>
+			element: <WebLayout />,
+			children: [
+				{
+					path: '/support',
+					element: <SupportPage />
+				},
+				{
+					path: '/',
+					element: <IndexPage />
+				},
+				{
+					path: '/about-us',
+					element: <AboutUsPage />
+				}
+			]
 		},
 		{
-			path: '/',
-			element: <WebLayout><IndexPage /></WebLayout>
-		},
-		{
-			path: '/pwa',
-			element: <PwaLayout><Main /></PwaLayout>,
-		},
-		{
-			path: '/pwa/profile',
-			element: <PwaLayout><Profile /></PwaLayout>,
-		},
-		{
-			path: '/pwa/pets',
-			element: <PwaLayout><PetPage /></PwaLayout>,
-		},
-		{
-			path: '/pwa/settings',
-			element: <PwaLayout><Settings /></PwaLayout>,
-		},
-		{
-			path: '/pwa/pets/add',
-			element: <RequireAuth loginPath={loginPage}><PwaLayout>
-				<AddPetPage /></PwaLayout></RequireAuth>,
+			element: <PwaLayout />,
+			children: [
+				{
+					path: '/pwa',
+					element: <Main />,
+				},
+				{
+					path: '/pwa/profile',
+					element: <Profile />,
+				},
+				{
+					path: '/pwa/pets',
+					element: <PetPage />,
+				},
+				{
+					path: '/pwa/settings',
+					element: <Settings />,
+				},
+				{
+					path: '/pwa/pets/add',
+					element: <RequireAuth loginPath={loginPage}>
+						<AddPetPage /></RequireAuth>,
+				}
+			]
 		}
+
 	]
 
 	const router = useRoutes(routes)

@@ -3,8 +3,9 @@ import NavigationBar from '@/components/nav-bar'
 import { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { notification } from '@/lib/utils'
+import { Outlet } from 'react-router-dom'
 
-export default function WebLayout({ children }: { children: React.ReactNode}) {
+export default function WebLayout() {
 
 	// States
 	const { t } = useTranslation()
@@ -20,7 +21,7 @@ export default function WebLayout({ children }: { children: React.ReactNode}) {
 			<NavigationBar />
 			<Toaster />
 			<main className='p-4'>
-				{children}
+				<Outlet />
 			</main>
 		</div>
 	)

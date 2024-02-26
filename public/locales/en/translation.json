@@ -121,6 +121,10 @@
     "text": "You can support us by donating via",
     "more_soon": "More ways to support soon."
   },
+  "about_us": {
+    "label": "About us",
+    "text": "smth"
+  },
   "user": {
     "name": "Name",
     "login": "Login",
