@@ -19,7 +19,7 @@ export default defineConfig({
       manifest: {
         'name': 'Pete',
         'short_name': 'Pete',
-        'start_url': '/pwa',
+        'start_url': '/?pwa=true',
         'scope': '/',
         'display': 'standalone',
         'background_color': '#1a141f',

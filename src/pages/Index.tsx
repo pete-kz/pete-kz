@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 import { m, useAnimate } from 'framer-motion'
 import ProjectCard from '@/components/cards/project'
+import { useQuery } from '@/lib/utils'
 
 export default function IndexPage() {
 
@@ -14,6 +15,7 @@ export default function IndexPage() {
     const navigate = useNavigate()
     const { t } = useTranslation()
     const [scope, animate] = useAnimate()
+    const query = useQuery()
 
     // Functions
     function go() {
@@ -21,6 +23,12 @@ export default function IndexPage() {
             navigate('/pwa')
         })
     }
+
+    useEffect(() => {
+        if (query.get('pwa') === 'true') {
+            navigate('/pwa')
+        }
+    }, [])
 
     return (
         <>

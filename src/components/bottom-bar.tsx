@@ -30,12 +30,12 @@ export default function BottomBar() {
 	}, [count])
 
 	return (
-		<header className='fixed bottom-0 left-0 right-0 z-50 bg-background'>
+		<header className='fixed bottom-0 left-0 right-0 z-50 bg-background h-16'>
 				<Separator />
 				<div className="grid grid-cols-3 grid-rows-1">
 					{pages.map((page: string[], index: number) => (
-						<div key={page[1]} className={cn('rounded-lg', 'p-2 px-3')} onClick={() => { navigate(page[1]); setCount(count + 1) }}>
-							<div className={cn(isActive(index, currentPageIndex) && 'bg-primary/50', 'rounded-md p-2 text-center', 'transition-all ease-in duration-150')}>
+						<div key={page[1]} onClick={() => { navigate(page[1]); setCount(count + 1) }}>
+							<div className={cn(isActive(index, currentPageIndex) && 'text-primary', 'rounded-md p-2 text-center', 'transition-all ease-in duration-150')}>
 								<div className='w-full flex justify-center'>
 									{index === 1 && <Home />}
 									{index === 0 && <UserRound />}
