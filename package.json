@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview --host --debug"
+    "preview": "vite preview --host --debug",
+    "prebuild": "ls node_modules/.bin",
+    "postinstall": "vite --version"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
