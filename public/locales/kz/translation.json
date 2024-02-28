@@ -136,7 +136,8 @@
             "phone": "Телефон"
         },
         "password": "Құпия сөз",
-        "profile_updated": "Профиль жаңартылды!"
+        "profile_updated": "Профиль жаңартылды!",
+        "update_profile": "Change profile"
     },
     "settings": {
         "labels": {

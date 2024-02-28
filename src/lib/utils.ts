@@ -44,9 +44,7 @@ export function formatAge(age: string, i18_years: string, i18_months: string) {
 	return `${years} ${i18_years}${Number(months) > 0 ? `, ${months} ${i18_months}` : ''}`
 }
 
-const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem(
-	'_auth',
-)}`
+const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
 
 const axiosAuth = axios.create({
 	headers: {
@@ -118,4 +116,4 @@ function parseMongoDate(Mongo_Date: string) {
 	}
 }
 
-export { axiosAuth, notification, type Notification, useQuery, parseMongoDate }
+export { axiosAuth, notification, type Notification, useQuery, parseMongoDate, token }

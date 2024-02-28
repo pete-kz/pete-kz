@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { axiosAuth as axios, notification } from '@utils'
+import { axiosAuth as axios, notification, parseMongoDate } from '@utils'
 import { API } from '@config'
 import { AxiosResponse } from 'axios'
 import { Pet_Response, User_Response } from '@declarations'
@@ -11,9 +11,6 @@ import { HeartOff, Trash, Pencil, Plus } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -25,29 +22,22 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Profile() {
 
     // Setups
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
+    const isAuthenticated = useIsAuthenticated()
     const { t } = useTranslation()
     const navigate = useNavigate()
-    const isAuthenticated = useIsAuthenticated()
 
     // States
     const [usersPet, setUsersPet] = useState<Pet_Response[]>()
     const [liked, setLiked] = useState<Pet_Response[]>([])
 
     // States for editing
-    const [name, setName] = useState<User_Response['name']>('')
-    const [login, setLogin] = useState<User_Response['login']>('')
-    const [phone, setPhone] = useState<User_Response['phone']>('')
-    const [instagram, setInstagram] = useState<User_Response['social']['instagram']>('')
-    const [telegram, setTelegram] = useState<User_Response['social']['telegram']>('')
-    const [password, setPassword] = useState<User_Response['password']>('')
-    const [update, setUpdated] = useState<boolean>(false)
-    const [updatingState, setUpdatingState] = useState<boolean>(false)
     const [userData, setUserData] = useState<User_Response>()
 
     // Functions
@@ -79,11 +69,6 @@ export default function Profile() {
                         // need to populate skipped and like => filter out all pets based on skipped ids
                         if (!res.data.err) {
                             const user: User_Response = res.data
-                            setName(user.name)
-                            setLogin(user.login)
-                            setPhone(user.phone)
-                            setInstagram(user.social.instagram)
-                            setTelegram(user.social.telegram)
                             setUserData(user)
                             setLiked(allPets?.filter(pet => user.liked.includes(pet._id)) || [])
                         } else {
@@ -145,116 +130,30 @@ export default function Profile() {
         })
     }
 
-    function updateProfileInfo() {
-        setUpdatingState(true)
-        axios.post(`${API.baseURL}/users/update/${user._id}`, {
-            update: {
-                name,
-                login,
-                phone,
-                password: password != '' ? password : undefined,
-                social: {
-                    instagram,
-                    telegram
-                }
-            }
-        })
-            .then((res: AxiosResponse) => {
-                if (!res.data.err) {
-                    notification.custom.success(t('user.profile_updated'))
-                    setUpdated(update => !update)
-                } else {
-                    notification.custom.error(res.data.err)
-                }
-                setUpdatingState(false)
-            })
-    }
-
-    useEffect(() => {
-        getInfo()
-    }, [update])
-
     useEffect(() => {
         // @ts-expect-error because it is imported from the web
         ym(96355513, 'hit', window.origin)
+        getInfo()
     }, [])
 
     return (
         <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <Accordion type='single' collapsible>
-                {user._id && (
-                    <AccordionItem value='my_profile' className='m-4'>
-                        <AccordionTrigger>{t('main.my_profile')}</AccordionTrigger>
-                        <AccordionContent className='flex flex-col p-2 gap-3'>
-                            <div className='grid w-full items-center gap-1.5'>
-                                <Label htmlFor='user_name'>{t('user.name')}</Label>
-                                <Input id='user_name' value={name} onChange={(e) => setName(e.target.value)} />
-                            </div>
-                            <div className='grid w-full items-center gap-1.5'>
-                                <Label htmlFor='user_login'>{t('user.login')}</Label>
-                                <Input id='user_login' value={login} onChange={(e) => setLogin(e.target.value)} />
-                            </div>
-                            <div className='grid w-full items-center gap-1.5'>
-                                <Label>{t('user.contacts.phone')}</Label>
-                                <Input placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value as string)} />
-                            </div>
-                            <div className='grid w-full items-center gap-1.5'>
-                                <Label htmlFor='user_instagram'>{t('user.contacts.instagram')}</Label>
-                                <Input id='user_instagram' value={instagram} onChange={(e) => setInstagram(e.target.value)} />
-                            </div>
-                            <div className='grid w-full items-center gap-1.5'>
-                                <Label htmlFor='user_telegram'>{t('user.contacts.telegram')}</Label>
-                                <Input id='user_telegram' value={telegram} onChange={(e) => setTelegram(e.target.value)} />
-                            </div>
-                            <div className='grid w-full items-center gap-1.5'>
-                                <Label htmlFor='user_password'>{t('user.password')}</Label>
-                                <Input id='user_password' value={password} type="password" onChange={(e) => setPassword(e.target.value)} />
-                            </div>
-                            <Button onClick={updateProfileInfo}>{updatingState ? 'Loading...' : 'Update'}</Button>
-                        </AccordionContent>
-                    </AccordionItem>
-                )}
-                {liked.length > 0 && (
-                    <AccordionItem value='my_likes' className='m-4'>
-                        <AccordionTrigger>{t('main.your_likes')}</AccordionTrigger>
-                        <AccordionContent className='flex flex-col p-2 gap-3'>
-                            {liked?.map((pet, index) => (
-                                <Card key={index} className='flex items-center justify-between mt-2 p-3' >
-                                    <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
-                                        <div className='flex gap-2 items-center'>
-                                            <Avatar>
-                                                <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
-                                                <AvatarFallback>{pet.name[0]}</AvatarFallback>
-                                            </Avatar>
-                                            <p>{pet.name}</p>
-                                        </div>
-                                    </div>
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button variant={'ghost'}>
-                                                <HeartOff size="20" style={{ color: '#FF0000' }} />
-                                            </Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    {t('alert.remove_like')}
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
-                                                <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>{t('alert.sure')}</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                </Card>
-                            ))}
-                        </AccordionContent>
-                    </AccordionItem>
-                )}
-            </Accordion>
-            <div className='p-4'>
+            {userData ? (
+                <Card className='p-3 flex gap-2'>
+                    <Avatar>
+                        <AvatarImage src={'/images/pete-logo.svg'} alt={'PETE'} />
+                        <AvatarFallback>{userData.name.split(' ')[1][0]}</AvatarFallback>s
+                    </Avatar>
+                    <div>
+                        <p className='font-bold'>{userData.name}</p>
+                        <p className=''>{`${t('main.pet_card.last_update')}: ${parseMongoDate(userData.updatedAt).date.day}.${parseMongoDate(userData.updatedAt).date.month}.${parseMongoDate(userData.updatedAt).date.year}`}</p>
+                    </div>
+                </Card>
+            ) : isAuthenticated() && (
+                <Skeleton className='h-[74px] w-full rounded-lg' />
+            )}
+
+            <div className='p-1 mt-3'>
                 <p>{t('main.my_pets')}</p>
                 <div className='grid grid-cols-3 gap-2 mt-2'>
                     {usersPet?.map((pet, index) => (
@@ -287,7 +186,6 @@ export default function Profile() {
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
-
                             </div>
                         </Card>
                     ))}
@@ -302,7 +200,38 @@ export default function Profile() {
                 </div>
             </div>
 
-
+            {liked.length > 0 && liked.map((pet, index) => (
+                <Card key={index} className='flex items-center justify-between mt-2 p-3' >
+                    <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
+                        <div className='flex gap-2 items-center'>
+                            <Avatar>
+                                <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
+                                <AvatarFallback>{pet.name[0]}</AvatarFallback>
+                            </Avatar>
+                            <p>{pet.name}</p>
+                        </div>
+                    </div>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant={'ghost'}>
+                                <HeartOff size="20" style={{ color: '#FF0000' }} />
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    {t('alert.remove_like')}
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>{t('alert.sure')}</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </Card>
+            ))}
         </m.div>
     )
 }

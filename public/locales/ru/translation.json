@@ -136,7 +136,8 @@
             "phone": "Телефон"
         },
         "password": "Пароль",
-        "profile_updated": "Профиль обновлен!"
+        "profile_updated": "Профиль обновлен!",
+        "update_profile": "Изменить профиль"
     },
     "settings": {
         "labels": {

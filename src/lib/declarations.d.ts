@@ -23,8 +23,8 @@ export type User_Response = {
     password: string
     liked: string[]
     token: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
 }
 
 export type PetCard_props = {

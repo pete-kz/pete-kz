@@ -4,8 +4,10 @@ import { Settings, Home, UserRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { main } from '@config'
-import { cn } from '@/lib/utils'
+import { cn, token } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
+import { useAuthHeader, useSignOut } from 'react-auth-kit'
+
 
 const pages: string[][] = main.bottomPWABar.pages
 const pagesPaths: string[] = pages.map(page => page[1])
@@ -14,6 +16,8 @@ export default function BottomBar() {
 
 	// Setups
 	const navigate = useNavigate()
+	const signout = useSignOut()
+	const authHeader = useAuthHeader()
 
 	// States
 	const [currentPageIndex, setCurrentPageIndex] = React.useState<number>(0)
@@ -25,8 +29,17 @@ export default function BottomBar() {
 		return index === currentIndex
 	}
 
+	function checkToken() {
+        const isEqualTokens = authHeader() == token
+        if (!isEqualTokens) {
+            signout()
+			localStorage.removeItem('_auth')
+        }
+    }
+
 	useEffect(() => {
 		setCurrentPageIndex(pagesPaths.indexOf(location.pathname))
+		checkToken()
 	}, [count])
 
 	return (
