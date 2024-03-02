@@ -164,12 +164,12 @@ export default function Profile() {
                             </Avatar>
                             <p className='text-center'>{pet.name}</p>
                             <div className='grid grid-rows-1 grid-cols-2 gap-2'>
-                                <Button className='p-2' variant={'outline'} onClick={() => { navigate(`/pwa/pets?id=${pet._id}&edit=true`) }}>
+                                <Button className='p-2 w-10 h-10' variant={'outline'} onClick={() => { navigate(`/pwa/pets?id=${pet._id}&edit=true`) }}>
                                     <Pencil size={14} />
                                 </Button>
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button className='p-2' variant={'outline'}>
+                                        <Button className='p-2 w-10 h-10' variant={'outline'}>
                                             <Trash size={14} style={{ color: '#FF0000' }} />
                                         </Button>
                                     </AlertDialogTrigger>
@@ -199,39 +199,41 @@ export default function Profile() {
                     </Card>
                 </div>
             </div>
-
-            {liked.length > 0 && liked.map((pet, index) => (
-                <Card key={index} className='flex items-center justify-between mt-2 p-3' >
-                    <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
-                        <div className='flex gap-2 items-center'>
-                            <Avatar>
-                                <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
-                                <AvatarFallback>{pet.name[0]}</AvatarFallback>
-                            </Avatar>
-                            <p>{pet.name}</p>
+            <div className='p-1 mt-3'>
+                <p>{t('main.your_likes')}</p>
+                {liked.length > 0 && liked.map((pet, index) => (
+                    <Card key={index} className='flex items-center justify-between mt-2 p-3' >
+                        <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
+                            <div className='flex gap-2 items-center'>
+                                <Avatar>
+                                    <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
+                                    <AvatarFallback>{pet.name[0]}</AvatarFallback>
+                                </Avatar>
+                                <p>{pet.name}</p>
+                            </div>
                         </div>
-                    </div>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant={'ghost'}>
-                                <HeartOff size="20" style={{ color: '#FF0000' }} />
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    {t('alert.remove_like')}
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>{t('alert.sure')}</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </Card>
-            ))}
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant={'ghost'}>
+                                    <HeartOff size="20" style={{ color: '#FF0000' }} />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        {t('alert.remove_like')}
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>{t('alert.sure')}</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </Card>
+                ))}
+            </div>
         </m.div>
     )
 }

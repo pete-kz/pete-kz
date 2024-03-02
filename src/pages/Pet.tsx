@@ -240,8 +240,8 @@ function LikeReturnBottom(props: { pet: Pet_Response }) {
         <>
             <div className='absolute w-screen flex items-center justify-center bottom-[4.5rem]'>
                 <div className='flex items-center gap-3'>
-                    <Button onClick={() => { navigate(`/pwa?start_id=${props.pet._id}&type=${props.pet.type}`) }}><CornerDownLeft /></Button>
-                    <Button style={{ color: '#FF0000' }} onClick={addLikedPet}><Heart fill={liked ? '#FF0000' : 'transparent'} /></Button>
+                    <Button variant={'outline'} onClick={() => { navigate(`/pwa?start_id=${props.pet._id}&type=${props.pet.type}`) }}><CornerDownLeft /></Button>
+                    <Button variant={'outline'} style={{ color: '#FF0000' }} onClick={addLikedPet}><Heart fill={liked ? '#FF0000' : 'transparent'} /></Button>
                 </div>
             </div>
         </>

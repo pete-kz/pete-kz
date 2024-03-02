@@ -1,18 +1,35 @@
-import React from 'react'
-import { Card, CardContent, CardTitle } from '../ui/card'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AboutUsLanguage } from '@/lib/declarations'
 
 export default function AboutUsCard() {
 
     // Setups
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
+    
+    // States
+    const [data, setData] = useState<AboutUsLanguage>()
 
+    useEffect(() => {
+        i18n.language && fetch(`locales/${i18n.language}/translation.json`).then(res => res.json()).then(res => {
+            setData(res)
+        })
+    }, [])
     return (
-        <Card className='p-4'>
-				<CardTitle>{t('about_us.label')}</CardTitle>
-				<CardContent className='mt-2 p-0'>
-					{t('about_us.text')}
-				</CardContent>
-			</Card>
+        <div className='p-4 border-none bg-none'>
+            <h1 className='text-2xl font-bold'>{t('about_us.label')}</h1>
+            <div className='mt-2 p-0 flex flex-col gap-3'>
+                <p>{data?.about_us.text.heading}</p>
+                <ul className='list-disc'>
+                {data?.about_us.text.keys.map((key, idx) => (
+                    <li key={key[0]} className={`${idx != 0 && 'mt-3'} ml-4`}>
+                        <h3 className='text-lg italic font-semibold'>{key[0]}</h3>
+                        <p>{key[1]}</p>
+                    </li>
+                ))}
+                </ul>
+                <p>{data?.about_us.text.conclusion}</p>
+            </div>
+        </div>
     )
 }

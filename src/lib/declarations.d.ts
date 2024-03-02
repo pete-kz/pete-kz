@@ -39,3 +39,14 @@ export type PetCard_props = {
     createdAt: string
     updatedAt: string
 }
+
+export interface AboutUsLanguage {
+    about_us: {
+        label: string
+        text: {
+            heading: string
+            keys: [string, string][],
+            conclusion: string
+        }
+    }
+}

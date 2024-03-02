@@ -20,7 +20,7 @@ export default function WebLayout() {
 		<div className='h-screen'>
 			<NavigationBar />
 			<Toaster />
-			<main className='p-4'>
+			<main className='p-4 pt-20'>
 				<Outlet />
 			</main>
 		</div>

@@ -13,6 +13,7 @@ import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { User_Response } from '@/lib/declarations'
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { InputIcon } from '../ui/input-icon'
 
 export function ChangeProfileForm() {
 
@@ -162,7 +163,7 @@ export function ChangeProfileForm() {
                                     <FormItem>
                                         <FormLabel>{t('user.contacts.instagram')}</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <InputIcon icon={<span className='text-muted'>instagram.com/</span>} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -175,7 +176,7 @@ export function ChangeProfileForm() {
                                     <FormItem>
                                         <FormLabel>{t('user.contacts.telegram')}</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <InputIcon icon={<span className='text-muted'>t.me/</span>} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

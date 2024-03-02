@@ -16,11 +16,11 @@ export default function NavigationBar() {
     }
 
     return (
-        <header className='h-16 flex items-center pl-5 pr-1 w-screen bg-card border-b justify-between' style={{ zIndex: 9999 }}>
-            <img src="/images/pete-logo.svg" width={30} />
-            <div className='grid grid-cols-3'>
+        <header className='h-16 fixed top-0 flex items-center px-5 w-screen bg-card border-b justify-between' style={{ zIndex: 9999 }}>
+            <img src="/images/pete-logo.svg" onClick={() => { navigate('/') }} width={30} />
+            <div className='flex gap-3'>
                 {main.navLinks.map((link, index) => (
-                    <Button variant={'link'} className={`transition-all ease-in duration-75 p-0 ${isActive(link[1]) ? 'font-bold underline' : ''}`} key={index} onClick={() => { navigate(link[1]) }}>{t(link[0])}</Button>
+                    <Button variant={'link'} className={`text-white/75 hover:bg-none transition-all ease-in duration-75 p-0 ${isActive(link[1]) && 'text-primary'}`} key={index} onClick={() => { navigate(link[1]) }}>{t(link[0])}</Button>
                 ))}
             </div>
         </header>

@@ -123,7 +123,32 @@
   },
   "about_us": {
     "label": "About us",
-    "text": "smth"
+    "text": {
+      "heading": "Project 'Pete' is a unique and intuitive online platform designed to facilitate the process of finding new homes for pets. Based on a simple yet powerful swiping mechanism similar to popular dating apps, 'Pete' allows users to quickly browse through animal profiles, selecting those who spark interest or affection. This makes the process of finding a new furry friend not only efficient but also fun.",
+      "keys": [
+        [
+          "Swipe Interface",
+          "Users can scroll through photos of animals (cats, dogs, or other pets) by swiping left or right. If a pet is liked, swiping right adds it to the 'Liked' list, where more information about the animal and its owner can be found."
+        ],
+        [
+          "Simple Navigation",
+          "The platform offers simple and intuitive navigation with animal categories for user convenience. Without complicated search functions or filtering, 'Pete' emphasizes a direct and personal approach to pet selection."
+        ],
+        [
+          "Liked",
+          "After a user has liked one or several pets, they can go to a special section in their profile where all the liked animals are collected. There, additional information about each pet can be obtained, and the owner's contact details can be found for further communication."
+        ],
+        [
+          "Direct Communication",
+          "'Pete' simplifies the process of communication between current pet owners and potential new owners. The platform provides contact information for direct communication, allowing all details of the pet's transfer to be discussed without intermediaries."
+        ],
+        [
+          "Simplicity and Accessibility",
+          "Without the need to create complex profiles or undergo multi-stage verification, 'Pete' makes the animal adoption process accessible and simple for everyone interested."
+        ]
+      ],
+      "conclusion": "'Pete' aims to create a positive and supportive community of people ready to open their homes and hearts to new furry family members. We believe that every animal deserves love and care, and our platform helps make this dream a reality."
+    }
   },
   "user": {
     "name": "Name",
