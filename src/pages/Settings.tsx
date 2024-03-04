@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import ChangeCity from '@/components/change-city'
 import { m } from 'framer-motion'
 import SupportCard from '@/components/cards/support'
-import { ModeToggle } from '@/components/mode-toggle'
+// import { ModeToggle } from '@/components/mode-toggle'
 import ProjectCard from '@/components/cards/project'
 import { ChangeProfileForm } from '@/components/forms/change-profile'
 
@@ -29,10 +29,11 @@ export default function Settings() {
 			<ProjectCard />
 			<SupportCard />
 			{isAuthenticated() && <ChangeProfileForm />}
-			<div className='flex gap-1.5'>
+			<ChangeCity />
+			{/* <div className='flex gap-1.5'>
 				<ChangeCity />
 				<ModeToggle />
-			</div>
+			</div> */}
 			<div>
 				<ChangeLanguage />
 			</div>

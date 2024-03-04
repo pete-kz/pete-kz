@@ -7,16 +7,13 @@ import { API } from '@config'
 import { User_Response, type Pet_Response } from '@declarations'
 import { axiosAuth as axios, notification, useQuery } from '@utils'
 import { AxiosResponse } from 'axios'
-
-// UI
 import { Card, CardContent, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Heart, Instagram, CornerDownLeft, Phone, Send } from 'lucide-react'
 import ReactImageGallery from 'react-image-gallery'
 import { formatAge } from '@/lib/utils'
+import { ChangePetForm } from '@/components/forms/change-pet'
 
 export default function PetPage() {
 
@@ -29,9 +26,6 @@ export default function PetPage() {
     // States
     const [petData, setPetData] = useState<Pet_Response>()
     const [ownerData, setOwnerData] = useState<User_Response>()
-    const [name, setName] = useState<string>('')
-    const [age, setAge] = useState<string>('')
-    const [description, setDescription] = useState<string>('')
     const [imageLinks, setImageLinks] = useState<{ original: string, thumbnail: string }[]>([])
 
     // Functions
@@ -40,9 +34,6 @@ export default function PetPage() {
             if (!res.data.err) {
                 const petOne = (res.data as Pet_Response[]).filter(petOne => petOne._id === query.get('id'))[0]
                 setPetData(petOne)
-                setName(petOne.name)
-                setAge(petOne.age)
-                setDescription(petOne.description)
             } else {
                 notification.custom.error(res.data.err)
             }
@@ -61,32 +52,6 @@ export default function PetPage() {
         }
     }
 
-    function updatePetInfo() {
-        notification.custom.promise(
-            axios.post(`${API.baseURL}/pets/edit`, {
-                query: { _id: petData?._id },
-                updated: {
-                    name,
-                    age,
-                    description
-                }
-            })
-        )
-    }
-
-    // Handlers
-    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value)
-    }
-
-    const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAge(event.target.value)
-    }
-
-    const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDescription(event.target.value)
-    }
-
     useEffect(() => {
         fetchPet()
         // @ts-expect-error because it is imported from the web
@@ -96,42 +61,23 @@ export default function PetPage() {
     useEffect(() => {
         fetchOwner()
 
-        const images: { original: string, thumbnail: string }[] = []
-        petData?.imagesPath.map(imageLink => {
-            images.push({
-                original: imageLink,
-                thumbnail: imageLink
-            })
-        })
-        setImageLinks(images)
+        if (petData) {
+            setImageLinks(petData.imagesPath.map(imageLink => {
+                return {
+                    original: imageLink,
+                    thumbnail: imageLink
+                }
+            }))
+        }
     }, [petData])
 
     return (
         <>
             {petData && (
                 (query.get('edit') === 'true' && ownerData?._id == user._id) ? (
-                    <Card className='m-2 p-4 mb-20'>
-                        <div className='mb-3'>
-                            <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} />
-                        </div>
-                        <div className='gap-2 flex flex-col'>
-                            <div className='flex gap-2 w-full'>
-                                <div className='grid w-full items-center gap-1.5'>
-                                    <Label htmlFor='pet_name'>{t('pet.name')}</Label>
-                                    <Input id='pet_name' defaultValue={name} onChange={handleNameChange} />
-                                </div>
-                                <div className='grid w-full items-center gap-1.5'>
-                                    <Label htmlFor='pet_age'>{t('pet.age')}</Label>
-                                    <Input id='pet_age' defaultValue={age} onChange={handleAgeChange} type='number' />
-                                </div>
-                            </div>
-                            <div className='grid w-full items-center gap-1.5'>
-                                <Label htmlFor='pet_description'>{t('pet.description')}</Label>
-                                <Input id='pet_description' defaultValue={description} onChange={handleDescriptionChange} multiple />
-                            </div>
-                        </div>
-                        <Button className='w-full' onClick={updatePetInfo}>{t('pet.update_btn')}</Button>
-                    </Card>
+                    <div className='m-4 bg-card p-4 border rounded-lg mb-16'>
+                        <ChangePetForm petData={petData} />
+                    </div>
                 ) : (
                     <>
                         {query.get('more') === 'true' && (

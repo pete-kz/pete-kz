@@ -30,6 +30,7 @@ export default function Main() {
 
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
+	const [filteredPets, setFilteredPets] = useState<Pet_Response[]>([])
 	const [loadingPets, setLoadingPets] = useState<boolean>(true)
 	const [petType, setPetType] = useState<'Cat' | 'Dog' | 'Other'>('Cat')
 	const [petIndex, setPetIndex] = useState<number>(0)
@@ -61,6 +62,7 @@ export default function Main() {
 				}
 				localStorage.setItem('_data_allPets', JSON.stringify(pets))
 				setAllPets(pets)
+				updateFilteredPets(pets)
 				setLoadingPets(false)
 			} else {
 				notification.custom.error(res.data.err)
@@ -74,17 +76,23 @@ export default function Main() {
 		if (allPets && _pet_id && _pet_type) {
 			allPets.map((pet) => {
 				if (pet._id === _pet_id) {
-					setPetIndex(allPets.indexOf(pet))
+					setPetType(_pet_type as 'Cat' | 'Dog' | 'Other')
+					updateFilteredPets()
+					setPetIndex(filteredPets.indexOf(pet))
 				}
 			})
 		}
 	}
 
+	function updateFilteredPets(pets?: Pet_Response[]): void {
+		setFilteredPets((pets || allPets).filter(pet => petType === pet.type).filter(pet => pet.city === localStorage.getItem('_city')))
+	}
+
 	function goToPet() {
-		navigate(`/pwa/pets?id=${
-			allPets
+		navigate(`/pwa/pets?id=${allPets
 				.filter(pet => petType === pet.type)
-				.filter(pet => pet.city === localStorage.getItem('_city'))[current]._id}&more=true`)
+				.filter(pet => pet.city === localStorage.getItem('_city'))[current]._id
+			}&more=true`)
 	}
 
 	useEffect(() => {
@@ -93,13 +101,14 @@ export default function Main() {
 		}
 		setCurrent(api.selectedScrollSnap())
 		api.on('select', () => {
-			setCurrent(api.selectedScrollSnap() )
+			setCurrent(api.selectedScrollSnap())
 		})
 	}, [api])
 
 	useEffect(() => {
 		checkQuery()
-	}, [allPets])
+		updateFilteredPets()
+	}, [allPets, petType])
 
 	useEffect(() => {
 		fetchAllPets()
@@ -130,9 +139,7 @@ export default function Main() {
 				<>
 					<Carousel className='p-3' setApi={setApi} opts={{ loop: true, startIndex: petIndex }}>
 						<CarouselContent>
-							{allPets
-								.filter(pet => petType === pet.type)
-								.filter(pet => pet.city === localStorage.getItem('_city'))
+							{filteredPets
 								.map(pet => (
 									<CarouselItem key={pet._id}>
 										<PetCard
@@ -143,15 +150,16 @@ export default function Main() {
 								))}
 						</CarouselContent>
 					</Carousel>
-					<div className='flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
-						<Button onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
-						<Button className='w-full' onClick={goToPet}>{t('main.pet_card.more')}</Button>
-						<Button onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
-					</div>
-					{allPets.filter(pet => pet.city === localStorage.getItem('_city')).length < 1 && (
+					{filteredPets.length < 1 ? (
 						<Card className='flex justify-center items-center p-4 mx-3 mt-1'>
 							<p>{t('main.no_more_pets_city')}</p>
 						</Card>
+					) : (
+						<div className='flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
+							<Button variant={'outline'} onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
+							<Button className='w-full font-bold text-md' onClick={goToPet}>{t('main.pet_card.more')}</Button>
+							<Button variant={'outline'} onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
+						</div>
 					)}
 				</>
 			) : loadingPets ?
@@ -162,10 +170,7 @@ export default function Main() {
 						<p>{t('main.no_more_pets')}</p>
 					</Card>
 				)
-
 			}
-
 		</>
 	)
-
 }
