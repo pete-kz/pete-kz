@@ -16,7 +16,7 @@ import PetFilter from '@/components/pet-filter'
 import PetCard from '@/components/cards/pet'
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Filter, UserRound } from 'lucide-react'
-
+import { m } from 'framer-motion'
 
 const commonClasses = 'absolute top-0 p-2 z-50 m-2'
 const iconSize = 'w-8 h-8'
@@ -59,11 +59,11 @@ export default function Main() {
 			setAllPets(JSON.parse(cachedPets))
 			setLoadingPets(false)
 		}
-		axios.get(`${API.baseURL}/pets/find/all`).then((res: AxiosResponse) => {
+		axios.get(`${API.baseURL}/pets/find`).then((res: AxiosResponse) => {
 			if (!res.data.err) {
 				let pets: Pet_Response[] = res.data
 				if (isAuthenticated()) {
-					axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
+					axios.get(`${API.baseURL}/users/find/${user._id}`).then((res: AxiosResponse) => {
 						if (!res.data.err) {
 							const userData: User_Response = res.data
 							pets = pets.filter(pet => !(userData.liked.includes(pet._id)))
@@ -90,7 +90,7 @@ export default function Main() {
 		if (cachedPets) {
 			setAllUsers(JSON.parse(cachedPets))
 		}
-		axios.get(`${API.baseURL}/users/find/all`).then((res: AxiosResponse) => {
+		axios.get(`${API.baseURL}/users/find`).then((res: AxiosResponse) => {
 			if (!res.data.err) {
 				localStorage.setItem('_data_allUsers', JSON.stringify(res.data))
 				setAllUsers(res.data)
@@ -195,7 +195,7 @@ export default function Main() {
 					<Filter className={iconSize} />
 				</Button>
 			</PetFilter>
-			<div className='flex h-screen w-screen items-center justify-center'>
+			<m.div className='flex h-screen w-screen items-center justify-center' initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
 				{allPets.length > 0 ? (
 					<>
 						{filteredPets.length > 0 ? (
@@ -213,15 +213,15 @@ export default function Main() {
 									</CarouselContent>
 								</Carousel>
 								<div className='absolute bottom-10 flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
-									<Button variant={'outline'} onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
-									<Button className='w-full font-bold text-md' onClick={goToPet}>{t('main.pet_card.more')}</Button>
-									<Button variant={'outline'} onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
+									<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
+									<Button className='w-1/3 font-bold text-md' onClick={goToPet}>{t('main.pet_card.more')}</Button>
+									<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
 								</div>
 							</>
 						) : <NoMorePetsFilter />}
 					</>
 				) : loadingPets ? <LoadingSpinner size={12} /> : <NoMorePets />}
-			</div>
+			</m.div>
 		</>
 	)
 }

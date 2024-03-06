@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
@@ -7,7 +7,7 @@ import { API } from '@config'
 import { AxiosResponse } from 'axios'
 import { Pet_Response, User_Response } from '@declarations'
 import { useNavigate } from 'react-router-dom'
-import { HeartOff, Trash, Pencil, Plus } from 'lucide-react'
+import { HeartOff, Trash, Pencil, Plus, Settings } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -24,6 +24,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import MobilePageHeader from '@/components/mobile-page-header'
+import ChangeProfileForm from '@/components/forms/change-profile'
+
 
 export default function Profile() {
 
@@ -35,52 +37,40 @@ export default function Profile() {
     const navigate = useNavigate()
 
     // States
-    const [usersPet, setUsersPet] = useState<Pet_Response[]>()
-    const [liked, setLiked] = useState<Pet_Response[]>([])
-
-    // States for editing
+    const [userPets, setUserPets] = useState<Pet_Response[]>([])
     const [userData, setUserData] = useState<User_Response>()
+    const [userLiked, setUserLiked] = useState<Pet_Response[]>([])
 
     // Functions
-    function getInfo() {
-        if (!isAuthenticated()) {
-            const likedIDS = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
-            if (likedIDS.length > 0) {
-                axios.post(`${API.baseURL}/pets/find`)
-                    .then((res: AxiosResponse) => {
-                        if (!res.data.err) {
-                            const allPets: Pet_Response[] = res.data
-                            const likedPets = allPets.filter(pet => {
-                                return likedIDS.includes(pet._id)
-                            })
-                            setLiked(likedPets)
-                        } else {
-                            notification.custom.error(res.data.err)
-                        }
-                    })
-            }
-            return
-        }
-        axios.post(`${API.baseURL}/pets/find`)
-            .then((res: AxiosResponse) => {
-                if (!res.data.err) {
-                    const allPets: Pet_Response[] = res.data
-                    setUsersPet((res.data as Pet_Response[]).filter(pet => pet.ownerID === user._id))
-                    axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
-                        // need to populate skipped and like => filter out all pets based on skipped ids
-                        if (!res.data.err) {
-                            const user: User_Response = res.data
-                            setUserData(user)
-                            setLiked(allPets?.filter(pet => user.liked.includes(pet._id)) || [])
-                        } else {
-                            notification.custom.error(res.data.err)
-                        }
-                    })
-                } else {
-                    notification.custom.error(res.data.err)
-                }
+    const getUserData = useMemo(() => async () => {
+        axios.get(`${API.baseURL}/users/find/${user._id}`).then((res) => {
+            if (res.data.err) return notification.custom.error(res.data.err)
+            setUserData(res.data)
+
+            axios.get(`${API.baseURL}/pets/find`).then((res) => {
+                setUserPets((res.data as Pet_Response[]).filter(pet => pet.ownerID === user._id))
             })
-    }
+        })
+    }, [user._id])
+
+    const getUser = useMemo(() => async () => {
+        if (userData) {
+            axios.get(`${API.baseURL}/pets/find`,).then((res) => {
+                if (res.data.err) return notification.custom.error(res.data.err)
+                const allPets: Pet_Response[] = res.data
+
+                if (!isAuthenticated()) {
+                    const likedIDS = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
+                    if (likedIDS.length > 0) {
+                        return setUserLiked(allPets.filter(pet => likedIDS.includes(pet._id)))
+                    }
+                    return setUserLiked(allPets)
+                }
+
+                return setUserLiked(allPets?.filter(pet => userData.liked.includes(pet._id)) || [])
+            })
+        }
+    }, [userData])
 
     function removePet(pet: Pet_Response) {
         if (!isAuthenticated()) return
@@ -88,7 +78,7 @@ export default function Profile() {
             .then((res: AxiosResponse) => {
                 if (!res.data.err) {
                     notification.custom.success(`${t('pet.goodbye')}, ${pet.name}!`)
-                    setUsersPet(pets => pets?.filter(userPet => userPet._id != pet._id))
+                    setUserPets(pets => pets?.filter(userPet => userPet._id != pet._id))
                 } else {
                     notification.custom.error(res.data.err)
                 }
@@ -99,14 +89,14 @@ export default function Profile() {
         if (!isAuthenticated || !userData) {
             let browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
             browserLiked = browserLiked.filter(likedPet => likedPet != pet_id)
-            axios.post(`${API.baseURL}/pets/find`)
+            axios.get(`${API.baseURL}/pets/find`)
                 .then((res: AxiosResponse) => {
                     if (!res.data.err) {
                         const allPets: Pet_Response[] = res.data
                         const likedPets = allPets.filter(pet => {
                             return browserLiked.includes(pet._id)
                         })
-                        setLiked(likedPets)
+                        setUserLiked(likedPets)
                         localStorage.setItem('_data_offline_liked', JSON.stringify(browserLiked))
                         notification.custom.success(t('errors.liked_remove'))
                     } else {
@@ -123,7 +113,7 @@ export default function Profile() {
         axios.delete(`${API.baseURL}/users/remove/${userData._id}/liked/${pet_id}`).then((res: AxiosResponse) => {
             if (!res.data.err) {
                 notification.custom.success(t('errors.liked_remove'))
-                setLiked(pets => pets?.filter(userPet => userPet._id != pet_id))
+                setUserLiked(pets => pets?.filter(userPet => userPet._id != pet_id))
                 setUserData(userPrevData)
             } else {
                 notification.custom.error(res.data.err)
@@ -131,35 +121,49 @@ export default function Profile() {
         })
     }
 
+    const userLastUpdated = useCallback((user: User_Response) => {
+        const parsedDate = parseMongoDate(user.updatedAt)
+        return `${parsedDate.date.day}.${parsedDate.date.month}.${parsedDate.date.year}`
+    }, [])
+
     useEffect(() => {
         // @ts-expect-error because it is imported from the web
         ym(96355513, 'hit', window.origin)
-        getInfo()
+        getUserData()
+        getUser()
     }, [])
 
     return (
         <>
-            <MobilePageHeader title='Profile' />
-            <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <MobilePageHeader title={t('header.profile')} to='/pwa' />
+            <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                 {userData ? (
-                    <Card className='p-3 flex gap-2'>
-                        <Avatar>
-                            <AvatarImage src={'/images/pete-logo.svg'} alt={'PETE'} />
-                            <AvatarFallback>P</AvatarFallback>
-                        </Avatar>
+                    <Card className='p-3 flex justify-between items-center'>
+                        <div className='flex gap-2'>
+                            <Avatar>
+                                <AvatarImage src={'/images/pete-logo.svg'} alt={'PETE'} />
+                                <AvatarFallback>P</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <p className='font-bold'>{userData.companyName ? userData.companyName : `${userData.firstName} ${userData.lastName}`}</p>
+                                <p className=''>{`${t('main.pet_card.last_update')}: ${userLastUpdated(userData)}`}</p>
+                                
+                            </div>
+                        </div>
                         <div>
-                            <p className='font-bold'>{userData.companyName ? userData.companyName : `${userData.firstName} ${userData.lastName}`}</p>
-                            <p className=''>{`${t('main.pet_card.last_update')}: ${parseMongoDate(userData.updatedAt).date.day}.${parseMongoDate(userData.updatedAt).date.month}.${parseMongoDate(userData.updatedAt).date.year}`}</p>
+                            <ChangeProfileForm>
+                                <Button size={'icon'} type='submit' variant={'link'}><Pencil /></Button>
+                            </ChangeProfileForm>
                         </div>
                     </Card>
-                ) : isAuthenticated() && ( 
+                ) : isAuthenticated() && (
                     <Skeleton className='h-[74px] w-full rounded-lg' />
                 )}
 
                 <div className='p-1 mt-3'>
                     <p>{t('profile.myPets')}</p>
                     <div className='grid grid-cols-3 gap-2 mt-2'>
-                        {usersPet?.map((pet, index) => (
+                        {userPets?.map((pet, index) => (
                             <Card key={index} className='flex flex-col items-center p-3 gap-2' >
                                 <Avatar>
                                     <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
@@ -203,8 +207,8 @@ export default function Profile() {
                     </div>
                 </div>
                 <div className='p-1 mt-3'>
-                    <p>{t('main.your_likes')}</p>
-                    {liked.length > 0 && liked.map((pet, index) => (
+                    <p>{t('profile.liked')}</p>
+                    {userLiked.length > 0 && userLiked.map((pet, index) => (
                         <Card key={index} className='flex items-center justify-between mt-2 p-3' >
                             <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
                                 <div className='flex gap-2 items-center'>
@@ -236,6 +240,9 @@ export default function Profile() {
                             </AlertDialog>
                         </Card>
                     ))}
+                </div>
+                <div className='absolute bottom-5 right-5'>
+                    <button className='p-3 bg-primary rounded-full text-border' onClick={() => navigate('/pwa/settings') }><Settings className='h-8 w-8' /></button>
                 </div>
             </m.div>
         </>

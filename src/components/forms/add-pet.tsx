@@ -25,10 +25,10 @@ export function AddPetForm() {
     const user = authStateUser() || {}
     const formSchema = z.object({
         name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
-        date: z.string(),
+        birthDate: z.string(),
         type: z.string(),
         sterilized: z.boolean().default(false),
-        weight: z.number().max(100),
+        weight: z.string().transform(arg => Number(arg)),
         sex: z.enum(['male', 'female']),
         description: z.string({ required_error: 'Description is required!' }),
     })
@@ -36,7 +36,7 @@ export function AddPetForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: '',
-            date: '',
+            birthDate: '',
             type: 'Cat',
             sterilized: false,
             weight: 0,
@@ -55,10 +55,13 @@ export function AddPetForm() {
         setLoadingState(true)
         const formData = new FormData()
         formData.append('name', values.name)
-        formData.append('age', `${values.date}`)
+        formData.append('birthDate', `${values.birthDate}`)
         formData.append('description', values.description)
         formData.append('type', values.type)
-        formData.append('userID', user._id)
+        formData.append('sterilized', JSON.stringify(values.sterilized))
+        formData.append('weight', JSON.stringify(values.weight))
+        formData.append('sex', values.sex)
+        formData.append('ownerID', user._id)
         formData.append('city', localStorage.getItem('_city') || '0')
         if (files) {
             for (let i = 0; i < files.length; i++) {
@@ -125,7 +128,7 @@ export function AddPetForm() {
                         name="type"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('pet.type')}</FormLabel>
+                                <FormLabel>{t('pet.type_choose')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
@@ -146,7 +149,7 @@ export function AddPetForm() {
                     />
                     <FormField
                         control={form.control}
-                        name="date"
+                        name="birthDate"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t('pet.date')}</FormLabel>

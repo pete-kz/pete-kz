@@ -15,7 +15,7 @@ import { User_Response } from '@/lib/declarations'
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { InputIcon } from '../ui/input-icon'
 
-export function ChangeProfileForm() {
+export default function ChangeProfileForm({ children }: { children: React.ReactNode }) {
 
     // Setups
     const { t } = useTranslation()
@@ -30,18 +30,19 @@ export function ChangeProfileForm() {
     // Form Setups
     const formSchema = z.object({
         firstName: z.string().min(2),
+        companyName: z.string().min(2),
         lastName: z.string().min(2),
         phone: z.string().min(7, { message: t('errors.phone_length') }).includes('+', { message: t('errors.phone_international') }),
         instagram: z.union([z.string(), z.string().min(2)]).optional().transform(e => e === '' ? undefined : e),
         telegram: z.union([z.string(), z.string().min(2)]).optional().transform(e => e === '' ? undefined : e),
         password: z.union([z.string(), z.string().min(4)]).optional().transform(e => e === '' ? undefined : e)
     })
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            firstName: userData?.name.split(' ')[0],
-            lastName: userData?.name.split(' ').filter(word => word != userData.name.split(' ')[0]).join(' '),
+            firstName: userData?.firstName,
+            lastName: userData?.lastName,
+            companyName: userData?.companyName,
             phone: userData?.phone,
             instagram: userData?.social.instagram,
             telegram: userData?.social.telegram,
@@ -52,7 +53,7 @@ export function ChangeProfileForm() {
     // Functions
     function getUserInfo() {
         setLoadingState(true)
-        axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
+        axios.get(`${API.baseURL}/users/find/${user._id}`).then((res: AxiosResponse) => {
             // need to populate skipped and like => filter out all pets based on skipped ids
             if (!res.data.err) {
                 const user: User_Response = res.data
@@ -69,7 +70,9 @@ export function ChangeProfileForm() {
         setLoadingState(true)
         axios.post(`${API.baseURL}/users/update/${user._id}`, {
             update: {
-                name: `${values.firstName} ${values.lastName}`,
+                companyName: values.companyName,
+                firstName: values.firstName,
+                lastName: values.lastName,
                 phone: values.phone,
                 password: values.password,
                 social: {
@@ -95,8 +98,9 @@ export function ChangeProfileForm() {
 
     useEffect(() => {
         if (userData) {
-            form.setValue('firstName', userData.name.split(' ')[0])
-            form.setValue('lastName', userData?.name.split(' ').filter(word => word != userData.name.split(' ')[0]).join(' '))
+            form.setValue('firstName', userData.firstName)
+            form.setValue('lastName', userData.lastName)
+            form.setValue('companyName', userData.companyName)
             form.setValue('instagram', userData.social.instagram)
             form.setValue('telegram', userData.social.telegram)
             form.setValue('phone', userData.phone)
@@ -107,22 +111,35 @@ export function ChangeProfileForm() {
         // user.name, user.login, user.phone, user.contacts.instagram, user.contacts.telegram, user.password
         <Dialog>
             <DialogTrigger asChild>
-                <Button>{t('user.update_profile')}</Button>
+                {children}
             </DialogTrigger>
             <DialogContent className='rounded-lg'>
                 <DialogHeader className='text-left'>
-                    <DialogTitle>{t('user.update_profile')}</DialogTitle>
-                    {/* <DialogDescription>Here</DialogDescription> */}
+                    <DialogTitle>{t('label.updateProfile')}</DialogTitle>
                 </DialogHeader>
                 {userData?._id && (
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
                             <FormField
                                 control={form.control}
+                                name="companyName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('user.companyName')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className='grid grid-cols-2 gap-3'>
+                            <FormField
+                                control={form.control}
                                 name="firstName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('register.labels.0')}</FormLabel>
+                                        <FormLabel>{t('user.firstName')}</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
@@ -135,7 +152,7 @@ export function ChangeProfileForm() {
                                 name="lastName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('register.labels.1')}</FormLabel>
+                                        <FormLabel>{t('user.lastName')}</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
@@ -143,12 +160,13 @@ export function ChangeProfileForm() {
                                     </FormItem>
                                 )}
                             />
+                            </div>
                             <FormField
                                 control={form.control}
                                 name="phone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('user.contacts.phone')}</FormLabel>
+                                        <FormLabel>{t('user.phone')}</FormLabel>
                                         <FormControl>
                                             <Input placeholder="+7 123 456 78 90" type='tel' {...field} />
                                         </FormControl>
@@ -161,7 +179,7 @@ export function ChangeProfileForm() {
                                 name="instagram"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('user.contacts.instagram')}</FormLabel>
+                                        <FormLabel>{t('user.instagram')}</FormLabel>
                                         <FormControl>
                                             <InputIcon icon={<span className='text-muted'>instagram.com/</span>} {...field} />
                                         </FormControl>
@@ -174,7 +192,7 @@ export function ChangeProfileForm() {
                                 name="telegram"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('user.contacts.telegram')}</FormLabel>
+                                        <FormLabel>{t('user.telegram')}</FormLabel>
                                         <FormControl>
                                             <InputIcon icon={<span className='text-muted'>t.me/</span>} {...field} />
                                         </FormControl>

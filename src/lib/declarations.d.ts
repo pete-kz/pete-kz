@@ -28,7 +28,7 @@ export interface Pet_Filter {
 
 export type User_Response = {
     _id: string
-    companyName?: string
+    companyName: string
     firstName: string
     lastName: string
     phone: string

@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import axios from 'axios'
+import { setupCache } from 'axios-cache-interceptor'
 import React from 'react'
 import { toast, type ToastOptions } from 'react-hot-toast'
 import { useLocation } from 'react-router-dom'
@@ -46,11 +47,13 @@ export function formatAge(age: string, i18_years: string, i18_months: string) {
 
 const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
 
-const axiosAuth = axios.create({
+
+const configuredAxios = axios.create({
 	headers: {
 		Authorization: token,
 	},
 })
+const axiosAuth = setupCache(configuredAxios)
 
 const notificationConfig: ToastOptions = {
 	className: 'rounded-lg border bg-card text-card-foreground shadow-sm w-full font-semibold',

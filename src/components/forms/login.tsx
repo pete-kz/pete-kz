@@ -67,7 +67,7 @@ export function LoginForm() {
                     name="phone"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{t('login.labels.1')}</FormLabel>
+                            <FormLabel>{t('user.phone')}</FormLabel>
                             <FormControl>
                                 <Input placeholder="+7 123 456 78 90" type='tel' {...field} />
                             </FormControl>
@@ -80,7 +80,7 @@ export function LoginForm() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{t('login.labels.0')}</FormLabel>
+                            <FormLabel>{t('user.password')}</FormLabel>
                             <FormControl>
                                 <Input placeholder="" type='password' {...field} />
                             </FormControl>
@@ -88,7 +88,7 @@ export function LoginForm() {
                         </FormItem>
                     )}
                 />
-                <Button className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('login.button')}</Button>
+                <Button className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('button.login')}</Button>
             </form>
         </Form>
     )
