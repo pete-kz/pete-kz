@@ -5,6 +5,7 @@ import { useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { AddPetForm } from '@/components/forms/add-pet'
+import MobilePageHeader from '@/components/mobile-page-header'
 
 export default function AddPetPage() {
 
@@ -36,10 +37,8 @@ export default function AddPetPage() {
 
     return (
         <>
+            <MobilePageHeader title={t('header.petAdd')} />
             <m.div className='m-2 p-2 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <div>
-                    <h1 className='text-2xl font-bold'>{t('pet.add.label')}</h1>
-                </div>
                 <AddPetForm />        
             </m.div>
         </>

@@ -7,10 +7,10 @@ import { useAuthUser } from 'react-auth-kit'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '../ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { AxiosResponse } from 'axios'
-import { axiosAuth as axios } from '@utils'
-import { notification } from '@utils'
+import { axiosAuth as axios, notification, filterValues } from '@utils'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { Textarea } from '@/components/ui/textarea'
@@ -24,15 +24,13 @@ export function AddPetForm() {
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
     const formSchema = z.object({
-        name: z
-            .string()
-            .min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
-        date: z
-            .string(),
-        type: z
-            .enum(['Cat', 'Dog', 'Other']),
-        description: z
-            .string({ required_error: 'Description is required!' }),
+        name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
+        date: z.string(),
+        type: z.string(),
+        sterilized: z.boolean().default(false),
+        weight: z.number().max(100),
+        sex: z.enum(['male', 'female']),
+        description: z.string({ required_error: 'Description is required!' }),
     })
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -40,6 +38,9 @@ export function AddPetForm() {
             name: '',
             date: '',
             type: 'Cat',
+            sterilized: false,
+            weight: 0,
+            sex: 'male',
             description: ''
         },
     })
@@ -132,8 +133,10 @@ export function AddPetForm() {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {['Cat', 'Dog', 'Other'].map((typepet) => (
-                                            <SelectItem key={typepet} value={typepet}>{t(`pet.types.${['Cat', 'Dog', 'Other'].indexOf(typepet)}`)}</SelectItem>
+                                        {filterValues.type.map((typepet) => (
+                                            <SelectItem key={typepet} value={typepet}>
+                                                {t(`pet.types.${typepet}`)}
+                                            </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -157,6 +160,62 @@ export function AddPetForm() {
                 </div>
                 <FormField
                     control={form.control}
+                    name="sex"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('pet.sex')}</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={t('pet.sex')} />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {filterValues.sex.map((sex) => (
+                                        <SelectItem key={sex} value={sex}>
+                                            {t(`pet.sex.${sex}`)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="sterilized"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                                <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                    {t('pet.sterilized')}
+                                </FormLabel>
+                            </div>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                        control={form.control}
+                        name="weight"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t('pet.weight')}</FormLabel>
+                                <FormControl>
+                                    <Input type='number' required {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                <FormField
+                    control={form.control}
                     name="description"
                     render={({ field }) => (
                         <FormItem>
@@ -178,7 +237,7 @@ export function AddPetForm() {
                             setFiles(files)
                         }} />
                 </div>
-                <Button onClick={() => { console.log(form.formState.errors)}} className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('pet.add.btn')}</Button>
+                <Button onClick={() => { console.log(form.formState.errors) }} className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('pet.add.btn')}</Button>
             </form>
         </Form>
     )

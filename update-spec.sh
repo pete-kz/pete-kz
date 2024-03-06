@@ -1,0 +1,1 @@
+doctl apps update 2b42069e-a93d-4338-a3ca-9ec774b849ba --spec digitalocean-spec.yml

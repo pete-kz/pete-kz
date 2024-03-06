@@ -10,6 +10,7 @@ import SupportCard from '@/components/cards/support'
 // import { ModeToggle } from '@/components/mode-toggle'
 import ProjectCard from '@/components/cards/project'
 import { ChangeProfileForm } from '@/components/forms/change-profile'
+import MobilePageHeader from '@/components/mobile-page-header'
 
 export default function Settings() {
 
@@ -25,32 +26,27 @@ export default function Settings() {
 	}, [])
 
 	return (
-		<m.div className="grid p-4 gap-3" animate={{ opacity: 1, y: 0, x: 0 }} initial={{ opacity: 0, y: 100, x: 0 }} exit={{ opacity: 0, x: -100 }}>
-			<ProjectCard />
-			<SupportCard />
-			{isAuthenticated() && <ChangeProfileForm />}
-			<ChangeCity />
-			{/* <div className='flex gap-1.5'>
+		<>
+			<MobilePageHeader title='Settings' />
+			<m.div className="grid p-4 gap-3" animate={{ opacity: 1, y: 0, x: 0 }} initial={{ opacity: 0, y: 100, x: 0 }} exit={{ opacity: 0, x: -100 }}>
+				<ProjectCard />
+				<SupportCard />
+				{/* {isAuthenticated() && <ChangeProfileForm />} */}
 				<ChangeCity />
-				<ModeToggle />
-			</div> */}
-			<div>
-				<ChangeLanguage />
-			</div>
-
-			{isAuthenticated() && (
-				<Button className='gap-2 w-full' variant={'destructive'} onClick={() => { signout() }}>
-					{t('settings.labels.exit_button')}
-				</Button>
-			)}
-			{!isAuthenticated() && (
-				<Button className='gap-2 w-full' onClick={() => { navigate('/auth/login') }}>
-					{t('settings.labels.login')}
-				</Button>
-			)}
-
-			
-			
-		</m.div>
+				<div>
+					<ChangeLanguage />
+				</div>
+				{isAuthenticated() && (
+					<Button className='gap-2 w-full' variant={'destructive'} onClick={() => { signout() }}>
+						{t('settings.labels.exit_button')}
+					</Button>
+				)}
+				{!isAuthenticated() && (
+					<Button className='gap-2 w-full' onClick={() => { navigate('/auth/login') }}>
+						{t('settings.labels.login')}
+					</Button>
+				)}
+			</m.div>
+		</>
 	)
 }

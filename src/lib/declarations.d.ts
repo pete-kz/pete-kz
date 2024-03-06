@@ -2,20 +2,37 @@ export type Pet_Response = {
     _id: string
 	name: string
     age: string
-    type: 'Cat' | 'Dog' | 'Other'
+    type: string,
+    sterilized: boolean,
+    sex: 'male' | 'female',
+    weight: number,
     description: string
-    userID: User_Response['_id']
+    ownerID: User_Response['_id']
     imagesPath: string[]
     city: string
     createdAt: string
     updatedAt: string
 }
 
+export interface Pet_Filter {
+    age?: {
+        min?: number,
+        max?: number
+    },
+    type?: string,
+    sterilized?: boolean,
+    sex?: 'male' | 'female' | '',
+    weight?: number,
+    owner_type?: 'private' | 'shelter' | 'breeder' | 'nursery' | ''
+}
+
 export type User_Response = {
     _id: string
-    login: string
-    name: string
+    companyName?: string
+    firstName: string
+    lastName: string
     phone: string
+    type: 'private' | 'shelter' | 'breeder' | 'nursery'
     social: {
         telegram: string
         instagram: string
@@ -31,9 +48,12 @@ export type PetCard_props = {
 	id: string
 	name: string
     age: string
-    type: 'Cat' | 'Dog' | 'Other'
+    type: string
+    sterilized: boolean,
+    sex: 'male' | 'female' | string,
+    weight: number
     description: string
-    userID: User_Data['_id']
+    ownerID: User_Data['_id']
     imagesPath: string[]
     city: string
     createdAt: string

@@ -23,6 +23,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
+import MobilePageHeader from '@/components/mobile-page-header'
 
 export default function Profile() {
 
@@ -64,7 +65,7 @@ export default function Profile() {
             .then((res: AxiosResponse) => {
                 if (!res.data.err) {
                     const allPets: Pet_Response[] = res.data
-                    setUsersPet((res.data as Pet_Response[]).filter(pet => pet.userID === user._id))
+                    setUsersPet((res.data as Pet_Response[]).filter(pet => pet.ownerID === user._id))
                     axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
                         // need to populate skipped and like => filter out all pets based on skipped ids
                         if (!res.data.err) {
@@ -137,103 +138,106 @@ export default function Profile() {
     }, [])
 
     return (
-        <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            {userData ? (
-                <Card className='p-3 flex gap-2'>
-                    <Avatar>
-                        <AvatarImage src={'/images/pete-logo.svg'} alt={'PETE'} />
-                        <AvatarFallback>{userData.name.split(' ')[1][0]}</AvatarFallback>s
-                    </Avatar>
-                    <div>
-                        <p className='font-bold'>{userData.name}</p>
-                        <p className=''>{`${t('main.pet_card.last_update')}: ${parseMongoDate(userData.updatedAt).date.day}.${parseMongoDate(userData.updatedAt).date.month}.${parseMongoDate(userData.updatedAt).date.year}`}</p>
-                    </div>
-                </Card>
-            ) : isAuthenticated() && (
-                <Skeleton className='h-[74px] w-full rounded-lg' />
-            )}
-
-            <div className='p-1 mt-3'>
-                <p>{t('main.my_pets')}</p>
-                <div className='grid grid-cols-3 gap-2 mt-2'>
-                    {usersPet?.map((pet, index) => (
-                        <Card key={index} className='flex flex-col items-center p-3 gap-2' >
-                            <Avatar>
-                                <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
-                                <AvatarFallback>{pet.name[0]}</AvatarFallback>
-                            </Avatar>
-                            <p className='text-center'>{pet.name}</p>
-                            <div className='grid grid-rows-1 grid-cols-2 gap-2'>
-                                <Button className='p-2 w-10 h-10' variant={'outline'} onClick={() => { navigate(`/pwa/pets?id=${pet._id}&edit=true`) }}>
-                                    <Pencil size={14} />
-                                </Button>
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button className='p-2 w-10 h-10' variant={'outline'}>
-                                            <Trash size={14} style={{ color: '#FF0000' }} />
-                                        </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                {t('alert.delete_pet_profile')}
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
-                                            <AlertDialogAction onClick={() => { removePet(pet) }}>{t('alert.sure')}</AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            </div>
-                        </Card>
-                    ))}
-                    <Card className='flex flex-col justify-center items-center p-3 gap-3' onClick={() => { navigate('/pwa/pets/add') }}>
-                        <div className='text-zinc-400'>
-                            <Plus fontSize='large' />
-                        </div>
-                        <div className='text-center'>
-                            <p>{t('pet.add.btn')}</p>
+        <>
+            <MobilePageHeader title='Profile' />
+            <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                {userData ? (
+                    <Card className='p-3 flex gap-2'>
+                        <Avatar>
+                            <AvatarImage src={'/images/pete-logo.svg'} alt={'PETE'} />
+                            <AvatarFallback>P</AvatarFallback>
+                        </Avatar>
+                        <div>
+                            <p className='font-bold'>{userData.companyName ? userData.companyName : `${userData.firstName} ${userData.lastName}`}</p>
+                            <p className=''>{`${t('main.pet_card.last_update')}: ${parseMongoDate(userData.updatedAt).date.day}.${parseMongoDate(userData.updatedAt).date.month}.${parseMongoDate(userData.updatedAt).date.year}`}</p>
                         </div>
                     </Card>
-                </div>
-            </div>
-            <div className='p-1 mt-3'>
-                <p>{t('main.your_likes')}</p>
-                {liked.length > 0 && liked.map((pet, index) => (
-                    <Card key={index} className='flex items-center justify-between mt-2 p-3' >
-                        <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
-                            <div className='flex gap-2 items-center'>
+                ) : isAuthenticated() && ( 
+                    <Skeleton className='h-[74px] w-full rounded-lg' />
+                )}
+
+                <div className='p-1 mt-3'>
+                    <p>{t('profile.myPets')}</p>
+                    <div className='grid grid-cols-3 gap-2 mt-2'>
+                        {usersPet?.map((pet, index) => (
+                            <Card key={index} className='flex flex-col items-center p-3 gap-2' >
                                 <Avatar>
                                     <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
                                     <AvatarFallback>{pet.name[0]}</AvatarFallback>
                                 </Avatar>
-                                <p>{pet.name}</p>
+                                <p className='text-center'>{pet.name}</p>
+                                <div className='grid grid-rows-1 grid-cols-2 gap-2'>
+                                    <Button className='p-2 w-10 h-10' variant={'outline'} onClick={() => { navigate(`/pwa/pets?id=${pet._id}&edit=true`) }}>
+                                        <Pencil size={14} />
+                                    </Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button className='p-2 w-10 h-10' variant={'outline'}>
+                                                <Trash size={14} style={{ color: '#FF0000' }} />
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    {t('alert.delete_pet_profile')}
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => { removePet(pet) }}>{t('alert.sure')}</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </div>
+                            </Card>
+                        ))}
+                        <Card className='flex flex-col justify-center items-center p-3 gap-3' onClick={() => { navigate('/pwa/pets/add') }}>
+                            <div className='text-zinc-400'>
+                                <Plus fontSize='large' />
                             </div>
-                        </div>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant={'ghost'}>
-                                    <HeartOff size="20" style={{ color: '#FF0000' }} />
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        {t('alert.remove_like')}
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>{t('alert.sure')}</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </Card>
-                ))}
-            </div>
-        </m.div>
+                            <div className='text-center'>
+                                <p>{t('pet.add.btn')}</p>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+                <div className='p-1 mt-3'>
+                    <p>{t('main.your_likes')}</p>
+                    {liked.length > 0 && liked.map((pet, index) => (
+                        <Card key={index} className='flex items-center justify-between mt-2 p-3' >
+                            <div className='w-full' onClick={() => { navigate(`/pwa/pets?id=${pet._id}&contacts=true`) }}>
+                                <div className='flex gap-2 items-center'>
+                                    <Avatar>
+                                        <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
+                                        <AvatarFallback>{pet.name[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <p>{pet.name}</p>
+                                </div>
+                            </div>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant={'ghost'}>
+                                        <HeartOff size="20" style={{ color: '#FF0000' }} />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            {t('alert.remove_like')}
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => { removePetFromLiked(pet._id) }}>{t('alert.sure')}</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </Card>
+                    ))}
+                </div>
+            </m.div>
+        </>
     )
 }

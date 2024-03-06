@@ -116,4 +116,10 @@ function parseMongoDate(Mongo_Date: string) {
 	}
 }
 
-export { axiosAuth, notification, type Notification, useQuery, parseMongoDate, token }
+const filterValues = {
+    type: ['cat',  'dog', 'other'],
+    sex: ['male', 'female'],
+    owner_type: ['private', 'shelter', 'breeder', 'nursery']
+}
+
+export { axiosAuth, notification, type Notification, useQuery, parseMongoDate, token, filterValues }

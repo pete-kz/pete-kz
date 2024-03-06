@@ -33,7 +33,7 @@ export default function IndexPage() {
     return (
         <>
             <m.div animate={{ opacity: 1, y: 0, x: 0 }} initial={{ opacity: 0, y: 100, x: 0 }} exit={{ opacity: 0, x: -100 }}>
-                <Card className='flex flex-col items-center p-5'>
+                <Card className='mx-auto flex flex-col items-center p-5 max-w-lg'>
                     <ProjectCard description />
                     <div className='grid grid-cols-2 grid-rows-1 gap-1.5 w-full'>
                         <ChangeLanguage />

@@ -8,9 +8,13 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import axios, { AxiosResponse } from 'axios'
-import { notification } from '@utils'
+import { filterValues, notification } from '@utils'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Label } from '../ui/label'
+import { Checkbox } from '../ui/checkbox'
+
 
 export function RegisterForm() {
 
@@ -21,8 +25,9 @@ export function RegisterForm() {
         firstName: z.string().min(1, { message: t('errors.firstName_req') }).optional(),
         lastName: z.string().min(1, { message: t('errors.lastName_req') }).optional(),
         phone: z.string().min(7, { message: t('errors.phone_length') }).includes('+', { message: t('errors.phone_international') }),
+        type: z.enum(['private', 'shelter', 'breeder', 'nursery']),
         password: z.string().min(8, { message: t('errors.password_length') }),
-        name: z.string().optional()
+        company_name: z.string().optional()
     })
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -31,17 +36,17 @@ export function RegisterForm() {
             password: '',
             firstName: '',
             lastName: '',
+            company_name: '',
+            type: 'private'
         },
     })
 
     // States
     const [loadingState, setLoadingState] = useState<boolean>(false)
+    const [company, setCompany] = useState<boolean>()
 
     // Functions
     function onSubmit(values: z.infer<typeof formSchema>) {
-        values.name = values.firstName + ' ' + values.lastName
-        values.firstName = undefined
-        values.lastName = undefined
         setLoadingState(true)
         axios.post(`${API.baseURL}/users/register`, values).then((response: AxiosResponse) => {
             if (!response.data.err) {
@@ -66,7 +71,7 @@ export function RegisterForm() {
                         name="firstName"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('register.labels.0')}</FormLabel>
+                                <FormLabel>{t('user.firstName')}</FormLabel>
                                 <FormControl>
                                     <Input {...field} />
                                 </FormControl>
@@ -79,7 +84,7 @@ export function RegisterForm() {
                         name="lastName"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('register.labels.1')}</FormLabel>
+                                <FormLabel>{t('user.lastName')}</FormLabel>
                                 <FormControl>
                                     <Input  {...field} />
                                 </FormControl>
@@ -88,12 +93,35 @@ export function RegisterForm() {
                         )}
                     />
                 </div>
+                <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <Checkbox className='h-6 w-6 rounded-full' id="company_checkbox" checked={company} onCheckedChange={(value) => {
+                        setCompany(value !== 'indeterminate' ? value : false)
+                    }} />
+                    <Label htmlFor="company_checkbox">
+                        {t('label.question.company')}
+                    </Label>
+                </div>
+                {company && (
+                    <FormField
+                        control={form.control}
+                        name="company_name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t('user.companyName')}</FormLabel>
+                                <FormControl>
+                                    <Input  {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
                 <FormField
                     control={form.control}
                     name="phone"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{t('register.labels.2')}</FormLabel>
+                            <FormLabel>{t('user.phone')}</FormLabel>
                             <FormControl>
                                 <Input placeholder="+7 123 456 78 90" type='tel' {...field} />
                             </FormControl>
@@ -103,10 +131,34 @@ export function RegisterForm() {
                 />
                 <FormField
                     control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('user.type')}</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={t('form.none')} />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {filterValues.owner_type.map((ownerType) => (
+                                        <SelectItem key={ownerType} value={ownerType}>
+                                            {t(`user.type.${ownerType}`)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{t('register.labels.3')}</FormLabel>
+                            <FormLabel>{t('user.password')}</FormLabel>
                             <FormControl>
                                 <Input placeholder="" type='password' {...field} />
                             </FormControl>
@@ -114,7 +166,7 @@ export function RegisterForm() {
                         </FormItem>
                     )}
                 />
-                <Button className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('register.button')}</Button>
+                <Button className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('button.register')}</Button>
             </form>
         </Form>
     )
