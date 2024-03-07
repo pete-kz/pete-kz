@@ -22,7 +22,7 @@ const commonClasses = 'absolute top-0 p-2 z-50 m-2'
 const iconSize = 'w-8 h-8'
 const defaultFilterValue: Pet_Filter = {
 	type: '',
-	sterilized: undefined,
+	sterilized: false,
 	sex: '',
 	weight: 0,
 	owner_type: ''
@@ -43,10 +43,8 @@ export default function Main() {
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
 	const [allUsers, setAllUsers] = useState<User_Response[]>([])
-	const [filteredPets, setFilteredPets] = useState<Pet_Response[]>([])
+	const [page, setPage] = useState<number>(1)
 	const [loadingPets, setLoadingPets] = useState<boolean>(true)
-	const [petType, setPetType] = useState<'Cat' | 'Dog' | 'Other'>('Cat')
-	const [petIndex, setPetIndex] = useState<number>(0)
 	const [api, setApi] = useState<CarouselApi>()
 	const [current, setCurrent] = useState(0)
 	const [filter, setFilter] = useState<Pet_Filter>(defaultFilterValue)
@@ -59,7 +57,12 @@ export default function Main() {
 			setAllPets(JSON.parse(cachedPets))
 			setLoadingPets(false)
 		}
-		axios.get(`${API.baseURL}/pets/find`).then((res: AxiosResponse) => {
+
+		const params = new URLSearchParams(filter as Record<string, string>).toString()
+		const paginationParams = `page=${page}&limit=10`
+		const queryString = `${paginationParams}&${params}`
+
+		axios.get(`${API.baseURL}/pets/recommendations?${queryString}`).then((res: AxiosResponse) => {
 			if (!res.data.err) {
 				let pets: Pet_Response[] = res.data
 				if (isAuthenticated()) {
@@ -77,7 +80,6 @@ export default function Main() {
 				}
 				localStorage.setItem('_data_allPets', JSON.stringify(pets))
 				setAllPets(pets)
-				updateFilteredPets(pets)
 				setLoadingPets(false)
 			} else {
 				notification.custom.error(res.data.err)
@@ -86,9 +88,9 @@ export default function Main() {
 	}
 
 	function fetchAllUsers() {
-		const cachedPets = localStorage.getItem('_data_allUsers')
-		if (cachedPets) {
-			setAllUsers(JSON.parse(cachedPets))
+		const cachedUsers = localStorage.getItem('_data_allUsers')
+		if (cachedUsers) {
+			setAllUsers(JSON.parse(cachedUsers))
 		}
 		axios.get(`${API.baseURL}/users/find`).then((res: AxiosResponse) => {
 			if (!res.data.err) {
@@ -100,20 +102,6 @@ export default function Main() {
 		})
 	}
 
-	function checkQuery() {
-		const _pet_id = query.get('start_id')
-		const _pet_type = query.get('type')
-		if (allPets && _pet_id && _pet_type) {
-			allPets.map((pet) => {
-				if (pet._id === _pet_id) {
-					setPetType(_pet_type as 'Cat' | 'Dog' | 'Other')
-					updateFilteredPets()
-					setPetIndex(filteredPets.indexOf(pet))
-				}
-			})
-		}
-	}
-
 	function checkToken() {
 		const isEqualTokens = authHeader() == token
 		if (!isEqualTokens) {
@@ -122,27 +110,8 @@ export default function Main() {
 		}
 	}
 
-	function updateFilteredPets(pets?: Pet_Response[]): void {
-		const currentCity = localStorage.getItem('_city')
-		const filteredPets = (pets || allPets).filter(pet => {
-			const ageCheck = filter.age ? (pet.age >= (filter.age.min ?? pet.age) && pet.age <= (filter.age.max ?? pet.age)) : true
-			const typeCheck = filter.type ? pet.type === filter.type : true
-			const sterilizedCheck = filter.sterilized !== undefined ? pet.sterilized === filter.sterilized : true
-			const sexCheck = filter.sex ? pet.sex === filter.sex : true
-			const weightCheck = filter.weight ? pet.weight === filter.weight : true
-			// Assuming you have a way to resolve ownerType from ownerID, omitted for brevity
-			const ownerTypeCheck = filter.type ? allUsers.filter(user => pet.ownerID === user._id)[0].type === filter.type : true
-			const cityCheck = pet.city === currentCity
-
-			return ageCheck && typeCheck && sterilizedCheck && sexCheck && weightCheck && ownerTypeCheck && cityCheck
-		})
-
-		setFilteredPets(filteredPets)
-	}
-
-
 	function goToPet() {
-		navigate(`/pwa/pets?id=${filteredPets[current]._id}&more=true`)
+		navigate(`/pwa/pets?id=${allPets[current]._id}&more=true`)
 	}
 
 	useEffect(() => {
@@ -156,10 +125,8 @@ export default function Main() {
 	}, [api])
 
 	useEffect(() => {
-		checkQuery()
-		updateFilteredPets()
 		checkToken()
-	}, [allPets, petType])
+	}, [allPets])
 
 	useEffect(() => {
 		checkToken()
@@ -195,33 +162,33 @@ export default function Main() {
 					<Filter className={iconSize} />
 				</Button>
 			</PetFilter>
-			<m.div className='flex h-screen w-screen items-center justify-center' initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+			<m.div initial={{ opacity: 0, y: 10 }} className='p-4' animate={{ opacity: 1, y: 0 }}>
 				{allPets.length > 0 ? (
 					<>
-						{filteredPets.length > 0 ? (
-							<>
-								<Carousel className='p-3' setApi={setApi} opts={{ loop: true, startIndex: petIndex }}>
-									<CarouselContent>
-										{filteredPets.map(pet => (
-											<CarouselItem key={pet._id}>
-												<PetCard
-													{...pet}
-													id={pet._id}
-												/>
-											</CarouselItem>
-										))}
-									</CarouselContent>
-								</Carousel>
-								<div className='absolute bottom-10 flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
-									<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
-									<Button className='w-1/3 font-bold text-md' onClick={goToPet}>{t('main.pet_card.more')}</Button>
-									<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
-								</div>
-							</>
+						{allPets.length > 0 ? (
+
+							<Carousel setApi={setApi} className='flex items-center h-screen' opts={{ loop: false }}>
+								<CarouselContent>
+									{allPets.map(pet => (
+										<CarouselItem key={pet._id}>
+											<PetCard
+												{...pet}
+												id={pet._id}
+											/>
+										</CarouselItem>
+									))}
+								</CarouselContent>
+							</Carousel>
+
 						) : <NoMorePetsFilter />}
 					</>
 				) : loadingPets ? <LoadingSpinner size={12} /> : <NoMorePets />}
 			</m.div>
+			<div className='absolute bottom-10 flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
+				<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
+				<Button className='w-1/3 font-bold text-md' onClick={goToPet}>{t('main.pet_card.more')}</Button>
+				<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
+			</div>
 		</>
 	)
 }
@@ -229,7 +196,7 @@ export default function Main() {
 function NoMorePets() {
 	const { t } = useTranslation()
 	return (
-		<Card className='flex justify-center items-center p-4 mx-3 mt-1'>
+		<Card className='flex justify-center items-center'>
 			<p>{t('main.no_more_pets')}</p>
 		</Card>
 	)
@@ -238,7 +205,7 @@ function NoMorePets() {
 function NoMorePetsFilter() {
 	const { t } = useTranslation()
 	return (
-		<Card className='flex justify-center items-center p-4 mx-3 mt-1'>
+		<Card className='flex justify-center items-center'>
 			<p>{t('main.no_more_pets_filter')}</p>
 		</Card>
 	)

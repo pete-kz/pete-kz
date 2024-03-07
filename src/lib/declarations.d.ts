@@ -1,7 +1,7 @@
 export type Pet_Response = {
     _id: string
 	name: string
-    age: string
+    birthDate: string
     type: string,
     sterilized: boolean,
     sex: 'male' | 'female',
@@ -47,7 +47,7 @@ export type User_Response = {
 export type PetCard_props = {
 	id: string
 	name: string
-    age: string
+    birthDate: string
     type: string
     sterilized: boolean,
     sex: 'male' | 'female' | string,

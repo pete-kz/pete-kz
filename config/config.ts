@@ -1,4 +1,4 @@
-const API: { baseURL: string } = { baseURL: 'https://api.pete.kz' }
+const API: { baseURL: string } = { baseURL: 'http://localhost:8080' }
 
 const main = {
     navLinks: [['navigation_main_bar.pages.main', '/'], ['navigation_main_bar.pages.support', '/support'], ['navigation_main_bar.pages.about_us', '/about-us']],

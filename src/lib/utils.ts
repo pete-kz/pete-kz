@@ -42,7 +42,7 @@ export function formatAge(age: string, i18_years: string, i18_months: string) {
 	}
 
 	// Return the formatted age string
-	return `${years} ${i18_years}${Number(months) > 0 ? `, ${months} ${i18_months}` : ''}`
+	return [Number(years) > 0 ? `${years} ${i18_years}` : '', Number(months) > 0 ? `${months} ${i18_months}` : ''].join(', ')
 }
 
 const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
