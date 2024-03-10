@@ -15,10 +15,6 @@ export type Pet_Response = {
 }
 
 export interface Pet_Filter {
-    age?: {
-        min?: number,
-        max?: number
-    },
     type?: string,
     sterilized?: boolean,
     sex?: 'male' | 'female' | '',
@@ -40,22 +36,6 @@ export type User_Response = {
     password: string
     liked: string[]
     token: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type PetCard_props = {
-	id: string
-	name: string
-    birthDate: string
-    type: string
-    sterilized: boolean,
-    sex: 'male' | 'female' | string,
-    weight: number
-    description: string
-    ownerID: User_Data['_id']
-    imagesPath: string[]
-    city: string
     createdAt: string
     updatedAt: string
 }

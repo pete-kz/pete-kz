@@ -1,0 +1,195 @@
+{
+  "header": {
+    "authorization": "Authorization",
+    "petAdd": "Add pet",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "cities": [
+    "Almaty",
+    "Nur-Sultan",
+    "Shymkent",
+    "Karaganda",
+    "Aktobe",
+    "Taraz",
+    "Pavlodar",
+    "Ust-Kamenogorsk",
+    "Semey",
+    "Kostanay"
+  ],
+  "notifications": {
+    "too_many_requests": "Too often! Try again in 5 minutes.",
+    "password_length": "Password is too short",
+    "internal_error": "An error has occurred. Try again later.",
+    "firstName_req": "Firstname required!",
+    "lastName_req": "Lastname required!",
+    "phone_length": "Phone number must be at least 7 characters.",
+    "phone_international": "Please, use international phone number format (with +)",
+    "phone_in_use": "Account with this phone number already exists!",
+    "liked_remove": "Like removed!",
+    "mobile_only": "App is optimized only for mobile!",
+    "profile_updated": "Profile updated!"
+  },
+  "alert": {
+    "you_sure": "Are you absolutely sure?",
+    "delete_pet_profile": "This action cannot be undone. This will permanently delete your pet from your account.",
+    "remove_like": "This action will delete pet from your liked!",
+    "back": "No, take me back",
+    "sure": "I am sure"
+  },
+  "label": {
+    "success": "Success",
+    "back": "Back",
+    "city": "City",
+    "language": "Language",
+    "mode": {
+      "default": "Theme",
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System"
+    },
+    "aboutUs": "About us",
+    "welcomeTo": "Welcome to",
+    "slogan": "Came. Saw. Took it💜",
+    "proceedPWA": "Let's go!",
+    "support": {
+      "default": "Support",
+      "usVia": "You can support us by donating via",
+      "soon": "More ways to support soon."
+    },
+    "liked": "Liked! Check in your profile later.",
+    "goodbye": "Goodbye",
+    "copied": "Copied!",
+    "updateProfile": "Update profile",
+    "authorization": {
+      "or": "or",
+      "default": "Authorization",
+      "login": {
+        "default": "Login",
+        "register": "create new account"
+      },
+      "register": {
+        "default": "Register",
+        "login": "login into existing account"
+      }
+    },
+    "question": {
+      "company": "Are you a company?"
+    },
+    "myProfile": "My Profile",
+    "myPets": "My Pets",
+    "myLikes": "My likes",
+    "apply": "Apply",
+    "contacts": "Contacts"
+  },
+  "text": {
+    "about_us": {
+      "label": "About us",
+      "text": {
+        "heading": "Project 'Pete' is a unique and intuitive online platform designed to facilitate the process of finding new homes for pets. Based on a simple yet powerful swiping mechanism similar to popular dating apps, 'Pete' allows users to quickly browse through animal profiles, selecting those who spark interest or affection. This makes the process of finding a new furry friend not only efficient but also fun.",
+        "keys": [
+          [
+            "Swipe Interface",
+            "Users can scroll through photos of animals (cats, dogs, or other pets) by swiping left or right. If a pet is liked, swiping right adds it to the 'Liked' list, where more information about the animal and its owner can be found."
+          ],
+          [
+            "Simple Navigation",
+            "The platform offers simple and intuitive navigation with animal categories for user convenience. Without complicated search functions or filtering, 'Pete' emphasizes a direct and personal approach to pet selection."
+          ],
+          [
+            "Liked",
+            "After a user has liked one or several pets, they can go to a special section in their profile where all the liked animals are collected. There, additional information about each pet can be obtained, and the owner's contact details can be found for further communication."
+          ],
+          [
+            "Direct Communication",
+            "'Pete' simplifies the process of communication between current pet owners and potential new owners. The platform provides contact information for direct communication, allowing all details of the pet's transfer to be discussed without intermediaries."
+          ],
+          [
+            "Simplicity and Accessibility",
+            "Without the need to create complex profiles or undergo multi-stage verification, 'Pete' makes the animal adoption process accessible and simple for everyone interested."
+          ]
+        ],
+        "conclusion": "'Pete' aims to create a positive and supportive community of people ready to open their homes and hearts to new furry family members. We believe that every animal deserves love and care, and our platform helps make this dream a reality."
+      }
+    },
+    "no_more_pets": "There are no more pets to show for you! Check liked in profile or wait a little while for new ones to come!",
+    "no_more_pets_city": "There is no pets available in this city! Check another"
+  },
+  "pet": {
+    "name": "Name",
+    "birthDate": "Date of birth",
+    "month": "months",
+    "year": "years",
+    "type": {
+      "default": "Your pet is",
+      "cat": "Cat",
+      "dog": "Dog",
+      "other": "Other"
+    },
+    "description": "Description",
+    "contacts": {
+      "name": "Name",
+      "label": "Contacts",
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "phone": "Phone"
+    },
+    "add": {
+      "label": "Add new pet",
+      "img": "Upload images",
+      "btn": "Add pet"
+    },
+    "sex": {
+      "default": "Sex",
+      "male": "Male",
+      "female": "Female"
+    },
+    "ownerType": "Owner type",
+    "sterilized": "Sterilized",
+    "weight": "Approximate weight",
+    "liked": "You liked "
+  },
+  "user": {
+    "companyName": "Company name",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "login": "Login",
+    "contacts": {
+      "default": "Contacts",
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "phone": "Phone"
+    },
+    "type": {
+      "default": "You are",
+      "private": "Private",
+      "shelter": "Shelter",
+      "breeder": "Breeder",
+      "nursery": "Nursery"
+    },
+    "password": "Password",
+    "phone": "Phone",
+    "instagram": "Instagram",
+    "telegram": "Telegram"
+  },
+  "navigation_main_bar": {
+    "pages": {
+      "main": "Main",
+      "support": "Support",
+      "about_us": "About Us"
+    }
+  },
+  "button": {
+    "update": "Update",
+    "login": "Login",
+    "register": "Register",
+    "authorization": "Authorization"
+  },
+  "warning": {
+    "city": {
+      "title": "What city are you from?",
+      "description": "To continue, please choose the city you are from in the settings",
+      "confirm": "Okay"
+    }
+  }
+}

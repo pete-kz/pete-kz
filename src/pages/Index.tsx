@@ -39,7 +39,7 @@ export default function IndexPage() {
                         <ChangeLanguage />
                         <div className='grid w-full items-center gap-1.5'>
                             <Label>PWA</Label>
-                            <Button onClick={go}>{t('index.proceed_PWA')}</Button>
+                            <Button onClick={go}>{t('label.proceedPWA')}</Button>
                         </div>
                     </div>
                 </Card>

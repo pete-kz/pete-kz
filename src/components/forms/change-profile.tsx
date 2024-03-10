@@ -32,7 +32,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
         firstName: z.string().min(2),
         companyName: z.string().min(2),
         lastName: z.string().min(2),
-        phone: z.string().min(7, { message: t('errors.phone_length') }).includes('+', { message: t('errors.phone_international') }),
+        phone: z.string().min(7, { message: t('notifications.phone_length') }).includes('+', { message: t('notifications.phone_international') }),
         instagram: z.union([z.string(), z.string().min(2)]).optional().transform(e => e === '' ? undefined : e),
         telegram: z.union([z.string(), z.string().min(2)]).optional().transform(e => e === '' ? undefined : e),
         password: z.union([z.string(), z.string().min(4)]).optional().transform(e => e === '' ? undefined : e)
@@ -83,7 +83,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
         })
             .then((res: AxiosResponse) => {
                 if (!res.data.err) {
-                    notification.custom.success(t('user.profile_updated'))
+                    notification.custom.success(t('notifications.profile_updated'))
                     setUpdated(update => !update)
                 } else {
                     notification.custom.error(res.data.err)
@@ -214,7 +214,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
                                 )}
                             />
                             <DialogFooter>
-                                <Button className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('pet.update_btn')}</Button>
+                                <Button className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('button.update')}</Button>
                             </DialogFooter>
                         </form>
                     </Form>

@@ -71,7 +71,7 @@ export function AddPetForm() {
         axios.post(`${API.baseURL}/pets/add`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then((response: AxiosResponse) => {
                 if (!response.data.err) {
-                    notification.custom.success(t('success.label'))
+                    notification.custom.success(t('label.success'))
                 } else {
                     notification.custom.error(response.data.err)
                 }
@@ -128,17 +128,17 @@ export function AddPetForm() {
                         name="type"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('pet.type_choose')}</FormLabel>
+                                <FormLabel>{t('pet.type.default')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder={t('pet.type')} />
+                                            <SelectValue placeholder={t('pet.type.default')} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
                                         {filterValues.type.map((typepet) => (
                                             <SelectItem key={typepet} value={typepet}>
-                                                {t(`pet.types.${typepet}`)}
+                                                {t(`pet.type.${typepet}`)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -152,7 +152,7 @@ export function AddPetForm() {
                         name="birthDate"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('pet.date')}</FormLabel>
+                                <FormLabel>{t('pet.birthDate')}</FormLabel>
                                 <FormControl>
                                     <Input type='date' required {...field} />
                                 </FormControl>
@@ -198,7 +198,7 @@ export function AddPetForm() {
                             </FormControl>
                             <div className="space-y-1 leading-none">
                                 <FormLabel>
-                                    {t('pet.sterilized')}
+                                    {t('pet.sterilized')}?
                                 </FormLabel>
                             </div>
                         </FormItem>

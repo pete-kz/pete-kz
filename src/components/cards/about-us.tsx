@@ -17,7 +17,7 @@ export default function AboutUsCard() {
     }, [])
     return (
         <div className='p-4 border-none bg-none'>
-            <h1 className='text-2xl font-bold'>{t('about_us.label')}</h1>
+            <h1 className='text-2xl font-bold'>{t('label.aboutUs')}</h1>
             <div className='mt-2 p-0 flex flex-col gap-3'>
                 <p>{data?.about_us.text.heading}</p>
                 <ul className='list-disc'>

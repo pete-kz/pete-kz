@@ -14,8 +14,6 @@ export default function Register() {
 	const { t } = useTranslation()
 
 	useEffect(() => {
-		// @ts-expect-error because it is imported from the web
-		ym(96355513, 'hit', window.origin)
 		if (isAuthenticated()) {
 			navigate('/pwa')
 		}
@@ -24,11 +22,11 @@ export default function Register() {
 	return (
 		<m.div className='flex flex-col gap-2 w-full md:max-w-[20%]' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 			<div className='w-full'>
-				<h1 className="text-2xl">{t('register.title')}</h1>
+				<h1 className="text-2xl">{t('label.authorization.register.default')}</h1>
 				<p className="text-sm">
-					{t('register.account_already.0')}
+					{t('label.authorization.or')}
 					{' '}
-					<Button className='p-0' variant={'link'} onClick={() => { navigate('/auth/login') }}>{t('register.account_already.1')}</Button>
+					<Button className='p-0' variant={'link'} onClick={() => { navigate('/auth/login') }}>{t('label.authorization.register.login')}</Button>
 				</p>
 			</div>
 			<RegisterForm />

@@ -18,8 +18,8 @@ export function LoginForm() {
     const { t } = useTranslation()
     const signIn = useSignIn()
     const formSchema = z.object({
-        phone: z.string().min(7, { message: t('errors.phone_length') }).includes('+', { message: t('errors.phone_international') }),
-        password: z.string().min(8, { message: t('errors.password_length') })
+        phone: z.string().min(7, { message: t('notifications.phone_length') }).includes('+', { message: t('notifications.phone_international') }),
+        password: z.string().min(8, { message: t('notifications.password_length') })
     })
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -46,7 +46,7 @@ export function LoginForm() {
                 })) {
                     location.reload()
                 } else {
-                    notification.custom.error(t('errors.internal_error'))
+                    notification.custom.error(t('notifications.internal_error'))
                 }
             } else {
                 const error = response.data.err
@@ -54,7 +54,7 @@ export function LoginForm() {
             }
             setLoadingState(false)
         }).catch(() => {
-            notification.custom.error(t('errors.too_many_request'))
+            notification.custom.error(t('notifications.too_many_requests'))
             setLoadingState(false)
         })
     }

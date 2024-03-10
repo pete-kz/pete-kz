@@ -20,7 +20,7 @@ export function ModeToggle() {
     return (
         <div className='grid w-fit h-fit items-center gap-1.5'>
             <Label className='text-ellipsis'>
-                {t('settings.labels.mode')}
+                {t('label.mode.default')}
             </Label>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -32,13 +32,13 @@ export function ModeToggle() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => setTheme('light')}>
-                        {t('settings.labels.theme.light')}
+                        {t('label.mode.light')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setTheme('dark')}>
-                        {t('settings.labels.theme.dark')}
+                        {t('label.mode.dark')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setTheme('system')}>
-                        {t('settings.labels.theme.system')}
+                        {t('label.mode.system')}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

@@ -41,8 +41,11 @@ export function formatAge(age: string, i18_years: string, i18_months: string) {
 		months += 12
 	}
 
+	const yearsString: string = Number(years) > 0 ? `${years} ${i18_years}` : ''
+	const monthsString: string = Number(months) > 0 ? `${months} ${i18_months}` : ''
+
 	// Return the formatted age string
-	return [Number(years) > 0 ? `${years} ${i18_years}` : '', Number(months) > 0 ? `${months} ${i18_months}` : ''].join(', ')
+	return yearsString + (yearsString && monthsString ? ' ' : '') + monthsString
 }
 
 const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`

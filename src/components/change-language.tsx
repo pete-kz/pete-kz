@@ -22,7 +22,7 @@ export default function ChangeLanguage() {
 	return (
 		<div className='grid w-full items-center gap-1.5'>
 			<Label>
-				{t('settings.labels.language_button')}
+				{t('label.language')}
 			</Label>
 			<Select
 				value={currentLanguage}
@@ -31,7 +31,7 @@ export default function ChangeLanguage() {
 					setLanguage(value)
 				}}>
 				<SelectTrigger>
-					<SelectValue placeholder={t('settings.labels.language_button')} />
+					<SelectValue placeholder={t('label.language')} />
 					<SelectContent>
 						{languages.map((language) => (
 							<SelectItem key={language[0]} value={language[0]}>{language[1]}</SelectItem>

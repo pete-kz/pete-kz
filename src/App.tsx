@@ -17,7 +17,6 @@ import Login from './pages/Authentication/Login'
 import Register from './pages/Authentication/Register'
 import Settings from './pages/Settings'
 import Profile from './pages/Profile'
-import PetPage from './pages/Pet'
 import AddPetPage from './pages/PetAdd'
 import IndexPage from './pages/Index'
 import SupportPage from './pages/Support'
@@ -69,10 +68,6 @@ export default function App() {
 				{
 					path: '/pwa/profile',
 					element: <Profile />,
-				},
-				{
-					path: '/pwa/pets',
-					element: <PetPage />,
 				},
 				{
 					path: '/pwa/settings',

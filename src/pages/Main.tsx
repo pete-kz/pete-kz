@@ -4,7 +4,7 @@ import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'reac
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response, Pet_Filter } from '@declarations'
-import { axiosAuth as axios, cn, notification, useQuery, token } from '@utils'
+import { axiosAuth as axios, cn, notification, token } from '@utils'
 import { AxiosResponse } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { MoveLeft, MoveRight } from 'lucide-react'
@@ -28,6 +28,10 @@ const defaultFilterValue: Pet_Filter = {
 	owner_type: ''
 }
 
+/**
+ * The main component of the application.
+ * Renders a carousel of pet cards and handles fetching pets and users data.
+ */
 export default function Main() {
 
 	// Setups
@@ -36,14 +40,12 @@ export default function Main() {
 	const signout = useSignOut()
 	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
-	const query = useQuery()
 	const isAuthenticated = useIsAuthenticated()
 	const navigate = useNavigate()
 
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
 	const [allUsers, setAllUsers] = useState<User_Response[]>([])
-	const [page, setPage] = useState<number>(1)
 	const [loadingPets, setLoadingPets] = useState<boolean>(true)
 	const [api, setApi] = useState<CarouselApi>()
 	const [current, setCurrent] = useState(0)
@@ -51,55 +53,66 @@ export default function Main() {
 	const [openAlertCity, setOpenAlertCity] = useState<boolean>(false)
 
 	// Functions
-	function fetchAllPets() {
+	function fetchAllPets(page: number = 1) {
+
+		// Checking local storage for pets
 		const cachedPets = localStorage.getItem('_data_allPets')
 		if (cachedPets) {
 			setAllPets(JSON.parse(cachedPets))
 			setLoadingPets(false)
 		}
 
+		// Creating query string
 		const params = new URLSearchParams(filter as Record<string, string>).toString()
 		const paginationParams = `page=${page}&limit=10`
 		const queryString = `${paginationParams}&${params}`
 
+		// Fetching pets
 		axios.get(`${API.baseURL}/pets/recommendations?${queryString}`).then((res: AxiosResponse) => {
-			if (!res.data.err) {
-				let pets: Pet_Response[] = res.data
-				if (isAuthenticated()) {
-					axios.get(`${API.baseURL}/users/find/${user._id}`).then((res: AxiosResponse) => {
-						if (!res.data.err) {
-							const userData: User_Response = res.data
-							pets = pets.filter(pet => !(userData.liked.includes(pet._id)))
-						} else {
-							notification.custom.error(res.data.err)
-						}
-					})
-				} else {
-					const browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
-					pets = pets.filter(pet => !(browserLiked.includes(pet._id)))
-				}
-				localStorage.setItem('_data_allPets', JSON.stringify(pets))
-				setAllPets(pets)
-				setLoadingPets(false)
-			} else {
-				notification.custom.error(res.data.err)
+			if (res.data.err) {
+				return notification.custom.error(res.data.err)
 			}
+			let pets: Pet_Response[] = res.data
+
+			// Filtering pets that the user already liked
+			pets = filterPets(pets)
+
+			// Adding new pets to the existing list if it is not the first page
+			if (page !== 1) pets = [...allPets, ...pets]
+
+			// Setting pets and saving to local storage
+			localStorage.setItem('_data_allPets', JSON.stringify(allPets.length < 20 ? pets : allPets))
+			setAllPets(pets)
+			setLoadingPets(false)
 		})
 	}
 
 	function fetchAllUsers() {
-		const cachedUsers = localStorage.getItem('_data_allUsers')
-		if (cachedUsers) {
-			setAllUsers(JSON.parse(cachedUsers))
-		}
 		axios.get(`${API.baseURL}/users/find`).then((res: AxiosResponse) => {
-			if (!res.data.err) {
-				localStorage.setItem('_data_allUsers', JSON.stringify(res.data))
-				setAllUsers(res.data)
-			} else {
-				notification.custom.error(res.data.err)
+			if (res.data.err) {
+				return notification.custom.error(res.data.err)
 			}
+			setAllUsers(res.data)
+		}).catch(err => {
+			console.error(err)
 		})
+	}
+
+	function filterPets(pets: Pet_Response[]) {
+		// Filtering pets that the user already liked
+		if (isAuthenticated()) {
+			axios.get(`${API.baseURL}/users/find/${user._id}`).then((res: AxiosResponse) => {
+				if (res.data.err) {
+					return notification.custom.error(res.data.err)
+				}
+				const userData: User_Response = res.data
+				pets = pets.filter(pet => !(userData.liked.includes(pet._id)))
+			})
+		} else {
+			const browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
+			pets = pets.filter(pet => !(browserLiked.includes(pet._id)))
+		}
+		return pets
 	}
 
 	function checkToken() {
@@ -110,9 +123,14 @@ export default function Main() {
 		}
 	}
 
-	function goToPet() {
-		navigate(`/pwa/pets?id=${allPets[current]._id}&more=true`)
-	}
+	useEffect(() => {
+		// Checking if current pet is the last one
+		if (current === allPets.length - 1) {
+			// Fetching more pets
+			fetchAllPets(allPets.length / 10 + 1)
+			console.log('Fetched more pets.')
+		}
+	}, [current])
 
 	useEffect(() => {
 		if (!api) {
@@ -125,18 +143,13 @@ export default function Main() {
 	}, [api])
 
 	useEffect(() => {
-		checkToken()
-	}, [allPets])
-
-	useEffect(() => {
-		checkToken()
-		fetchAllPets()
-		fetchAllUsers()
-		if (!localStorage.getItem('_city')) {
-			setOpenAlertCity(true)
-		}
-		// @ts-expect-error because it is imported from the web
-		ym(96355513, 'hit', window.origin)
+		if (localStorage.getItem('_city')) {
+			checkToken()
+			fetchAllPets()
+			fetchAllUsers()
+			return
+		} 
+		setOpenAlertCity(true)
 	}, [])
 
 	return (
@@ -173,7 +186,8 @@ export default function Main() {
 										<CarouselItem key={pet._id}>
 											<PetCard
 												{...pet}
-												id={pet._id}
+												_id={pet._id}
+												user={allUsers.filter(user => user._id === pet.ownerID)[0]}
 											/>
 										</CarouselItem>
 									))}
@@ -186,7 +200,6 @@ export default function Main() {
 			</m.div>
 			<div className='absolute bottom-10 flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
 				<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
-				<Button className='w-1/3 font-bold text-md' onClick={goToPet}>{t('main.pet_card.more')}</Button>
 				<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
 			</div>
 		</>
@@ -197,7 +210,7 @@ function NoMorePets() {
 	const { t } = useTranslation()
 	return (
 		<Card className='flex justify-center items-center'>
-			<p>{t('main.no_more_pets')}</p>
+			<p>{t('text.no_more_pets')}</p>
 		</Card>
 	)
 }
@@ -206,7 +219,7 @@ function NoMorePetsFilter() {
 	const { t } = useTranslation()
 	return (
 		<Card className='flex justify-center items-center'>
-			<p>{t('main.no_more_pets_filter')}</p>
+			<p>{t('text.no_more_pets')}</p>
 		</Card>
 	)
 }

@@ -22,11 +22,11 @@ export function RegisterForm() {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const formSchema = z.object({
-        firstName: z.string().min(1, { message: t('errors.firstName_req') }).optional(),
-        lastName: z.string().min(1, { message: t('errors.lastName_req') }).optional(),
-        phone: z.string().min(7, { message: t('errors.phone_length') }).includes('+', { message: t('errors.phone_international') }),
+        firstName: z.string().min(1, { message: t('notifications.firstName_req') }).optional(),
+        lastName: z.string().min(1, { message: t('notifications.lastName_req') }).optional(),
+        phone: z.string().min(7, { message: t('notifications.phone_length') }).includes('+', { message: t('notifications.phone_international') }),
         type: z.enum(['private', 'shelter', 'breeder', 'nursery']),
-        password: z.string().min(8, { message: t('errors.password_length') }),
+        password: z.string().min(8, { message: t('notifications.password_length') }),
         company_name: z.string().optional()
     })
     const form = useForm<z.infer<typeof formSchema>>({
@@ -57,7 +57,7 @@ export function RegisterForm() {
             setLoadingState(false)
             return
         }).catch(() => {
-            notification.custom.error(t('errors.too_many_requests'))
+            notification.custom.error(t('notifications.too_many_requests'))
             setLoadingState(false)
         })
     }
@@ -134,11 +134,11 @@ export function RegisterForm() {
                     name="type"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{t('user.type')}</FormLabel>
+                            <FormLabel>{t('user.type.default')}</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder={t('form.none')} />
+                                        <SelectValue placeholder={'-'} />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>

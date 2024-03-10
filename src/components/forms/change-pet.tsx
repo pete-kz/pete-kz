@@ -9,13 +9,14 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { axiosAuth as axios } from '@utils'
+import { axiosAuth as axios, filterValues } from '@utils'
 import { notification } from '@utils'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { Textarea } from '@/components/ui/textarea'
 import ReactImageGallery from 'react-image-gallery'
 import { Pet_Response } from '@/lib/declarations'
+import { Checkbox } from '../ui/checkbox'
 
 
 export function ChangePetForm({ petData }: { petData: Pet_Response }) {
@@ -25,26 +26,23 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
     const formSchema = z.object({
-        name: z
-            .string()
-            .min(2, { message: 'Pets name cant be shorter than 2 characters!' })
-            .optional(),
-        date: z
-            .string()
-            .optional(),
-        type: z
-            .enum(['Cat', 'Dog', 'Other'])
-            .optional(),
-        description: z
-            .string()
-            .optional(),
+        name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
+        birthDate: z.string(),
+        type: z.string(),
+        sterilized: z.boolean().default(false),
+        weight: z.string().transform(arg => Number(arg)),
+        sex: z.enum(['male', 'female']),
+        description: z.string({ required_error: 'Description is required!' }),
     })
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: '',
-            date: '',
+            birthDate: '',
             type: 'Cat',
+            sterilized: false,
+            weight: 0,
+            sex: 'male',
             description: ''
         },
     })
@@ -58,11 +56,14 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
     function onSubmit(values: z.infer<typeof formSchema>) {
         setLoadingState(true)
         const formData = new FormData()
-        formData.append('name', values.name as string)
-        formData.append('age', values.date as string)
-        formData.append('description', values.description as string)
-        formData.append('type', values.type as string)
-        formData.append('userID', user._id)
+        formData.append('name', values.name)
+        formData.append('birthDate', `${values.birthDate}`)
+        formData.append('description', values.description)
+        formData.append('type', values.type)
+        formData.append('sterilized', JSON.stringify(values.sterilized))
+        formData.append('weight', JSON.stringify(values.weight))
+        formData.append('sex', values.sex)
+        formData.append('ownerID', user._id)
         formData.append('city', localStorage.getItem('_city') || '0')
         if (files) {
             for (let i = 0; i < files.length; i++) {
@@ -98,9 +99,12 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
     useEffect(() => {
         if (petData) {
             form.setValue('name', petData.name)
+            form.setValue('birthDate', petData.birthDate)
             form.setValue('description', petData.description)
-            form.setValue('date', petData.age)
             form.setValue('type', petData.type)
+            form.setValue('sterilized', petData.sterilized)
+            form.setValue('weight', petData.weight)
+            form.setValue('sex', petData.sex)
             setImages(petData.imagesPath.map(imgLink => { return { original: imgLink, thumbnail: imgLink } as never }))
         }
     }, [petData, form])
@@ -130,16 +134,18 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                         name="type"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('pet.type')}</FormLabel>
+                                <FormLabel>{t('pet.type.default')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder={t('pet.type')} />
+                                            <SelectValue placeholder={t('pet.type.default')} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {['Cat', 'Dog', 'Other'].map((typepet) => (
-                                            <SelectItem key={typepet} value={typepet}>{t(`pet.types.${['Cat', 'Dog', 'Other'].indexOf(typepet)}`)}</SelectItem>
+                                        {filterValues.type.map((typepet) => (
+                                            <SelectItem key={typepet} value={typepet}>
+                                                {t(`pet.type.${typepet}`)}
+                                            </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -149,12 +155,12 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                     />
                     <FormField
                         control={form.control}
-                        name="date"
+                        name="birthDate"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('pet.date')}</FormLabel>
+                                <FormLabel>{t('pet.birthDate')}</FormLabel>
                                 <FormControl>
-                                    <Input type='date' {...field} />
+                                    <Input type='date' required {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -163,12 +169,68 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                 </div>
                 <FormField
                     control={form.control}
+                    name="sex"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('pet.sex')}</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={t('pet.sex')} />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {filterValues.sex.map((sex) => (
+                                        <SelectItem key={sex} value={sex}>
+                                            {t(`pet.sex.${sex}`)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="sterilized"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                                <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                    {t('pet.sterilized')}?
+                                </FormLabel>
+                            </div>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                        control={form.control}
+                        name="weight"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t('pet.weight')}</FormLabel>
+                                <FormControl>
+                                    <Input type='number' required {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                <FormField
+                    control={form.control}
                     name="description"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>{t('pet.description')}</FormLabel>
                             <FormControl>
-                                <Textarea {...field} />
+                                <Textarea required {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -183,7 +245,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                             setFiles(files)
                         }} />
                 </div>
-                <Button onClick={() => { console.log(form.formState.errors) }} className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('pet.update_btn')}</Button>
+                <Button onClick={() => { console.log(form.formState.errors) }} className='w-full' type="submit">{loadingState ? <LoadingSpinner /> : t('button.update')}</Button>
             </form>
         </Form>
     )

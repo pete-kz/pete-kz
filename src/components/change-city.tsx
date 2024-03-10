@@ -19,7 +19,7 @@ export default function ChangeCity() {
     return (
         <div className='grid w-full items-center gap-1.5'>
             <Label>
-                {t('settings.labels.city')}
+                {t('label.city')}
             </Label>
             <Select
                 value={currentCity}
@@ -27,7 +27,7 @@ export default function ChangeCity() {
                     setCurrentCity(value)
                 }}>
                 <SelectTrigger>
-                    <SelectValue placeholder={t('settings.labels.city')} />
+                    <SelectValue placeholder={t('label.city')} />
                     <SelectContent>
                         <SelectItem  value={'-'}>{'-'}</SelectItem>
                         {[...Array(10).keys()].map((city) => (

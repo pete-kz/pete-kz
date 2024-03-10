@@ -31,8 +31,7 @@ export default function AddPetPage() {
             return
         }
         checkToken()
-        // @ts-expect-error because it is imported from the web
-        ym(96355513, 'hit', window.origin)
+        
     }, [])
 
     return (

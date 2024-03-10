@@ -18,7 +18,6 @@ export default function MobilePageHeader({ title, to }: { title: string, to: str
                     <div className='flex items-center'><ChevronLeft />
                         {t('label.back')}</div>
                 </Button>
-
             </div>
             <div className='text-2xl font-bold flex items-center justify-center'>{title}</div>
             <div className='w-full bg-card'></div>

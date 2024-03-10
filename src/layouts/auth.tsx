@@ -12,7 +12,7 @@ export default function AuthLayout() {
 
 	return (
 		<m.div className='h-screen' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-			<MobilePageHeader title={t('header.authorization')} to='/pwa/settings' />
+			<MobilePageHeader title={t('header.authorization')} to='/pwa/profile' />
 			<Toaster />
 			<main className='p-4'>
 				<Outlet />

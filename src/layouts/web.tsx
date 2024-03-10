@@ -12,7 +12,7 @@ export default function WebLayout() {
 
 	useEffect(() => {
 		if (window.innerHeight / window.innerWidth <= 1) {
-			notification.custom.error(t('errors.mobile_only'))
+			notification.custom.error(t('notifications.mobile_only'))
 		} 
 	}, [])
 
