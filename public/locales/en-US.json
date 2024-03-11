@@ -80,7 +80,8 @@
     "myPets": "My Pets",
     "myLikes": "My likes",
     "apply": "Apply",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "noPets": "No pets!"
   },
   "text": {
     "about_us": {

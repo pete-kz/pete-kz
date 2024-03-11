@@ -7,7 +7,7 @@ import { User_Response, type Pet_Response, Pet_Filter } from '@declarations'
 import { axiosAuth as axios, cn, notification, token } from '@utils'
 import { AxiosResponse } from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { MoveLeft, MoveRight } from 'lucide-react'
+import { LucideCat, LucideDog, MoveLeft, MoveRight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import LoadingSpinner from '@/components/loading-spinner'
@@ -54,7 +54,7 @@ export default function Main() {
 
 	// Functions
 	function fetchAllPets(page: number = 1) {
-
+		setLoadingPets(true)
 		// Checking local storage for pets
 		const cachedPets = localStorage.getItem('_data_allPets')
 		if (cachedPets) {
@@ -79,6 +79,10 @@ export default function Main() {
 
 			// Adding new pets to the existing list if it is not the first page
 			if (page !== 1) pets = [...allPets, ...pets]
+
+			// Removing duplicate pets
+			const petIds = new Set(allPets.map(pet => pet._id))
+			pets = pets.filter(pet => !petIds.has(pet._id))
 
 			// Setting pets and saving to local storage
 			localStorage.setItem('_data_allPets', JSON.stringify(allPets.length < 20 ? pets : allPets))
@@ -175,12 +179,10 @@ export default function Main() {
 					<Filter className={iconSize} />
 				</Button>
 			</PetFilter>
-			<m.div initial={{ opacity: 0, y: 10 }} className='p-4' animate={{ opacity: 1, y: 0 }}>
+			<m.div initial={{ opacity: 0, y: 10 }} className='p-4 flex items-center h-screen' animate={{ opacity: 1, y: 0 }}>
 				{allPets.length > 0 ? (
 					<>
-						{allPets.length > 0 ? (
-
-							<Carousel setApi={setApi} className='flex items-center h-screen' opts={{ loop: false }}>
+							<Carousel setApi={setApi} className='' opts={{ loop: false }}>
 								<CarouselContent>
 									{allPets.map(pet => (
 										<CarouselItem key={pet._id}>
@@ -193,15 +195,13 @@ export default function Main() {
 									))}
 								</CarouselContent>
 							</Carousel>
-
-						) : <NoMorePetsFilter />}
 					</>
 				) : loadingPets ? <LoadingSpinner size={12} /> : <NoMorePets />}
 			</m.div>
-			<div className='absolute bottom-10 flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
-				<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
-				<Button size={'icon'} variant={'secondary'} className='active:scale-95' onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
-			</div>
+			{allPets.length > 0 && <div className='absolute bottom-10 flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
+				<Button size={'icon'} variant={'secondary'} className='active:scale-95' disabled={allPets[current]._id === allPets[0]._id} onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
+				<Button size={'icon'} variant={'secondary'} className='active:scale-95' disabled={allPets[current]._id === allPets[allPets.length - 1]._id} onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
+			</div>}
 		</>
 	)
 }
@@ -209,16 +209,8 @@ export default function Main() {
 function NoMorePets() {
 	const { t } = useTranslation()
 	return (
-		<Card className='flex justify-center items-center'>
-			<p>{t('text.no_more_pets')}</p>
-		</Card>
-	)
-}
-
-function NoMorePetsFilter() {
-	const { t } = useTranslation()
-	return (
-		<Card className='flex justify-center items-center'>
+		<Card className='flex flex-col text-center justify-center items-center p-6'>
+			<h1 className='text-2xl font-bold flex gap-2 items-center text-orange-200'><LucideDog />{t('label.noPets')}<LucideCat /></h1>
 			<p>{t('text.no_more_pets')}</p>
 		</Card>
 	)
