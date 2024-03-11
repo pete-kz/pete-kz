@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from '@/components/ui/toaster'
 import { m } from 'framer-motion'
 import MobilePageHeader from '@/components/mobile-page-header'
 import { useTranslation } from 'react-i18next'

@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { axiosAuth as axios, filterValues } from '@utils'
-import { notification } from '@utils'
+import { useToast } from '../ui/use-toast'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { Textarea } from '@/components/ui/textarea'
@@ -18,13 +18,13 @@ import ReactImageGallery from 'react-image-gallery'
 import { Pet_Response } from '@/lib/declarations'
 import { Checkbox } from '../ui/checkbox'
 
-
 export function ChangePetForm({ petData }: { petData: Pet_Response }) {
 
     // Setups
     const { t } = useTranslation()
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
+    const { toast } = useToast()
     const formSchema = z.object({
         name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
         birthDate: z.string(),
@@ -70,10 +70,13 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                 formData.append('images', files[i])
             }
         }
-        notification.custom.promise(
-            axios.post(`${API.baseURL}/pets/edit/${petData._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-                .finally(() => { setLoadingState(false) })
-        )
+
+        axios
+            .post(`${API.baseURL}/pets/edit/${petData._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(_res => {
+                if (_res.data.err) toast ({ description: _res.data.err })
+            })
+            .finally(() => { setLoadingState(false) })
+
     }
 
     function checkImage(file: Blob | undefined) {
@@ -211,18 +214,18 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                     )}
                 />
                 <FormField
-                        control={form.control}
-                        name="weight"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t('pet.weight')}</FormLabel>
-                                <FormControl>
-                                    <Input type='number' required {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    control={form.control}
+                    name="weight"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('pet.weight')}</FormLabel>
+                            <FormControl>
+                                <Input type='number' required {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="description"

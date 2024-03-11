@@ -1,5 +1,5 @@
 import React from 'react'
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from '@/components/ui/toaster'
 import { m } from 'framer-motion'
 import { Outlet } from 'react-router-dom'
 

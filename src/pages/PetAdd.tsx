@@ -36,7 +36,7 @@ export default function AddPetPage() {
 
     return (
         <>
-            <MobilePageHeader title={t('header.petAdd')} />
+            <MobilePageHeader title={t('header.petAdd')} to='/pwa/profile' />
             <m.div className='m-2 p-2 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <AddPetForm />        
             </m.div>

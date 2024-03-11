@@ -8,15 +8,20 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import axios, { AxiosResponse } from 'axios'
-import { notification } from '@utils'
+import { useToast } from '../ui/use-toast'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
+import { PhoneInput } from '../ui/phone-input'
+import { axiosErrorHandler } from '@/lib/utils'
+import { useNavigate } from 'react-router-dom'
 
 export function LoginForm() {
 
     // Setups
     const { t } = useTranslation()
     const signIn = useSignIn()
+    const { toast } = useToast()
+    const navigate = useNavigate()
     const formSchema = z.object({
         phone: z.string().min(7, { message: t('notifications.phone_length') }).includes('+', { message: t('notifications.phone_international') }),
         password: z.string().min(8, { message: t('notifications.password_length') })
@@ -34,29 +39,20 @@ export function LoginForm() {
 
     // Functions
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
         setLoadingState(true)
-        axios.post(`${API.baseURL}/users/login`, values).then((response: AxiosResponse) => {
-            if (!response.data.err) {
+        axios.post(`${API.baseURL}/users/login`, { phone: values.phone, password: values.password }).then((response: AxiosResponse) => {
                 if (signIn({
                     token: response.data.token,
                     expiresIn: response.data.expiresIn,
                     tokenType: 'Bearer',
                     authState: response.data.docs,
                 })) {
-                    location.reload()
+                    navigate('/pwa/profile')
                 } else {
-                    notification.custom.error(t('notifications.internal_error'))
+                    toast({ description: t('notifications.internal_error') })
                 }
-            } else {
-                const error = response.data.err
-                notification.custom.error(error)
-            }
             setLoadingState(false)
-        }).catch(() => {
-            notification.custom.error(t('notifications.too_many_requests'))
-            setLoadingState(false)
-        })
+        }).catch(axiosErrorHandler).finally(() => setLoadingState(false))
     }
 
     return (
@@ -69,7 +65,7 @@ export function LoginForm() {
                         <FormItem>
                             <FormLabel>{t('user.phone')}</FormLabel>
                             <FormControl>
-                                <Input placeholder="+7 123 456 78 90" type='tel' {...field} />
+                                <PhoneInput defaultCountry='KZ' placeholder={t('user.phone')} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

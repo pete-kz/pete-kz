@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, } from '@/components/ui/drawer'
 import { Pet_Filter } from '@/lib/declarations'
 import { Button } from '@/components/ui/button'
@@ -7,23 +7,45 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from './ui/checkbox'
 import { useTranslation } from 'react-i18next'
 import { Slider } from '@/components/ui/slider'
-import { filterValues } from '@/lib/utils'
+import { filterValues, defaultFilterValue } from '@/lib/utils'
 
 
-export default function PetFilter({ setFilter, filter, children }: { setFilter: React.Dispatch<React.SetStateAction<Pet_Filter>>, filter: Pet_Filter, children: React.ReactNode }) {
+export default function PetFilter({ updateFilter, filter, children }: { updateFilter: (filter: Pet_Filter) => void, filter: Pet_Filter, children: React.ReactNode }) {
     // Setups
     const { t } = useTranslation()
 
     // States
-    const [tempFilter, setTempFilter] = useState<Pet_Filter>(filter)
-    const [sliderValue, setSliderValue] = useState<number>(filter.weight || 0)
+    const [type, setType] = useState<Pet_Filter['type']>(filter.type)
+    const [sterilized, setSterilized] = useState<Pet_Filter['sterilized']>(filter.sterilized)
+    const [sex, setSex] = useState<Pet_Filter['sex'] | string>(filter.sex)
+    const [weight, setWeight] = useState<Pet_Filter['weight']>(filter.weight || 0)
+    const [ownerType, setOwnerType] = useState<Pet_Filter['owner_type'] | string>(filter.owner_type)
 
     // Functions
     function onSubmit() {
-        setFilter(tempFilter!)
+        updateFilter({
+            type,
+            sterilized,
+            sex: sex as Pet_Filter['sex'],
+            weight,
+            owner_type: ownerType as Pet_Filter['owner_type']
+        })
     }
 
-    useEffect(() => { setTempFilter((filt) => { filt.weight = sliderValue; return filt }) }, [sliderValue])
+    function reset() {
+        setType(defaultFilterValue.type)
+        setSterilized(defaultFilterValue.sterilized)
+        setSex(defaultFilterValue.sex)
+        setWeight(defaultFilterValue.weight)
+        setOwnerType(defaultFilterValue.owner_type)
+        updateFilter({
+            type: defaultFilterValue.type,
+            sterilized: defaultFilterValue.sterilized,
+            sex: defaultFilterValue.sex,
+            weight: defaultFilterValue.weight,
+            owner_type: defaultFilterValue.owner_type
+        })
+    }
 
     return (
         <Drawer>
@@ -40,30 +62,26 @@ export default function PetFilter({ setFilter, filter, children }: { setFilter: 
                         <div className="grid space-y-4">
                             <div className='grid gap-1.5'>
                                 <Label htmlFor="">{t('pet.type.default')}</Label>
-                                <Select value={tempFilter?.type} onValueChange={(value: string) => {
-                                    setTempFilter(filt => { filt.type = value; return filt })
-                                }}>
+                                <Select value={type} onValueChange={setType}>
                                     <SelectTrigger>
                                         <SelectValue placeholder={'None'} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {filterValues.type.map((typepet) => (
-                                            <SelectItem key={typepet} value={typepet}>{t('pet.type.'+typepet)}</SelectItem>
+                                            <SelectItem key={typepet} value={typepet}>{t('pet.type.' + typepet)}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className='grid gap-1.5'>
                                 <Label htmlFor="sex">{t('pet.sex.default')}</Label>
-                                <Select value={tempFilter?.sex} onValueChange={(value: string) => {
-                                    setTempFilter(filt => { filt.sex = value as Pet_Filter['sex']; return filt })
-                                }}>
+                                <Select value={sex} onValueChange={setSex}>
                                     <SelectTrigger>
                                         <SelectValue placeholder={'None'} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {filterValues.sex.map((petSex) => (
-                                            <SelectItem key={petSex} value={petSex}>{t('pet.sex.'+petSex)}</SelectItem>
+                                            <SelectItem key={petSex} value={petSex}>{t('pet.sex.' + petSex)}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -72,39 +90,38 @@ export default function PetFilter({ setFilter, filter, children }: { setFilter: 
                                 <Label htmlFor="sterilized_checkbox">
                                     {t('pet.sterilized')}?
                                 </Label>
-                                <Checkbox id="sterilized_checkbox" checked={tempFilter?.sterilized} onCheckedChange={(value) => { 
-                                    setTempFilter(filt => { filt.sterilized = (value != 'indeterminate' ? value : filt.sterilized); return filt })
+                                <Checkbox id="sterilized_checkbox" checked={sterilized} onCheckedChange={(value) => {
+                                    setSterilized(_ => value !== 'indeterminate' ? value : _)
                                 }} />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="slider_weight">
-                                    {`${t('pet.weight')} = ${sliderValue}`}
+                                    {`${t('pet.weight')} = ${weight}`}
                                 </Label>
-                                <Slider id='slider_weight' value={[sliderValue]} onValueChange={(value) => {
-                                    setSliderValue(value[0])
+                                <Slider id='slider_weight' value={[weight!]} onValueChange={(value) => {
+                                    setWeight(value[0])
                                 }} step={5} />
                             </div>
                             <div className='grid gap-1.5'>
                                 <Label htmlFor="">{t('pet.ownerType')}</Label>
-                                <Select value={tempFilter?.owner_type} onValueChange={(value: string) => {
-                                    setTempFilter(filt => { filt.owner_type = value as Pet_Filter['owner_type']; return filt })
-                                }}>
+                                <Select value={ownerType} onValueChange={setOwnerType}>
                                     <SelectTrigger>
                                         <SelectValue placeholder={'None'} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {filterValues.owner_type.map((ownerType) => (
-                                            <SelectItem key={ownerType} value={ownerType}>{t('user.type.'+ownerType)}</SelectItem>
+                                            <SelectItem key={ownerType} value={ownerType}>{t('user.type.' + ownerType)}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
                         </div>
                     </div>
-                    <DrawerFooter>
+                    <DrawerFooter className='flex flex-row w-full gap-1.5'>
                         <DrawerClose asChild>
-                            <Button onClick={onSubmit}>{t('label.apply')}</Button>
+                            <Button className='w-full' onClick={onSubmit}>{t('label.apply')}</Button>
                         </DrawerClose>
+                        <Button className='w-full' variant={'outline'} type='reset' onClick={reset}>{t('label.reset')}</Button>
                     </DrawerFooter>
                 </div>
             </DrawerContent>

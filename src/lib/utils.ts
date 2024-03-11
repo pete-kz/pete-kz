@@ -1,16 +1,18 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { setupCache } from 'axios-cache-interceptor'
 import React from 'react'
-import { toast, type ToastOptions } from 'react-hot-toast'
 import { useLocation } from 'react-router-dom'
+import { APIErrors, Pet_Filter } from './declarations'
+import { toast } from '@/components/ui/use-toast'
+import i18n from '../i18'
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-export function formatAge(age: string, i18_years: string, i18_months: string) {
+export function formatAge(age: string, i18_years: string, i18_months: string, number: boolean = false) {
 	// Parse the given date string to a Date object
 	const birthDate = new Date(age)
 
@@ -41,6 +43,12 @@ export function formatAge(age: string, i18_years: string, i18_months: string) {
 		months += 12
 	}
 
+	if (number) {
+		return {
+			years, months
+		}
+	}
+
 	const yearsString: string = Number(years) > 0 ? `${years} ${i18_years}` : ''
 	const monthsString: string = Number(months) > 0 ? `${months} ${i18_months}` : ''
 
@@ -58,41 +66,17 @@ const configuredAxios = axios.create({
 })
 const axiosAuth = setupCache(configuredAxios)
 
-const notificationConfig: ToastOptions = {
-	className: 'rounded-lg border bg-card text-card-foreground shadow-sm w-full font-semibold',
-	position: 'top-center',
-}
-
-interface Notification {
-	custom: {
-		error: (err: string) => void
-		success: (msg: string) => void
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		promise: (fn: any) => void
+export function axiosErrorHandler(error: AxiosError) {
+	if (error.response) {
+		if (error.response.status === 500) return toast({ description: i18n.t(`api.${(error.response.data as { msg: APIErrors }).msg}`), variant: 'destructive' })
+		console.error(error.response)
+	} else if (error.request) {
+		console.error(error.request)
+		toast({ description: i18n.t('notifications.checkNetwork') })
+	} else {
+		console.error(error.message)
 	}
-}
-
-const notification: Notification = {
-	custom: {
-		error: (err: string) => {
-			toast.error(err, notificationConfig)
-		},
-		success: (msg: string) => {
-			toast.success(msg, notificationConfig)
-		},
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		promise: (fn: any) => {
-			toast.promise(
-				fn,
-				{
-					loading: 'Загрузка...',
-					success: 'Успешно загружено!',
-					error: 'Произошла ошибка',
-				},
-				notificationConfig,
-			)
-		},
-	}
+	console.error(error.config)
 }
 
 function useQuery() {
@@ -128,4 +112,12 @@ const filterValues = {
     owner_type: ['private', 'shelter', 'breeder', 'nursery']
 }
 
-export { axiosAuth, notification, type Notification, useQuery, parseMongoDate, token, filterValues }
+export const defaultFilterValue: Pet_Filter = {
+	type: '',
+	sterilized: false,
+	sex: '',
+	weight: 0,
+	owner_type: ''
+}
+
+export { axiosAuth, useQuery, parseMongoDate, token, filterValues }

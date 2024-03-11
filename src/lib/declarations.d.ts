@@ -50,3 +50,5 @@ export interface AboutUsLanguage {
         }
     }
 }
+
+export type APIErrors = 'userNotFound' | 'userExists' | 'wrongPassword' | 'internal'

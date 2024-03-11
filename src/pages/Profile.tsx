@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuthUser, useIsAuthenticated, useSignOut } from 'react-auth-kit'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { axiosAuth as axios, notification, parseMongoDate } from '@utils'
+import { axiosAuth as axios, axiosErrorHandler, parseMongoDate } from '@utils'
 import { API } from '@config'
 import { AxiosResponse } from 'axios'
 import { Pet_Response, User_Response } from '@declarations'
@@ -16,7 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import MobilePageHeader from '@/components/mobile-page-header'
 import ChangeProfileForm from '@/components/forms/change-profile'
 import LikedPet from '@/components/cards/liked-pet'
-
+import { useToast } from '@/components/ui/use-toast'
 
 export default function Profile() {
 
@@ -27,6 +27,7 @@ export default function Profile() {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const signout = useSignOut()
+    const { toast } = useToast()
 
     // States
     const [userPets, setUserPets] = useState<Pet_Response[]>([])
@@ -37,35 +38,23 @@ export default function Profile() {
     const getUserData = useMemo(() => async () => {
         if (user._id) {
             axios.get(`${API.baseURL}/users/find/${user._id}`).then((res) => {
-                if (res.data.err) return notification.custom.error(res.data.err)
                 setUserData(res.data)
 
                 axios.get(`${API.baseURL}/pets/find`).then((res) => {
                     setUserPets((res.data as Pet_Response[]).filter(pet => pet.ownerID === user._id))
-                })
-            })
+                }).catch(axiosErrorHandler)
+            }).catch(axiosErrorHandler)
         }
     }, [user._id])
 
     const getUser = useMemo(() => async () => {
         // Fetch all pets
         axios.get(`${API.baseURL}/pets/find`,).then((res) => {
-            if (res.data.err) return notification.custom.error(res.data.err)
             const allPets: Pet_Response[] = res.data
-
+            const likedIds: string[] = userData?.liked || JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
             // If user is not authenticated
-            if (!isAuthenticated()) {
-                const likedIDS = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
-                if (likedIDS.length > 0) {
-                    return setUserLiked(allPets.filter(pet => likedIDS.includes(pet._id)))
-                }
-                return setUserLiked(allPets)
-            }
-
-            if (userData) {
-                return setUserLiked(allPets?.filter(pet => userData.liked.includes(pet._id)) || [])
-            }
-        })
+            setUserLiked(allPets.filter(pet => likedIds.includes(pet._id)))
+        }).catch(axiosErrorHandler)
 
     }, [userData])
 
@@ -77,16 +66,17 @@ export default function Profile() {
         axios.delete(`${API.baseURL}/pets/remove/${pet._id}`)
             .then((res: AxiosResponse) => {
                 if (res.data.err) {
-                    notification.custom.error(res.data.err)
+                    toast({ description: res.data.err })
                 }
 
                 // Filter pet from state of user pets for rendering
                 setUserPets(pets => pets?.filter(userPet => userPet._id != pet._id))
-                notification.custom.success(`${t('pet.goodbye')}, ${pet.name}!`)
+                toast({ description: `${t('pet.goodbye')}, ${pet.name}!` })
             })
+            .catch(axiosErrorHandler)
     }
 
-    
+
 
     const userLastUpdated = useCallback((user: User_Response) => {
         const parsedDate = parseMongoDate(user.updatedAt)
@@ -111,15 +101,15 @@ export default function Profile() {
                             </Avatar>
                             <div>
                                 <p className='font-bold'>{userData.companyName ? userData.companyName : `${userData.firstName} ${userData.lastName}`}</p>
-                                <p className=''>{`${t('main.pet_card.last_update')}: ${userLastUpdated(userData)}`}</p>
+                                <p className=''>{`${t('label.lastUpdated')}: ${userLastUpdated(userData)}`}</p>
 
                             </div>
                         </div>
-                        <div>
+                        <div className='grid grid-cols-2 border grid-rows-1 rounded-lg'>
                             <ChangeProfileForm>
-                                <Button size={'icon'} type='submit' variant={'link'}><Pencil /></Button>
+                                <Button className='rounded-none p-2 m-0 border-r rounded-l-lg' type='submit' variant={'link'}><Pencil /></Button>
                             </ChangeProfileForm>
-                            <Button size='icon' variant={'destructive'} onClick={() => { signout() }}>
+                            <Button variant={'link'} className='text-red-500 hover:bg-red-500 hover:text-white hover:rounded-r-lg rounded-r-lg border-l rounded-none p-2 m-0' onClick={() => { signout() }}>
                                 <LogOut />
                             </Button>
                         </div>

@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { visualizer } from 'rollup-plugin-visualizer'
+import analyze from 'rollup-plugin-analyzer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -183,17 +184,20 @@ export default defineConfig({
     tsconfigPaths(),
     visualizer({ open: true }) as unknown as PluginOption
   ],
-  // build: {
-  //   rollupOptions: {
-  //     output: {
-  //       manualChunks(id) {
-  //         if (id.includes('node_modules')) {
-  //           if (id.includes('radix') || id.includes('ui')) return 'UI'
-  //           return 'vendor'
-  //         }
-  //         return 'index'
-  //       }
-  //     }
-  //   }
-  // }
+  build: {
+    rollupOptions: {
+      plugins: [
+        analyze({
+          summaryOnly: true
+        }) as unknown as PluginOption
+      ],
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor'
+          }
+        }
+      }
+    }
+  }
 })

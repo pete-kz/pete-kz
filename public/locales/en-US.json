@@ -20,7 +20,7 @@
   "notifications": {
     "too_many_requests": "Too often! Try again in 5 minutes.",
     "password_length": "Password is too short",
-    "internal_error": "An error has occurred. Try again later.",
+    "internal_error": "Internal error. Try again later",
     "firstName_req": "Firstname required!",
     "lastName_req": "Lastname required!",
     "phone_length": "Phone number must be at least 7 characters.",
@@ -28,7 +28,9 @@
     "phone_in_use": "Account with this phone number already exists!",
     "liked_remove": "Like removed!",
     "mobile_only": "App is optimized only for mobile!",
-    "profile_updated": "Profile updated!"
+    "profile_updated": "Profile updated!",
+    "passwordNoMatch": "Passwords do not match!",
+    "checkNetwork": "Check your internet connection"
   },
   "alert": {
     "you_sure": "Are you absolutely sure?",
@@ -50,14 +52,14 @@
     },
     "aboutUs": "About us",
     "welcomeTo": "Welcome to",
-    "slogan": "Came. Saw. Took it💜",
+    "slogan": "Came. Saw. Adopt it💜",
     "proceedPWA": "Let's go!",
     "support": {
       "default": "Support",
       "usVia": "You can support us by donating via",
       "soon": "More ways to support soon."
     },
-    "liked": "Liked! Check in your profile later.",
+    "liked": "Liked!",
     "goodbye": "Goodbye",
     "copied": "Copied!",
     "updateProfile": "Update profile",
@@ -81,7 +83,10 @@
     "myLikes": "My likes",
     "apply": "Apply",
     "contacts": "Contacts",
-    "noPets": "No pets!"
+    "noPets": "No pets!",
+    "reset": "Reset",
+    "updatePets": "Updating list of pets",
+    "lastUpdated": "Last updated"
   },
   "text": {
     "about_us": {
@@ -148,7 +153,7 @@
     "ownerType": "Owner type",
     "sterilized": "Sterilized",
     "weight": "Approximate weight",
-    "liked": "You liked "
+    "liked": "You liked"
   },
   "user": {
     "companyName": "Company name",
@@ -171,7 +176,8 @@
     "password": "Password",
     "phone": "Phone",
     "instagram": "Instagram",
-    "telegram": "Telegram"
+    "telegram": "Telegram",
+    "passwordConfirm": "Confirm your password"
   },
   "navigation_main_bar": {
     "pages": {

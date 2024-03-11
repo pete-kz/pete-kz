@@ -16,11 +16,12 @@ import {
 import { HeartOff } from 'lucide-react'
 import { Pet_Response, User_Response } from '@/lib/declarations'
 import { useIsAuthenticated } from 'react-auth-kit'
-import { axiosAuth as axios, notification } from '@utils'
+import { axiosAuth as axios, axiosErrorHandler } from '@utils'
 import { API } from '@config'
 import { AxiosResponse } from 'axios'
 import { useTranslation } from 'react-i18next'
 import PetOverlay from '../pet-overlay'
+import { useToast } from '../ui/use-toast'
 
 export default function LikedPet({ pet, userData, setUserLiked }: { pet: Pet_Response, userData: User_Response | undefined, userLiked: Pet_Response[], setUserLiked: React.Dispatch<React.SetStateAction<Pet_Response[]>> }) {
     // States
@@ -29,6 +30,7 @@ export default function LikedPet({ pet, userData, setUserLiked }: { pet: Pet_Res
     // Setups
     const isAuthenticated = useIsAuthenticated()
     const { t } = useTranslation()
+    const { toast } = useToast()
 
     // Functions
     function removePetFromLiked(pet_id: string) {
@@ -40,23 +42,24 @@ export default function LikedPet({ pet, userData, setUserLiked }: { pet: Pet_Res
             browserLiked = browserLiked.filter(likedPet => likedPet != pet_id)
 
             // Fetch all pets
-            axios.get(`${API.baseURL}/pets/find`)
-                .then((res: AxiosResponse) => {
-                    if (!res.data.err) return notification.custom.error(res.data.err)
-                    const allPets: Pet_Response[] = res.data
 
-                    // Filter liked pets from all pets that saved locally
-                    const likedPets = allPets.filter(pet => {
-                        return browserLiked.includes(pet._id)
-                    })
+                axios.get(`${API.baseURL}/pets/find`)
+                    .then((res: AxiosResponse) => {
+                        const allPets: Pet_Response[] = res.data
 
-                    // Set liked pets to state for rendering
-                    setUserLiked(likedPets)
+                        // Filter liked pets from all pets that saved locally
+                        const likedPets = allPets.filter(pet => {
+                            return browserLiked.includes(pet._id)
+                        })
 
-                    // Save liked pets to local storage
-                    localStorage.setItem('_data_offline_liked', JSON.stringify(browserLiked))
-                    notification.custom.success(t('notifications.liked_remove'))
-                })
+                        // Set liked pets to state for rendering
+                        setUserLiked(likedPets)
+
+                        // Save liked pets to local storage
+                        localStorage.setItem('_data_offline_liked', JSON.stringify(browserLiked))
+                        toast({ description: t('notifications.liked_remove') })
+                    }).catch(axiosErrorHandler)
+
 
             return
         }
@@ -71,15 +74,12 @@ export default function LikedPet({ pet, userData, setUserLiked }: { pet: Pet_Res
         userPrevData.password = undefined
 
         // Send request to remove liked pet from user data
-        axios.delete(`${API.baseURL}/users/remove/${userData._id}/liked/${pet_id}`).then((res: AxiosResponse) => {
-            if (!res.data.err) {
-                notification.custom.success(t('notifications.liked_remove'))
+
+            axios.delete(`${API.baseURL}/users/remove/${userData._id}/liked/${pet_id}`).then(() => {
+                toast({ description: t('notifications.liked_remove') })
                 // Remove pet from state of liked pets for rendering
                 setUserLiked(pets => pets?.filter(userPet => userPet._id != pet_id))
-            } else {
-                notification.custom.error(res.data.err)
-            }
-        })
+            }).catch(axiosErrorHandler)
     }
 
     return (

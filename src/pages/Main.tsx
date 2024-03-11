@@ -4,7 +4,7 @@ import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'reac
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response, Pet_Filter } from '@declarations'
-import { axiosAuth as axios, cn, notification, token } from '@utils'
+import { axiosAuth as axios, cn, token, defaultFilterValue, axiosErrorHandler } from '@utils'
 import { AxiosResponse } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { LucideCat, LucideDog, MoveLeft, MoveRight } from 'lucide-react'
@@ -17,16 +17,10 @@ import PetCard from '@/components/cards/pet'
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Filter, UserRound } from 'lucide-react'
 import { m } from 'framer-motion'
-
+import { useToast } from '@/components/ui/use-toast'
 const commonClasses = 'absolute top-0 p-2 z-50 m-2'
 const iconSize = 'w-8 h-8'
-const defaultFilterValue: Pet_Filter = {
-	type: '',
-	sterilized: false,
-	sex: '',
-	weight: 0,
-	owner_type: ''
-}
+
 
 /**
  * The main component of the application.
@@ -42,11 +36,13 @@ export default function Main() {
 	const { t } = useTranslation()
 	const isAuthenticated = useIsAuthenticated()
 	const navigate = useNavigate()
+	const { toast } = useToast()
 
 	// States
 	const [allPets, setAllPets] = useState<Pet_Response[]>([])
 	const [allUsers, setAllUsers] = useState<User_Response[]>([])
 	const [loadingPets, setLoadingPets] = useState<boolean>(true)
+	const [updatingCache, setUpdatingCache] = useState<boolean>(false)
 	const [api, setApi] = useState<CarouselApi>()
 	const [current, setCurrent] = useState(0)
 	const [filter, setFilter] = useState<Pet_Filter>(defaultFilterValue)
@@ -54,12 +50,14 @@ export default function Main() {
 
 	// Functions
 	function fetchAllPets(page: number = 1) {
+		setAllPets([])
 		setLoadingPets(true)
 		// Checking local storage for pets
 		const cachedPets = localStorage.getItem('_data_allPets')
 		if (cachedPets) {
 			setAllPets(JSON.parse(cachedPets))
 			setLoadingPets(false)
+			setUpdatingCache(true)
 		}
 
 		// Creating query string
@@ -69,9 +67,6 @@ export default function Main() {
 
 		// Fetching pets
 		axios.get(`${API.baseURL}/pets/recommendations?${queryString}`).then((res: AxiosResponse) => {
-			if (res.data.err) {
-				return notification.custom.error(res.data.err)
-			}
 			let pets: Pet_Response[] = res.data
 
 			// Filtering pets that the user already liked
@@ -87,36 +82,38 @@ export default function Main() {
 			// Setting pets and saving to local storage
 			localStorage.setItem('_data_allPets', JSON.stringify(allPets.length < 20 ? pets : allPets))
 			setAllPets(pets)
+			setUpdatingCache(false)
 			setLoadingPets(false)
-		})
+			toast({ description: 'Pets updated!' })
+		}).catch(axiosErrorHandler)
 	}
 
 	function fetchAllUsers() {
 		axios.get(`${API.baseURL}/users/find`).then((res: AxiosResponse) => {
 			if (res.data.err) {
-				return notification.custom.error(res.data.err)
+				return toast({ description: res.data.err })
 			}
 			setAllUsers(res.data)
-		}).catch(err => {
-			console.error(err)
-		})
+		}).catch(axiosErrorHandler)
 	}
 
 	function filterPets(pets: Pet_Response[]) {
 		// Filtering pets that the user already liked
 		if (isAuthenticated()) {
 			axios.get(`${API.baseURL}/users/find/${user._id}`).then((res: AxiosResponse) => {
-				if (res.data.err) {
-					return notification.custom.error(res.data.err)
-				}
 				const userData: User_Response = res.data
 				pets = pets.filter(pet => !(userData.liked.includes(pet._id)))
-			})
+			}).catch(axiosErrorHandler)
 		} else {
 			const browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
 			pets = pets.filter(pet => !(browserLiked.includes(pet._id)))
 		}
 		return pets
+	}
+
+	function updateFilter(filter: Pet_Filter) {
+		setFilter(() => filter)
+		fetchAllPets()
 	}
 
 	function checkToken() {
@@ -152,7 +149,7 @@ export default function Main() {
 			fetchAllPets()
 			fetchAllUsers()
 			return
-		} 
+		}
 		setOpenAlertCity(true)
 	}, [])
 
@@ -174,29 +171,32 @@ export default function Main() {
 			<div className={cn(commonClasses, 'left-0')} onClick={() => { navigate('/pwa/profile') }}>
 				<UserRound className={iconSize} />
 			</div>
-			<PetFilter setFilter={setFilter} filter={filter}>
+			<PetFilter updateFilter={updateFilter} filter={filter}>
 				<Button variant='link' className={cn(commonClasses, 'right-0')}>
 					<Filter className={iconSize} />
 				</Button>
 			</PetFilter>
-			<m.div initial={{ opacity: 0, y: 10 }} className='p-4 flex items-center h-screen' animate={{ opacity: 1, y: 0 }}>
-				{allPets.length > 0 ? (
+			<m.div initial={{ opacity: 0, y: 10 }} className='p-4 flex flex-col items-center w-screen justify-center h-screen' animate={{ opacity: 1, y: 0 }}>
+				{loadingPets ? <LoadingSpinner size={12} /> : allPets.length > 0 ? (
 					<>
-							<Carousel setApi={setApi} className='' opts={{ loop: false }}>
-								<CarouselContent>
-									{allPets.map(pet => (
-										<CarouselItem key={pet._id}>
-											<PetCard
-												{...pet}
-												_id={pet._id}
-												user={allUsers.filter(user => user._id === pet.ownerID)[0]}
-											/>
-										</CarouselItem>
-									))}
-								</CarouselContent>
-							</Carousel>
+					{updatingCache && !loadingPets && <p className='animate-pulse font-semibold bg-card p-4 mb-2 rounded-lg border w-full'>{t('label.updatePets')}...</p>}
+					<Carousel setApi={setApi} className='' opts={{ loop: false }}>
+						<CarouselContent>
+							{allPets.map(pet => (
+								<CarouselItem key={pet._id}>
+									<PetCard
+										{...pet}
+										_id={pet._id}
+										user={allUsers.filter(user => user._id === pet.ownerID)[0]}
+									/>
+								</CarouselItem>
+							))}
+						</CarouselContent>
+					</Carousel>
 					</>
-				) : loadingPets ? <LoadingSpinner size={12} /> : <NoMorePets />}
+				) : (
+					<NoMorePets />
+				)}
 			</m.div>
 			{allPets.length > 0 && <div className='absolute bottom-10 flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
 				<Button size={'icon'} variant={'secondary'} className='active:scale-95' disabled={allPets[current]._id === allPets[0]._id} onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>

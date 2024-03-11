@@ -8,12 +8,14 @@ import { useAuthUser } from 'react-auth-kit'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { AxiosResponse } from 'axios'
-import { notification, axiosAuth as axios } from '@utils'
+import { axiosAuth as axios, axiosErrorHandler } from '@utils'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { User_Response } from '@/lib/declarations'
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { InputIcon } from '../ui/input-icon'
+import { useToast } from '../ui/use-toast'
+import { PhoneInput } from '../ui/phone-input'
 
 export default function ChangeProfileForm({ children }: { children: React.ReactNode }) {
 
@@ -21,6 +23,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
     const { t } = useTranslation()
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
+    const { toast } = useToast()
 
     // States
     const [loadingState, setLoadingState] = useState<boolean>(false)
@@ -54,16 +57,10 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
     function getUserInfo() {
         setLoadingState(true)
         axios.get(`${API.baseURL}/users/find/${user._id}`).then((res: AxiosResponse) => {
-            // need to populate skipped and like => filter out all pets based on skipped ids
-            if (!res.data.err) {
                 const user: User_Response = res.data
                 setUserData(user)
                 setLoadingState(false)
-            } else {
-                notification.custom.error(res.data.err)
-                setLoadingState(false)
-            }
-        })
+        }).catch(axiosErrorHandler)
     }
 
     function onSubmit(values: z.infer<typeof formSchema>) {
@@ -81,15 +78,12 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
                 }
             }
         })
-            .then((res: AxiosResponse) => {
-                if (!res.data.err) {
-                    notification.custom.success(t('notifications.profile_updated'))
+            .then(() => {
+                    toast({ description: t('notifications.profile_updated') })
                     setUpdated(update => !update)
-                } else {
-                    notification.custom.error(res.data.err)
-                }
                 setLoadingState(false)
             })
+            .catch(axiosErrorHandler)
     }
 
     useEffect(() => {
@@ -168,7 +162,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
                                     <FormItem>
                                         <FormLabel>{t('user.phone')}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="+7 123 456 78 90" type='tel' {...field} />
+                                            <PhoneInput placeholder={t('user.phone')} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

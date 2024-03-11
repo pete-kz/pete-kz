@@ -9,13 +9,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '../ui/checkbox'
 import { Input } from '@/components/ui/input'
-import { AxiosResponse } from 'axios'
-import { axiosAuth as axios, notification, filterValues } from '@utils'
+import { axiosAuth as axios, axiosErrorHandler, filterValues } from '@utils'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { Textarea } from '@/components/ui/textarea'
 import ReactImageGallery from 'react-image-gallery'
-
+import { useToast } from '../ui/use-toast'
 
 export function AddPetForm() {
 
@@ -23,6 +22,7 @@ export function AddPetForm() {
     const { t } = useTranslation()
     const authStateUser = useAuthUser()
     const user = authStateUser() || {}
+    const { toast } = useToast()
     const formSchema = z.object({
         name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
         birthDate: z.string(),
@@ -69,18 +69,11 @@ export function AddPetForm() {
             }
         }
         axios.post(`${API.baseURL}/pets/add`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-            .then((response: AxiosResponse) => {
-                if (!response.data.err) {
-                    notification.custom.success(t('label.success'))
-                } else {
-                    notification.custom.error(response.data.err)
-                }
+            .then(() => {
+                toast({ description: t('label.success') })
                 setLoadingState(false)
             })
-            .catch(err => {
-                notification.custom.error(err)
-                setLoadingState(false)
-            })
+            .catch(axiosErrorHandler)
     }
 
     function checkImage(file: Blob | undefined) {
@@ -166,7 +159,7 @@ export function AddPetForm() {
                     name="sex"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{t('pet.sex')}</FormLabel>
+                            <FormLabel>{t('pet.sex.default')}</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
@@ -205,18 +198,18 @@ export function AddPetForm() {
                     )}
                 />
                 <FormField
-                        control={form.control}
-                        name="weight"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t('pet.weight')}</FormLabel>
-                                <FormControl>
-                                    <Input type='number' required {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    control={form.control}
+                    name="weight"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('pet.weight')}</FormLabel>
+                            <FormControl>
+                                <Input type='number' required {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="description"

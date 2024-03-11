@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react'
 import NavigationBar from '@/components/nav-bar'
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from '@/components/ui/toaster'
 import { useTranslation } from 'react-i18next'
-import { notification } from '@/lib/utils'
+import { useToast } from '@/components/ui/use-toast'
 import { Outlet } from 'react-router-dom'
 
 export default function WebLayout() {
 
 	// States
 	const { t } = useTranslation()
+	const { toast } = useToast()
 
 	useEffect(() => {
 		if (window.innerHeight / window.innerWidth <= 1) {
-			notification.custom.error(t('notifications.mobile_only'))
+			toast({ description: t('notifications.mobile_only') })
 		} 
 	}, [])
 

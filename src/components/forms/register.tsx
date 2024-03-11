@@ -8,32 +8,43 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import axios, { AxiosResponse } from 'axios'
-import { filterValues, notification } from '@utils'
+import { axiosErrorHandler, filterValues, } from '@utils'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '../ui/label'
 import { Checkbox } from '../ui/checkbox'
-
+import { useToast } from '../ui/use-toast'
+import { PhoneInput } from '../ui/phone-input'
 
 export function RegisterForm() {
 
     // Setups
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const { toast } = useToast()
     const formSchema = z.object({
         firstName: z.string().min(1, { message: t('notifications.firstName_req') }).optional(),
         lastName: z.string().min(1, { message: t('notifications.lastName_req') }).optional(),
         phone: z.string().min(7, { message: t('notifications.phone_length') }).includes('+', { message: t('notifications.phone_international') }),
         type: z.enum(['private', 'shelter', 'breeder', 'nursery']),
         password: z.string().min(8, { message: t('notifications.password_length') }),
+        password_repeat: z.string().min(8),
         company_name: z.string().optional()
-    })
+    }).superRefine(({ password_repeat, password }, ctx) => {
+        if (password_repeat !== password) {
+          ctx.addIssue({
+            code: 'custom',
+            message: t('notifications.passwordNoMatch')
+          })
+        }
+      })
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             phone: '+7',
             password: '',
+            password_repeat: '',
             firstName: '',
             lastName: '',
             company_name: '',
@@ -52,28 +63,25 @@ export function RegisterForm() {
             if (!response.data.err) {
                 navigate('/auth/login')
             } else {
-                notification.custom.error(response.data.err)
+                toast({ description: response.data.err })
             }
             setLoadingState(false)
             return
-        }).catch(() => {
-            notification.custom.error(t('notifications.too_many_requests'))
-            setLoadingState(false)
-        })
+        }).catch(axiosErrorHandler)
     }
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full md:w-1/3">
-                <div className='flex gap-1.5'>
+                <div className='w-full flex gap-1.5'>
                     <FormField
                         control={form.control}
                         name="firstName"
                         render={({ field }) => (
-                            <FormItem>
+                            <FormItem className='w-full'>
                                 <FormLabel>{t('user.firstName')}</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <Input className='w-full' {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -83,17 +91,17 @@ export function RegisterForm() {
                         control={form.control}
                         name="lastName"
                         render={({ field }) => (
-                            <FormItem>
+                            <FormItem className='w-full'>
                                 <FormLabel>{t('user.lastName')}</FormLabel>
                                 <FormControl>
-                                    <Input  {...field} />
+                                    <Input className='w-full'  {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                 </div>
-                <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <div className="flex items-center space-x-3 space-y-0 rounded-md border p-4">
                     <Checkbox className='h-6 w-6 rounded-full' id="company_checkbox" checked={company} onCheckedChange={(value) => {
                         setCompany(value !== 'indeterminate' ? value : false)
                     }} />
@@ -123,7 +131,7 @@ export function RegisterForm() {
                         <FormItem>
                             <FormLabel>{t('user.phone')}</FormLabel>
                             <FormControl>
-                                <Input placeholder="+7 123 456 78 90" type='tel' {...field} />
+                                <PhoneInput defaultCountry='KZ' placeholder={t('user.phone')} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -159,6 +167,19 @@ export function RegisterForm() {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>{t('user.password')}</FormLabel>
+                            <FormControl>
+                                <Input placeholder="" type='password' {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="password_repeat"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('user.passwordConfirm')}</FormLabel>
                             <FormControl>
                                 <Input placeholder="" type='password' {...field} />
                             </FormControl>
