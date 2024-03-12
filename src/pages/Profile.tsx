@@ -7,7 +7,7 @@ import { API } from '@config'
 import { AxiosResponse } from 'axios'
 import { Pet_Response, User_Response } from '@declarations'
 import { useNavigate } from 'react-router-dom'
-import { Trash, Pencil, Plus, Settings, LogOut, ExternalLink } from 'lucide-react'
+import { Trash, Pencil, Plus, Settings, LogOut } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -91,9 +91,9 @@ export default function Profile() {
     return (
         <>
             <MobilePageHeader title={t('header.profile')} to='/pwa' />
-            <m.div className="block w-screen gap-2 p-3 mb-20" initial={{ opacity: 0, y: 1 }} animate={{ opacity: 1, y: 0 }}>
-                {userData ? (
-                    <Card className='p-3 flex justify-between items-center'>
+            <m.div className="block w-full gap-2 p-3 mb-20" initial={{ opacity: 0, y: 1 }} animate={{ opacity: 1, y: 0 }}>
+            {userData ? (
+                    <Card className='p-3 flex flex-col gap-4'>
                         <div className='flex gap-2'>
                             <Avatar>
                                 <AvatarImage src={'/images/pete-logo.svg'} alt={'PETE'} />
@@ -102,23 +102,24 @@ export default function Profile() {
                             <div>
                                 <p className='font-bold'>{userData.companyName ? userData.companyName : `${userData.firstName} ${userData.lastName}`}</p>
                                 <p className=''>{`${t('label.lastUpdated')}: ${userLastUpdated(userData)}`}</p>
-
                             </div>
                         </div>
                         <div className='grid grid-cols-2 border grid-rows-1 rounded-lg'>
                             <ChangeProfileForm>
-                                <Button className='rounded-none p-2 m-0 border-r rounded-l-lg' type='submit' variant={'link'}><Pencil /></Button>
+                                <Button className='rounded-none p-2 m-0 border-r gap-2 rounded-l-lg' type='submit' variant={'link'}>
+                                    {t('label.edit')}<Pencil />
+                                </Button>
                             </ChangeProfileForm>
-                            <Button variant={'link'} className='text-red-500 hover:bg-red-500 hover:text-white hover:rounded-r-lg rounded-r-lg border-l rounded-none p-2 m-0' onClick={() => { signout() }}>
-                                <LogOut />
+                            <Button variant={'link'} className='text-red-500 hover:bg-red-500 hover:text-white hover:rounded-r-lg rounded-r-lg border-l rounded-none p-2 m-0 gap-2' onClick={() => { signout(); navigate('/pwa') }}>
+                            {t('label.logout')}<LogOut />
                             </Button>
                         </div>
                     </Card>
                 ) : isAuthenticated() ? (
-                    <Skeleton className='h-[74px] w-full rounded-lg' />
+                    <Skeleton className='h-[132px] w-full rounded-lg' />
                 ) : (
-                    <Button variant={'secondary'} className='h-[74px] gap-2 w-full' onClick={() => { navigate('/auth/login') }}>
-                        {t('button.authorization')}<ExternalLink />
+                    <Button variant={'secondary'} className='gap-2 w-full font-bold' onClick={() => { navigate('/auth/login') }}>
+                        {t('button.authorization')}
                     </Button>
                 )}
 

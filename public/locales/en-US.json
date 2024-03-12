@@ -27,7 +27,6 @@
     "phone_international": "Please, use international phone number format (with +)",
     "phone_in_use": "Account with this phone number already exists!",
     "liked_remove": "Like removed!",
-    "mobile_only": "App is optimized only for mobile!",
     "profile_updated": "Profile updated!",
     "passwordNoMatch": "Passwords do not match!",
     "checkNetwork": "Check your internet connection"
@@ -86,7 +85,9 @@
     "noPets": "No pets!",
     "reset": "Reset",
     "updatePets": "Updating list of pets",
-    "lastUpdated": "Last updated"
+    "lastUpdated": "Last updated",
+    "edit": "Edit",
+    "logout": "Exit"
   },
   "text": {
     "about_us": {

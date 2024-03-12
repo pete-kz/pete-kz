@@ -165,7 +165,7 @@ export default defineConfig({
             'sizes': '1024x1024'
           }
         ],
-        'shortcuts' : [
+        'shortcuts': [
           {
             'name': 'Add new pet',
             'url': '/pwa/pets/add'

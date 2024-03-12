@@ -47,7 +47,7 @@ export function LoginForm() {
                     tokenType: 'Bearer',
                     authState: response.data.docs,
                 })) {
-                    navigate('/pwa/profile')
+                    navigate('/pwa')
                 } else {
                     toast({ description: t('notifications.internal_error') })
                 }

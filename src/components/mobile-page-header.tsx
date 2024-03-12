@@ -12,7 +12,7 @@ export default function MobilePageHeader({ title, to }: { title: string, to: str
     const { t } = useTranslation()
 
     return (
-        <m.div className='grid grid-rows-1 grid-cols-3 bg-card h-16 w-screen' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <m.div className='grid grid-rows-1 grid-cols-3 bg-card h-16 w-full' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className='flex items-center justify-start pl-2'>
                 <Button variant={'link'} onClick={() => { navigate(to) }} className='flex justify-start gap-1 h-fit text-muted-foreground p-4 pl-0'>
                     <div className='flex items-center'><ChevronLeft />

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useState, useEffect } from 'react'
-import { useAuthUser, useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
+import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response, Pet_Filter } from '@declarations'
-import { axiosAuth as axios, cn, token, defaultFilterValue, axiosErrorHandler } from '@utils'
+import { axiosAuth as axios, cn, defaultFilterValue, axiosErrorHandler } from '@utils'
 import { AxiosResponse } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { LucideCat, LucideDog, MoveLeft, MoveRight } from 'lucide-react'
@@ -31,8 +31,6 @@ export default function Main() {
 	// Setups
 	const authStateUser = useAuthUser()
 	const user = authStateUser() || {}
-	const signout = useSignOut()
-	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
 	const isAuthenticated = useIsAuthenticated()
 	const navigate = useNavigate()
@@ -116,14 +114,6 @@ export default function Main() {
 		fetchAllPets()
 	}
 
-	function checkToken() {
-		const isEqualTokens = authHeader() == token
-		if (!isEqualTokens) {
-			signout()
-			localStorage.removeItem('_auth')
-		}
-	}
-
 	useEffect(() => {
 		// Checking if current pet is the last one
 		if (current === allPets.length - 1) {
@@ -145,7 +135,6 @@ export default function Main() {
 
 	useEffect(() => {
 		if (localStorage.getItem('_city')) {
-			checkToken()
 			fetchAllPets()
 			fetchAllUsers()
 			return
@@ -176,27 +165,29 @@ export default function Main() {
 					<Filter className={iconSize} />
 				</Button>
 			</PetFilter>
-			<m.div initial={{ opacity: 0, y: 10 }} className='p-4 flex flex-col items-center w-screen justify-center h-screen' animate={{ opacity: 1, y: 0 }}>
-				{loadingPets ? <LoadingSpinner size={12} /> : allPets.length > 0 ? (
-					<>
-					{updatingCache && !loadingPets && <p className='animate-pulse font-semibold bg-card p-4 mb-2 rounded-lg border w-full'>{t('label.updatePets')}...</p>}
-					<Carousel setApi={setApi} className='' opts={{ loop: false }}>
-						<CarouselContent>
-							{allPets.map(pet => (
-								<CarouselItem key={pet._id}>
-									<PetCard
-										{...pet}
-										_id={pet._id}
-										user={allUsers.filter(user => user._id === pet.ownerID)[0]}
-									/>
-								</CarouselItem>
-							))}
-						</CarouselContent>
-					</Carousel>
-					</>
-				) : (
-					<NoMorePets />
-				)}
+			<m.div initial={{ opacity: 0, y: 10 }} className='p-4 flex flex-col items-center w-full justify-center h-screen' animate={{ opacity: 1, y: 0 }}>
+				<div className='max-w-md'>
+					{loadingPets ? <LoadingSpinner size={12} /> : allPets.length > 0 ? (
+						<>
+							{updatingCache && !loadingPets && <p className='animate-pulse font-semibold bg-card p-4 mb-2 rounded-lg border w-full'>{t('label.updatePets')}...</p>}
+							<Carousel setApi={setApi} className='' opts={{ loop: false }}>
+								<CarouselContent>
+									{allPets.map(pet => (
+										<CarouselItem key={pet._id}>
+											<PetCard
+												{...pet}
+												_id={pet._id}
+												user={allUsers.filter(user => user._id === pet.ownerID)[0]}
+											/>
+										</CarouselItem>
+									))}
+								</CarouselContent>
+							</Carousel>
+						</>
+					) : (
+						<NoMorePets />
+					)}
+				</div>
 			</m.div>
 			{allPets.length > 0 && <div className='absolute bottom-10 flex w-full gap-2 justify-center px-3 mt-2 mb-20'>
 				<Button size={'icon'} variant={'secondary'} className='active:scale-95' disabled={allPets[current]._id === allPets[0]._id} onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>

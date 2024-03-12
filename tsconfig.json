@@ -31,6 +31,9 @@
       "@utils": [
         "./src/lib/utils.ts"
       ],
+      "@hooks": [
+        "./src/lib/hooks.ts"
+      ],
       "@config": [
         "./config/config.ts"
       ]
