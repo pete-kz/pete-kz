@@ -12,3 +12,4 @@ stats.html
 dist/
 dev-dist/
 .DS_store
+spec.yml
