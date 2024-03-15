@@ -4,14 +4,15 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { useAuthUser } from 'react-auth-kit'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { AxiosResponse } from 'axios'
 import { axiosAuth as axios, axiosErrorHandler } from '@utils'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
-import { User_Response } from '@/lib/declarations'
+import { AuthState, User_Response } from '@/lib/declarations'
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { InputIcon } from '../ui/input-icon'
 import { useToast } from '../ui/use-toast'
@@ -21,8 +22,8 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 
     // Setups
     const { t } = useTranslation()
-    const authStateUser = useAuthUser()
-    const user = authStateUser() || {}
+    const user = useAuthUser<AuthState>()
+    const authHeader = useAuthHeader()
     const { toast } = useToast()
 
     // States
@@ -33,7 +34,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
     // Form Setups
     const formSchema = z.object({
         firstName: z.string().min(2),
-        companyName: z.string().min(2),
+        companyName: z.string().optional(),
         lastName: z.string().min(2),
         phone: z.string().min(7, { message: t('notifications.phone_length') }).includes('+', { message: t('notifications.phone_international') }),
         instagram: z.union([z.string(), z.string().min(2)]).optional().transform(e => e === '' ? undefined : e),
@@ -56,16 +57,16 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
     // Functions
     function getUserInfo() {
         setLoadingState(true)
-        axios.get(`${API.baseURL}/users/find/${user._id}`).then((res: AxiosResponse) => {
-                const user: User_Response = res.data
-                setUserData(user)
-                setLoadingState(false)
+        axios.get(`${API.baseURL}/users/find/${user?._id}`).then((res: AxiosResponse) => {
+            const user: User_Response = res.data
+            setUserData(user)
+            setLoadingState(false)
         }).catch(axiosErrorHandler)
     }
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         setLoadingState(true)
-        axios.post(`${API.baseURL}/users/update/${user._id}`, {
+        axios.post(`${API.baseURL}/users/update/${user?._id}`, {
             update: {
                 companyName: values.companyName,
                 firstName: values.firstName,
@@ -77,13 +78,16 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
                     telegram: values.telegram
                 }
             }
-        })
+        }, { headers: { Authorization: authHeader } })
             .then(() => {
-                    toast({ description: t('notifications.profile_updated') })
-                    setUpdated(update => !update)
+                toast({ description: t('notifications.profile_updated') })
+                setUpdated(update => !update)
                 setLoadingState(false)
             })
             .catch(axiosErrorHandler)
+            .finally(() => {
+                setLoadingState(false)
+            })
     }
 
     useEffect(() => {
@@ -94,7 +98,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
         if (userData) {
             form.setValue('firstName', userData.firstName)
             form.setValue('lastName', userData.lastName)
-            form.setValue('companyName', userData.companyName)
+            if (userData.companyName) form.setValue('companyName', userData.companyName)
             form.setValue('instagram', userData.social.instagram)
             form.setValue('telegram', userData.social.telegram)
             form.setValue('phone', userData.phone)
@@ -114,46 +118,48 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
                 {userData?._id && (
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
-                            <FormField
-                                control={form.control}
-                                name="companyName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('user.companyName')}</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            {userData.companyName && (
+                                <FormField
+                                    control={form.control}
+                                    name="companyName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('user.companyName')}</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
                             <div className='grid grid-cols-2 gap-3'>
-                            <FormField
-                                control={form.control}
-                                name="firstName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('user.firstName')}</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="lastName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('user.lastName')}</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                <FormField
+                                    control={form.control}
+                                    name="firstName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('user.firstName')}</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="lastName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('user.lastName')}</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
                             <FormField
                                 control={form.control}

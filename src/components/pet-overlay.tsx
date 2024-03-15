@@ -1,187 +1,129 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useState, useEffect } from 'react'
-import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
+import React, { useState, useEffect, lazy } from 'react'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
-import { User_Response, type Pet_Response } from '@declarations'
+import { User_Response, type Pet_Response, AuthState } from '@declarations'
 import { axiosAuth as axios, axiosErrorHandler } from '@utils'
-import { AxiosResponse } from 'axios'
-import { Card, CardContent, CardTitle, CardDescription } from '@/components/ui/card'
+import { AxiosError } from 'axios'
+import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Heart, Instagram, Phone, Send } from 'lucide-react'
+import { Phone, Send } from 'lucide-react'
 import ReactImageGallery from 'react-image-gallery'
 import { formatAge } from '@/lib/utils'
-import { ChangePetForm } from '@/components/forms/change-pet'
 import { OverlayContent, Overlay } from './ui/overlay'
-import { AuthStateUserObject } from 'react-auth-kit/dist/types'
 import BackButton from './back-button'
-import { useToast } from './ui/use-toast'
 
-export default function PetOverlay({ pet, owner, info = false, edit = false, contacts = false, open = false, setOpen }: { pet: Pet_Response, owner?: User_Response, info?: boolean, edit?: boolean, contacts?: boolean, open?: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+const ChangePetForm = lazy(() => import('@/components/forms/change-pet'))
+const LikeButton = lazy(() => import('@/components/like-button'))
+
+interface PetOverlayProps { 
+    pet: Pet_Response, 
+    owner?: User_Response, 
+    info?: boolean, 
+    like?: boolean, 
+    edit?: boolean, 
+    contacts?: boolean, 
+    open?: boolean, 
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>, 
+}
+
+export default function PetOverlay({ pet, owner, info = false, edit = false, contacts = false, open = false, like = false, setOpen }: PetOverlayProps) {
 
     // Setups
-    const user: AuthStateUserObject = useAuthUser() || {}
+    const user = useAuthUser<AuthState>()
     const { t } = useTranslation()
 
     // States
     const [imageLinks, setImageLinks] = useState<{ original: string, thumbnail: string }[]>([])
+    const [ownerData, setOwnerData] = useState<User_Response>(owner as User_Response)
 
     // Functions
-    function fetchOwner() {
-        axios.get(`${API.baseURL}/users/find/${pet.ownerID}`)
-            .then((res: AxiosResponse) => {
-                owner = res.data
-            })
-            .catch(axiosErrorHandler)
+    async function fetchOwner() {
+        if (owner) return
+        try {
+            const res = await axios.get(`${API.baseURL}/users/find/${pet.ownerID}`)
+            setOwnerData(res.data)
+        } catch (error) {
+            axiosErrorHandler(error as AxiosError)
+        }
     }
-
 
     useEffect(() => {
         fetchOwner()
-        setImageLinks(pet.imagesPath.map(imageLink => {
-            return {
-                original: imageLink,
-                thumbnail: imageLink
-            }
-        }))
+        setImageLinks(pet.imagesPath.map(imageLink => ({
+            original: imageLink,
+            thumbnail: imageLink
+        })))
     }, [])
 
-    return <Overlay open={open}>
-        <OverlayContent className='max-h-full h-fit overflow-scroll'>
-
-            {
-                (edit && owner?._id === user?._id) ? (
+    return (
+        <Overlay open={open}>
+            <OverlayContent className='max-h-full h-fit overflow-scroll'>
+                {edit && ownerData?._id === user?._id && (
                     <div className='m-4 bg-card p-4 border rounded-lg mb-16'>
-                        <ChangePetForm petData={pet} />
+                        <BackButton className='p-0' action={() => setOpen(false)} />
+                        <ChangePetForm setOpen={setOpen} petData={pet} />
                     </div>
-                ) : (
-                    <>
-                        <Card className='m-2 flex flex-col gap-3'>
-                            <BackButton className='pb-0 pl-4' action={() => { setOpen(false) }} />
-                            <CardTitle className='p-6 pb-2 pt-0'>
-                                {pet.name}, {formatAge(pet.birthDate, t('pet.year'), t('pet.month')) as string}, {owner?.companyName ? owner.companyName : owner?.firstName + ' ' + owner?.lastName}
-                            </CardTitle>
-                            <CardContent className="p-0">
-                                <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={true} showPlayButton={false} />
-                            </CardContent>
-                            <CardDescription className='p-6 pt-2 pb-2'>
-                                {pet.description}
-                            </CardDescription>
-                            {info && (
-                                <div className='p-6 pt-0 flex justify-center'>
-                                    <LikeButton pet={pet} />
+                )}
+
+                {ownerData && info && (
+                    <Card className='border-none rounded-none flex flex-col gap-3 h-full w-full'>
+                        <BackButton className='pb-0 pl-4' action={() => setOpen(false)} />
+                        <CardTitle className='p-6 pb-2 pt-0'>
+                            {pet.name}, {formatAge(pet.birthDate, t('pet.year'), t('pet.month')) as string}
+                            <br />
+                            <span className='text-muted font-normal'>
+                                {ownerData.companyName ? ownerData.companyName : ownerData.firstName + ' ' + ownerData.lastName}
+                            </span>
+                        </CardTitle>
+                        <CardContent className='p-0'>
+                            <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={true} showPlayButton={false} />
+                        </CardContent>
+                        <div className='p-6 pt-2 pb-2'>
+                            {pet.description}
+                            <div id='pet_table'>
+                                <div id='pet_row'>
+                                    <p>{t('pet.sex.default')}</p>
+                                    <p>{t(`pet.sex.${pet.sex}`)}</p>
                                 </div>
-                            )}
-                        </Card>
+                                <div id='pet_row'>
+                                    <p>{t('pet.sterilized')}</p>
+                                    <p>{pet.sterilized ? t('label.yes') : t('label.no')}</p>
+                                </div>
+                                <div id='pet_row'>
+                                    <p>{t('pet.weight')}</p>
+                                    <p>{`${pet.weight} ${t('pet.kg')}`}</p>
+                                </div>
+                            </div>
+                        </div>
                         {contacts && (
-                            <Card className='p-4 m-2'>
-                                <Accordion type='single' collapsible>
-                                    <AccordionItem value={`${pet._id}_owner_contacts`}>
-                                        <AccordionTrigger className='p-0'>{t('label.contacts')}</AccordionTrigger>
-                                        <AccordionContent>
-                                            <p>{owner?.firstName + ' ' + owner?.lastName}</p>
-                                            {owner?.social.instagram && (
-                                                <Button variant={'link'} className='flex gap-2' onClick={() => { window.open(`https://instagram.com/${owner?.social.instagram}`, '_blank') }}>
-                                                    <Instagram />{owner?.social.instagram}
-                                                </Button>
-                                            )}
-                                            {owner?.social.telegram && (
-                                                <Button className='flex gap-2' variant={'link'} onClick={() => { window.open(`https://t.me/${owner?.social.telegram}`, '_blank') }}>
-                                                    <Send />{owner?.social.telegram}
-                                                </Button>
-                                            )}
-                                            {owner?.phone && (
-                                                <Button className='flex gap-2' variant={'link'} onClick={() => { window.open(`tel:${owner?.phone}`, '_blank') }}>
-                                                    <Phone />{owner?.phone}
-                                                </Button>
-                                            )}
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
-                            </Card>
+                            <div className='p-6 pt-0'>
+                                <h3 className='text-xl'>{t('label.contacts')}</h3>
+                                <p>{ownerData.firstName + ' ' + ownerData.lastName}</p>
+                                {ownerData.social.instagram && (
+                                    <Button variant={'link'} className='flex gap-2 pl-0' onClick={() => { window.open(`https://instagram.com/${ownerData.social.instagram}`, '_blank') }}>
+                                        {ownerData.social.instagram}
+                                    </Button>
+                                )}
+                                {ownerData.social.telegram && (
+                                    <Button className='flex gap-2 pl-0' variant={'link'} onClick={() => { window.open(`https://t.me/${ownerData.social.telegram}`, '_blank') }}>
+                                        <Send />{ownerData.social.telegram}
+                                    </Button>
+                                )}
+                                {ownerData.phone && (
+                                    <Button className='flex gap-2 pl-0' variant={'link'} onClick={() => { window.open(`tel:${ownerData.phone}`, '_blank') }}>
+                                        <Phone />{ownerData.phone}
+                                    </Button>
+                                )}
+                            </div>
                         )}
-                    </>
-                )
-            }
+                    </Card>
+                )}
 
-        </OverlayContent>
-    </Overlay>
+                {like && <LikeButton pet={pet} />}
+            </OverlayContent>
+        </Overlay>
+    )
 }
 
-function LikeButton(props: { pet: Pet_Response }) {
-    // Setups
-    const authStateUser = useAuthUser()
-    const user = authStateUser() || {}
-    const { t } = useTranslation()
-    const isAuthenticated = useIsAuthenticated()
-    const { toast } = useToast()
-
-    // States
-    const [userData, setUserData] = useState<User_Response>()
-    const [liked, setLiked] = useState<boolean>(false)
-
-    // Functions
-    function likePet() {
-        if (!liked) {
-            if (!isAuthenticated() || !userData) {
-                const browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
-                browserLiked.push(props.pet._id)
-                localStorage.setItem('_data_offline_liked', JSON.stringify(browserLiked))
-                toast({ description: t('pet.liked') + ' ' + props.pet.name + '!' })
-                setLiked(true)
-                return
-            }
-            const userPrevData = structuredClone(userData)
-            userPrevData.liked.push(props.pet._id)
-            // @ts-expect-error Using interface User_Response that have strict definitions throws error when trying to exclude password from data
-            userPrevData.password = undefined
-            axios.post(`${API.baseURL}/users/update/${userData._id}`, { update: userPrevData }).then(() => {
-                toast({ description: t('pet.liked') + ' ' + props.pet.name + '!' })
-                setLiked(true)
-            })
-                .catch(axiosErrorHandler)
-        } else {
-            removePetFromLiked(props.pet._id)
-            setLiked(false)
-        }
-
-    }
-
-    function removePetFromLiked(pet_id: string) {
-        // If user is not authenticated, remove pet from local storage
-        if (!isAuthenticated || !userData) {
-            // Parse liked pets from local storage
-            let browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]
-            // Filter liked pets from unliked pet
-            browserLiked = browserLiked.filter(likedPet => likedPet != pet_id)
-
-            localStorage.setItem('_data_offline_liked', JSON.stringify(browserLiked))
-            toast({ description: t('notifications.liked_remove') })
-
-            return
-        }
-        // If user is authenticated, remove pet from user data
-        // Send request to remove liked pet from user data
-        axios.delete(`${API.baseURL}/users/remove/${userData._id}/liked/${pet_id}`).then(() => { 
-            toast({ description: t('notifications.liked_remove') })
-        })
-        .catch(axiosErrorHandler)
-    }
-
-    function getUser() {
-        if (isAuthenticated()) {
-            axios.post(`${API.baseURL}/users/find`, { query: { _id: user._id } }).then((res: AxiosResponse) => {
-                setUserData(res.data)
-            })
-            .catch(axiosErrorHandler)
-        }
-    }
-
-    useEffect(() => {
-        getUser()
-
-    }, [])
-
-    return <Button variant={'outline'} size={'icon'} className='w-fit p-6 rounded-full' style={{ color: '#FF0000' }} onClick={likePet}><Heart fill={liked ? '#FF0000' : 'transparent'} /></Button>
-}

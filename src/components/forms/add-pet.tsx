@@ -3,7 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
-import { useAuthUser } from 'react-auth-kit'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -15,13 +16,14 @@ import LoadingSpinner from '@/components/loading-spinner'
 import { Textarea } from '@/components/ui/textarea'
 import ReactImageGallery from 'react-image-gallery'
 import { useToast } from '../ui/use-toast'
+import { AuthState } from '@/lib/declarations'
 
 export function AddPetForm() {
 
     // Setups
     const { t } = useTranslation()
-    const authStateUser = useAuthUser()
-    const user = authStateUser() || {}
+    const user = useAuthUser<AuthState>()
+    const authHeader = useAuthHeader()
     const { toast } = useToast()
     const formSchema = z.object({
         name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
@@ -52,28 +54,30 @@ export function AddPetForm() {
 
     // Functions
     function onSubmit(values: z.infer<typeof formSchema>) {
-        setLoadingState(true)
-        const formData = new FormData()
-        formData.append('name', values.name)
-        formData.append('birthDate', `${values.birthDate}`)
-        formData.append('description', values.description)
-        formData.append('type', values.type)
-        formData.append('sterilized', JSON.stringify(values.sterilized))
-        formData.append('weight', JSON.stringify(values.weight))
-        formData.append('sex', values.sex)
-        formData.append('ownerID', user._id)
-        formData.append('city', localStorage.getItem('_city') || '0')
-        if (files) {
-            for (let i = 0; i < files.length; i++) {
-                formData.append('images', files[i])
+        if (user) {
+            setLoadingState(true)
+            const formData = new FormData()
+            formData.append('name', values.name)
+            formData.append('birthDate', `${values.birthDate}`)
+            formData.append('description', values.description)
+            formData.append('type', values.type)
+            formData.append('sterilized', JSON.stringify(values.sterilized))
+            formData.append('weight', JSON.stringify(values.weight))
+            formData.append('sex', values.sex)
+            formData.append('ownerID', user._id)
+            formData.append('city', localStorage.getItem('_city') || '0')
+            if (files) {
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('images', files[i])
+                }
             }
+            axios.post(`${API.baseURL}/pets/add`, formData, { headers: { 'Content-Type': 'multipart/form-data', Authorization: authHeader } })
+                .then(() => {
+                    toast({ description: t('label.success') })
+                    setLoadingState(false)
+                })
+                .catch(axiosErrorHandler)
         }
-        axios.post(`${API.baseURL}/pets/add`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-            .then(() => {
-                toast({ description: t('label.success') })
-                setLoadingState(false)
-            })
-            .catch(axiosErrorHandler)
     }
 
     function checkImage(file: Blob | undefined) {

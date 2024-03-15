@@ -11,12 +11,14 @@ export default function AuthLayout() {
 	const { t } = useTranslation()
 
 	return (
-		<m.div className='h-screen' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-			<MobilePageHeader title={t('header.authorization')} to='/pwa/profile' />
-			<Toaster />
-			<main className='p-4'>
-				<Outlet />
-			</main>
+		<m.div className='h-screen flex justify-center bg-[url("/images/background.webp")]' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+			<div className='max-w-lg bg-background'>
+				<MobilePageHeader title={t('header.authorization')} to='/pwa/profile' />
+				<Toaster />
+				<main className='p-4'>
+					<Outlet />
+				</main>
+			</div>
 		</m.div>
 	)
 }

@@ -56,19 +56,15 @@ export function formatAge(age: string, i18_years: string, i18_months: string, nu
 	return yearsString + (yearsString && monthsString ? ' ' : '') + monthsString
 }
 
-const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
+const token = () => `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
 
 
-const configuredAxios = axios.create({
-	headers: {
-		Authorization: token,
-	},
-})
-const axiosAuth = setupCache(configuredAxios)
+const axiosAuth = setupCache(axios)
 
 export function axiosErrorHandler(error: AxiosError) {
 	if (error.response) {
 		if (error.response.status === 500) return toast({ description: i18n.t(`api.${(error.response.data as { msg: APIErrors }).msg}`), variant: 'destructive' })
+		if (error.response.status === 401) return toast({ description: i18n.t('notifications.unauthorized'), variant: 'destructive' })
 		console.error(error.response)
 	} else if (error.request) {
 		console.error(error.request)
@@ -87,23 +83,26 @@ function useQuery() {
 
 function parseMongoDate(Mongo_Date: string) {
 	// Mongo_Date: 2024-02-03T01:39:13.410+00:00
-	const parsedTime = Mongo_Date.split('-')[2].split('T')[1].split('.')[0] // -> 01:39:13
+	if (Mongo_Date) {
+		const parsedTime = Mongo_Date.split('-')[2].split('T')[1].split('.')[0] // -> 01:39:13
 
-	const date = {
-		year: Mongo_Date.split('-')[0],
-		month: Mongo_Date.split('-')[1].split('T')[0][0] != '0' ? Mongo_Date.split('-')[1].split('T')[0] : Mongo_Date.split('-')[1].split('T')[0][1],
-		day: Mongo_Date.split('-')[2].split('T')[0][0] != '0' ? Mongo_Date.split('-')[2].split('T')[0] : Mongo_Date.split('-')[2].split('T')[0][1],
-	}
+		const date = {
+			year: Mongo_Date.split('-')[0],
+			month: Mongo_Date.split('-')[1].split('T')[0][0] != '0' ? Mongo_Date.split('-')[1].split('T')[0] : Mongo_Date.split('-')[1].split('T')[0][1],
+			day: Mongo_Date.split('-')[2].split('T')[0][0] != '0' ? Mongo_Date.split('-')[2].split('T')[0] : Mongo_Date.split('-')[2].split('T')[0][1],
+		}
 
-	const time = {
-		hour: parsedTime.split(':')[0][0] != '0' ? Number(parsedTime.split(':')[0]) : Number(parsedTime.split(':')[0][1]),
-		minutes: parsedTime.split(':')[1][0] != '0' ? Number(parsedTime.split(':')[1]) : Number(parsedTime.split(':')[1][1])
-	}
+		const time = {
+			hour: parsedTime.split(':')[0][0] != '0' ? Number(parsedTime.split(':')[0]) : Number(parsedTime.split(':')[0][1]),
+			minutes: parsedTime.split(':')[1][0] != '0' ? Number(parsedTime.split(':')[1]) : Number(parsedTime.split(':')[1][1])
+		}
 
-	return {
-		date,
-		time
+		return {
+			date,
+			time
+		}
 	}
+	return null
 }
 
 const filterValues = {

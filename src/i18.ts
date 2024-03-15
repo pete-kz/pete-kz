@@ -8,8 +8,8 @@ i18n
 	.use(detector)
 	.use(initReactI18next)
 	.init({
-		fallbackLng: 'en-US',
-		debug: true,
+		fallbackLng: 'ru',
+		debug: false,
 		detection: {
 			// options for language detection - you can add more configurations here
 		},

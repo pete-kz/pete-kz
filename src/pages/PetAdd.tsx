@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useIsAuthenticated, useAuthHeader, useSignOut } from 'react-auth-kit'
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
+import useSignOut from 'react-auth-kit/hooks/useSignOut'
 import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { AddPetForm } from '@/components/forms/add-pet'
@@ -19,7 +21,7 @@ export default function AddPetPage() {
     // Functions
     function checkToken() {
         const token = `${localStorage.getItem('_auth_type')} ${localStorage.getItem('_auth')}`
-        const isEqualTokens = authHeader() == token
+        const isEqualTokens = authHeader == token
         if (!isEqualTokens) {
             signout()
         }

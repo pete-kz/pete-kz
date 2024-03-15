@@ -1,97 +1,82 @@
-// System
-import React from 'react'
-import { AuthProvider, RequireAuth } from 'react-auth-kit'
-import { useRoutes } from 'react-router-dom'
+import React, { lazy, Suspense } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LazyMotion, domAnimation } from 'framer-motion'
-import type { RouteObject } from 'react-router-dom'
-import './i18'
 import { ThemeProvider } from '@/components/theme-provider'
+import RequireAuth from '@auth-kit/react-router/RequireAuth'
+import AuthProvider from 'react-auth-kit/AuthProvider'
+import createStore from 'react-auth-kit/createStore'
+
 // Layouts
 import PwaLayout from './layouts/pwa'
 import AuthLayout from './layouts/auth'
 import WebLayout from './layouts/web'
+import LoadingPage from './components/loading-page'
+import ProfileSkeleton from './pages/skeletons/profile'
+import MainSkeleton from './pages/skeletons/main'
+import SettingsSkeleton from './pages/skeletons/settings'
 
 // pages
-import Main from './pages/Main'
-import Login from './pages/Authentication/Login'
-import Register from './pages/Authentication/Register'
-import Settings from './pages/Settings'
-import Profile from './pages/Profile'
-import AddPetPage from './pages/PetAdd'
-import IndexPage from './pages/Index'
-import SupportPage from './pages/Support'
-import AboutUsPage from './pages/AboutUs'
+const Main = lazy(() => import('./pages/Main'))
+const Login = lazy(() => import('./pages/Authentication/Login'))
+const Register = lazy(() => import('./pages/Authentication/Register'))
+const Settings = lazy(() => import('./pages/Settings'))
+const Profile = lazy(() => import('./pages/Profile'))
+const AddPetPage = lazy(() => import('./pages/PetAdd'))
+const IndexPage = lazy(() => import('./pages/Index'))
+const SupportPage = lazy(() => import('./pages/Support'))
+const AboutUsPage = lazy(() => import('./pages/AboutUs'))
 
-export default function App() {
+const store = createStore({
+	authName: '_auth',
+	authType: 'localstorage',
+	debug: true
+})
 
-	const loginPage = '/auth/login'
-
-	const routes: RouteObject[] = [
-		{
-			path: '/auth',
-			element: <AuthLayout />,
-			children: [
-				{
-					path: '/auth/login',
-					element: <Login />,
-				},
-				{
-					path: '/auth/register',
-					element: <Register />,
-				},
-			]
-		},
-		{
-			element: <WebLayout />,
-			children: [
-				{
-					path: '/support',
-					element: <SupportPage />
-				},
-				{
-					path: '/',
-					element: <IndexPage />
-				},
-				{
-					path: '/about-us',
-					element: <AboutUsPage />
-				}
-			]
-		},
-		{
-			element: <PwaLayout />,
-			children: [
-				{
-					path: '/pwa',
-					element: <Main />,
-				},
-				{
-					path: '/pwa/profile',
-					element: <Profile />,
-				},
-				{
-					path: '/pwa/settings',
-					element: <Settings />,
-				},
-				{
-					path: '/pwa/pets/add',
-					element: <RequireAuth loginPath={loginPage}>
-						<AddPetPage /></RequireAuth>,
-				}
-			]
-		}
-
-	]
-
-	const router = useRoutes(routes)
-
+const App = () => {
 	return (
-		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-			<LazyMotion features={domAnimation}>
-				<AuthProvider authType="localstorage" authName="_auth">
-					{router}
-				</AuthProvider>
-			</LazyMotion>
-		</ThemeProvider>
+		<AuthProvider store={store}>
+			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+				<LazyMotion features={domAnimation}>
+					<Suspense fallback={<LoadingPage />}>
+						<Router>
+							<Routes>
+								<Route path="/auth" element={<AuthLayout />}>
+									<Route path="/auth/login" element={<Login />} />
+									<Route path="/auth/register" element={<Register />} />
+								</Route>
+								<Route element={<WebLayout />}>
+									<Route path="/support" element={<SupportPage />} />
+									<Route path="/" element={<IndexPage />} />
+									<Route path="/about-us" element={<AboutUsPage />} />
+								</Route>
+								<Route element={<PwaLayout />}>
+									<Route path="/pwa" element={
+										<Suspense fallback={<MainSkeleton />}>
+											<Main />
+										</Suspense>
+									} />
+									<Route path="/pwa/profile" element={
+										<Suspense fallback={<ProfileSkeleton />}>
+											<Profile />
+										</Suspense>
+									} />
+									<Route path="/pwa/settings" element={
+										<Suspense fallback={<SettingsSkeleton />}>
+											<Settings />
+										</Suspense>
+									} />
+									<Route
+										path="/pwa/pets/add"
+										element={<RequireAuth fallbackPath="/auth/login"><AddPetPage /></RequireAuth>}
+									/>
+								</Route>
+							</Routes>
+						</Router>
+					</Suspense>
+				</LazyMotion>
+			</ThemeProvider>
+		</AuthProvider>
 	)
 }
+
+export default App

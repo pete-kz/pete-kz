@@ -3,28 +3,33 @@ import React, { useState, useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useAuthUser } from 'react-auth-kit'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { axiosAuth as axios, filterValues } from '@utils'
-import { useToast } from '../ui/use-toast'
+import { axiosAuth as axios, axiosErrorHandler, filterValues } from '@utils'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { Textarea } from '@/components/ui/textarea'
-import ReactImageGallery from 'react-image-gallery'
-import { Pet_Response } from '@/lib/declarations'
+import ReactImageGallery, { ReactImageGalleryItem } from 'react-image-gallery'
+import { AuthState, Pet_Response } from '@/lib/declarations'
 import { Checkbox } from '../ui/checkbox'
+import { useToast } from '../ui/use-toast'
+import { useNavigate } from 'react-router-dom'
+import useProfileUpdateContext from '@/hooks/use-profile-update-context'
 
-export function ChangePetForm({ petData }: { petData: Pet_Response }) {
+export default function ChangePetForm({ petData, setOpen }: { petData: Pet_Response, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     // Setups
     const { t } = useTranslation()
-    const authStateUser = useAuthUser()
-    const user = authStateUser() || {}
+    const user = useAuthUser<AuthState>()
+    const authHeader = useAuthHeader()
     const { toast } = useToast()
+    const navigate = useNavigate()
+    const { setUpdate } = useProfileUpdateContext()
     const formSchema = z.object({
         name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
         birthDate: z.string(),
@@ -39,7 +44,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
         defaultValues: {
             name: '',
             birthDate: '',
-            type: 'Cat',
+            type: 'cat',
             sterilized: false,
             weight: 0,
             sex: 'male',
@@ -50,33 +55,43 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
     // States
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const [files, setFiles] = useState<undefined | Blob[]>(undefined)
-    const [images, setImages] = useState<never[]>([])
+    const [images, setImages] = useState<ReactImageGalleryItem[]>([])
 
     // Functions
     function onSubmit(values: z.infer<typeof formSchema>) {
-        setLoadingState(true)
-        const formData = new FormData()
-        formData.append('name', values.name)
-        formData.append('birthDate', `${values.birthDate}`)
-        formData.append('description', values.description)
-        formData.append('type', values.type)
-        formData.append('sterilized', JSON.stringify(values.sterilized))
-        formData.append('weight', JSON.stringify(values.weight))
-        formData.append('sex', values.sex)
-        formData.append('ownerID', user._id)
-        formData.append('city', localStorage.getItem('_city') || '0')
-        if (files) {
-            for (let i = 0; i < files.length; i++) {
-                formData.append('images', files[i])
+        if (user) {
+            setLoadingState(true)
+            const formData = new FormData()
+            formData.append('name', values.name)
+            formData.append('birthDate', `${values.birthDate}`)
+            formData.append('description', values.description)
+            formData.append('type', values.type)
+            formData.append('sterilized', JSON.stringify(values.sterilized))
+            formData.append('weight', JSON.stringify(values.weight))
+            formData.append('sex', values.sex)
+            formData.append('ownerID', user._id)
+            formData.append('city', localStorage.getItem('_city') || '0')
+            if (files) {
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('images', files[i])
+                }
+            } else if (((images[0]).original as string).includes('http')) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                formData.append('imagesPath', images.map((img: any) => img.original).join(','))
+            } else {
+                console.log('No images')
             }
+
+            axios
+                .post(`${API.baseURL}/pets/edit/${petData._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data', Authorization: authHeader } }).catch(axiosErrorHandler)
+                .finally(() => {
+                    setUpdate(upd => !upd)
+                    setLoadingState(false)
+                    setOpen(false)
+                    toast({ description: t('pet.updated') })
+                    navigate('/pwa/profile')
+                })
         }
-
-        axios
-            .post(`${API.baseURL}/pets/edit/${petData._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(_res => {
-                if (_res.data.err) toast ({ description: _res.data.err })
-            })
-            .finally(() => { setLoadingState(false) })
-
     }
 
     function checkImage(file: Blob | undefined) {
@@ -87,13 +102,13 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
     }
 
     useEffect(() => {
-        const imagesObject: React.SetStateAction<never[]> = []
+        const imagesObject: ReactImageGalleryItem[] = []
         files?.map(file => {
             if (checkImage(file) != '') {
                 imagesObject.push({
                     original: checkImage(file),
                     thumbnail: checkImage(file)
-                } as never)
+                })
             }
         })
         setImages(imagesObject)
@@ -125,7 +140,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                         <FormItem>
                             <FormLabel>{t('pet.name')}</FormLabel>
                             <FormControl>
-                                <Input {...field} />
+                                <Input disabled={loadingState} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -138,7 +153,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t('pet.type.default')}</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select disabled={loadingState} onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder={t('pet.type.default')} />
@@ -163,7 +178,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                             <FormItem>
                                 <FormLabel>{t('pet.birthDate')}</FormLabel>
                                 <FormControl>
-                                    <Input type='date' required {...field} />
+                                    <Input disabled={loadingState} type='date' required {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -175,11 +190,11 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                     name="sex"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{t('pet.sex')}</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormLabel>{t('pet.sex.default')}</FormLabel>
+                            <Select disabled={loadingState} onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder={t('pet.sex')} />
+                                        <SelectValue placeholder={t('pet.sex.default')} />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -201,6 +216,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                         <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                             <FormControl>
                                 <Checkbox
+                                    disabled={loadingState}
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
                                 />
@@ -220,7 +236,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                         <FormItem>
                             <FormLabel>{t('pet.weight')}</FormLabel>
                             <FormControl>
-                                <Input type='number' required {...field} />
+                                <Input disabled={loadingState} type='number' required {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -233,7 +249,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                         <FormItem>
                             <FormLabel>{t('pet.description')}</FormLabel>
                             <FormControl>
-                                <Textarea required {...field} />
+                                <Textarea disabled={loadingState} required {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -241,7 +257,7 @@ export function ChangePetForm({ petData }: { petData: Pet_Response }) {
                 />
                 <div className="grid w-full items-center gap-1.5">
                     <label htmlFor="picture">{t('pet.add.img')}</label>
-                    <Input id="picture" type="file" accept="image/png, image/jpeg, image/jpg"
+                    <Input id="picture" disabled={loadingState} type="file" accept="image/png, image/jpeg, image/jpg"
                         multiple
                         onChange={(event) => {
                             const files = event.target.files ? Array.from(event.target.files) : []

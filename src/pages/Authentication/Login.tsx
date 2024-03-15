@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useIsAuthenticated } from 'react-auth-kit'
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import { useTranslation } from 'react-i18next'
 import { m } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -20,10 +20,10 @@ export default function Login() {
 	}, [])
 
 	return (
-		<m.div className='flex flex-col gap-2 w-full md:max-w-[20%]' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+		<m.div className='flex flex-col gap-1 w-full' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 			<div>
 				<h1 className="text-2xl">{t('label.authorization.login.default')}</h1>
-				<p className="text-sm">
+				<p className="flex items-center gap-1.5 text-sm">
 					{t('label.authorization.or')}
 					{' '}
 					<Button className='p-0' variant={'link'} onClick={() => { navigate('/auth/register') }}>{t('label.authorization.login.register')}</Button>

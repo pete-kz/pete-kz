@@ -29,7 +29,8 @@
     "liked_remove": "Алынған сияқты!",
     "profile_updated": "Профиль жаңартылды!",
     "passwordNoMatch": "Парольдер сәйкес келмейді!",
-    "checkNetwork": "Интернет қосылымын тексеріңіз"
+    "checkNetwork": "Интернет қосылымын тексеріңіз",
+    "unauthorized": "You must be authorized!"
   },
   "alert": {
     "you_sure": "Сіз толықтай сенімдісіз бе?",
@@ -87,7 +88,10 @@
     "updatePets": "Үй жануарларын жаңарту",
     "lastUpdated": "Соңғы жаңартылған",
     "edit": "Өңдеу",
-    "logout": "Шығу"
+    "logout": "Шығу",
+    "addToLiked": "Add to favorites",
+    "yes": "Yes",
+    "no": "No"
   },
   "text": {
     "about_us": {
@@ -154,7 +158,9 @@
     "ownerType": "Иесі түрі",
     "sterilized": "Зарарсыздандырылған",
     "weight": "Шамамен салмақ",
-    "liked": "Сізге ұнады"
+    "liked": "Сізге ұнады",
+    "updated": "Pet updated!",
+    "kg": "КГ"
   },
   "user": {
     "companyName": "Компанияның Аты",

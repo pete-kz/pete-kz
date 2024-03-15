@@ -12,9 +12,11 @@ export default function BackButton({ to = '/pwa', action, className }: { to?: st
     const { t } = useTranslation()
 
     return (
-        <Button variant={'link'} onClick={() => { action ? action() : navigate(to) }} className={cn('flex justify-start gap-1 h-fit text-muted-foreground p-4 pl-0', className)}>
-            <div className='flex items-center'><ChevronLeft />
-            {t('label.back')}</div>
-        </Button>
+        <div className={cn('flex justify-start gap-1 h-fit p-4 pl-0', className)}>
+            <Button variant={'link'} type='button' className='grid gap-1.5 text-muted-foreground p-0 m-0' onClick={() => { action ? action() : navigate(to) }} >
+                <div className='flex items-center'><ChevronLeft />
+                {t('label.back')}</div>
+            </Button>
+        </div>
     )
 }

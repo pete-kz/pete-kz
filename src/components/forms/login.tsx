@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { useSignIn } from 'react-auth-kit'
+import useSignIn from 'react-auth-kit/hooks/useSignIn'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
@@ -42,10 +42,11 @@ export function LoginForm() {
         setLoadingState(true)
         axios.post(`${API.baseURL}/users/login`, { phone: values.phone, password: values.password }).then((response: AxiosResponse) => {
                 if (signIn({
-                    token: response.data.token,
-                    expiresIn: response.data.expiresIn,
-                    tokenType: 'Bearer',
-                    authState: response.data.docs,
+                    auth: {
+                        token: response.data.token,
+                        type: 'Bearer',
+                    },
+                    userState: response.data.docs,
                 })) {
                     navigate('/pwa')
                 } else {

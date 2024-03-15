@@ -1,11 +1,4 @@
 {
-  "api": {
-    "userNotFound": "",
-    "userExists": "",
-    "wrongPassword": "",
-    "internal": "",
-    "noAuth": ""
-  },
   "header": {
     "authorization": "Authorization",
     "petAdd": "Add pet",

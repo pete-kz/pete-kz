@@ -51,4 +51,9 @@ export interface AboutUsLanguage {
     }
 }
 
-export type APIErrors = 'userNotFound' | 'userExists' | 'wrongPassword' | 'internal'
+export type APIErrors = 'userNotFound' | 'userExists' | 'wrongPassword' | 'internal' | 'noAuth'
+
+export interface AuthState {
+    _id: string
+    phone: string
+}
