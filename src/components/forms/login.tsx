@@ -40,12 +40,13 @@ export function LoginForm() {
     // Functions
     function onSubmit(values: z.infer<typeof formSchema>) {
         setLoadingState(true)
-        axios.post(`${API.baseURL}/users/login`, { phone: values.phone, password: values.password }).then((response: AxiosResponse) => {
+        axios.post(`${API.baseURL}/auth/login`, { phone: values.phone, password: values.password }).then((response: AxiosResponse) => {
                 if (signIn({
                     auth: {
                         token: response.data.token,
                         type: 'Bearer',
                     },
+                    refresh: response.data.refreshToken,
                     userState: response.data.docs,
                 })) {
                     navigate('/pwa')

@@ -119,4 +119,6 @@ export const defaultFilterValue: Pet_Filter = {
 	owner_type: ''
 }
 
-export { axiosAuth, useQuery, parseMongoDate, token, filterValues }
+const axiosFetcher = (url: string) => axios.get(url).then(res => res.data)
+
+export { axiosAuth, useQuery, parseMongoDate, token, filterValues, axiosFetcher }

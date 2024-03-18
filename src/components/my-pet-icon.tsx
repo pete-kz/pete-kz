@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pet_Response, User_Response } from '@declarations'
 import { Trash, Pencil } from 'lucide-react'
@@ -12,19 +12,23 @@ import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import { axiosAuth as axios, axiosErrorHandler } from '@/lib/utils'
 import { API } from '@config'
 import { useToast } from './ui/use-toast'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
-interface PetIcon extends Pet_Response {
+interface PetIcon {
+    _id: string
     user: User_Response
     setUserPets: React.Dispatch<React.SetStateAction<Pet_Response[]>>
 }
 
-export default function MyPetIcon(props: PetIcon) {
+export default function MyPetIcon({ _id, user, setUserPets }: PetIcon) {
 
     // Setups
     const { t } = useTranslation()
     const authHeader = useAuthHeader()
     const isAuthenticated = useIsAuthenticated()
+    const queryClient = useQueryClient()
     const { toast } = useToast()
+    const { data: pet, error: petError, isPending: petPending } = useQuery({ queryKey: [`pet_${_id}`], queryFn: () => axios.get(`${API.baseURL}/pets/find/${_id}`).then(res => res.data), refetchInterval: 100, refetchOnMount: 'always' })
 
     // States
     const [openPet, setOpenPet] = useState<boolean>(false)
@@ -38,21 +42,34 @@ export default function MyPetIcon(props: PetIcon) {
         axios.delete(`${API.baseURL}/pets/remove/${pet._id}`, { headers: { Authorization: authHeader } })
             .then(() => {
                 // Filter pet from state of user pets for rendering
-                props.setUserPets(pets => pets?.filter(userPet => userPet._id != pet._id))
+                setUserPets(pets => pets?.filter(userPet => userPet._id != pet._id))
                 toast({ description: `${t('pet.goodbye')}, ${pet.name}!` })
             })
             .catch(axiosErrorHandler)
     }
 
-    return (
+    if (petError) {
+        <Card className='flex flex-col items-center p-3 gap-2' >
+            <Avatar>
+                <AvatarFallback>{t('error')}</AvatarFallback>
+            </Avatar>
+            <p className='text-center'>{t('error')}</p>
+        </Card>
+    }
+
+    useEffect(() => {
+        queryClient.fetchQuery({ queryKey: [`pet_${_id}`] })
+    }, [])
+
+    return pet && !petPending && (
         <>
-            <PetOverlay pet={props} owner={props.user} edit open={openPet} setOpen={setOpenPet} />
+            <PetOverlay pet={pet} owner={user} edit open={openPet} setOpen={setOpenPet} />
             <Card className='flex flex-col items-center p-3 gap-2' >
                 <Avatar>
-                    <AvatarImage src={props.imagesPath[0]} alt={props.name} />
-                    <AvatarFallback>{props.name[0]}</AvatarFallback>
+                    <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
+                    <AvatarFallback>{pet.name[0]}</AvatarFallback>
                 </Avatar>
-                <p className='text-center'>{props.name}</p>
+                <p className='text-center'>{pet.name}</p>
                 <div className='grid grid-rows-1 grid-cols-2 gap-2'>
                     <Button className='p-2 w-10 h-10' variant={'outline'} onClick={() => { setOpenPet(true) }}>
                         <Pencil size={14} />
@@ -72,7 +89,7 @@ export default function MyPetIcon(props: PetIcon) {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => { removePet({ ...props }) }}>{t('alert.sure')}</AlertDialogAction>
+                                <AlertDialogAction onClick={() => { removePet({ ...pet }) }}>{t('alert.sure')}</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>

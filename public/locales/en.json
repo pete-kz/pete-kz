@@ -205,5 +205,6 @@
       "description": "To continue, please choose the city you are from",
       "confirm": "Confirm"
     }
-  }
+  },
+  "error": "Error"
 }

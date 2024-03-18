@@ -5,16 +5,16 @@ import { Pet_Response, User_Response } from '@/lib/declarations'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import { axiosAuth as axios, axiosErrorHandler } from '@utils'
 import { API } from '@config'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import { useTranslation } from 'react-i18next'
 import { useToast } from '../ui/use-toast'
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
-import useProfileUpdateContext from '@/hooks/use-profile-update-context'
+import { useQuery } from '@tanstack/react-query'
 
 const RemoveLikeAlert = lazy(() => import('@/components/popups/remove-like'))
 const PetOverlay = lazy(() => import('../pet-overlay'))
 
-export default function LikedPet({ pet, userData, setUserLiked }: { pet: Pet_Response, userData: User_Response | undefined, userLiked: Pet_Response[], setUserLiked: React.Dispatch<React.SetStateAction<Pet_Response[]>> }) {
+export default function LikedPet({ pet_id, userData, setUserLiked }: { pet_id: Pet_Response['_id'], userData: User_Response | undefined, setUserLiked: React.Dispatch<React.SetStateAction<Pet_Response[]>> }) {
     // States
     const [open, setOpen] = useState<boolean>(false)
 
@@ -23,7 +23,7 @@ export default function LikedPet({ pet, userData, setUserLiked }: { pet: Pet_Res
     const { t } = useTranslation()
     const { toast } = useToast()
     const authHeader = useAuthHeader()
-    const { setUpdate } = useProfileUpdateContext()
+    const { data: pet, error: petError }: { data: Pet_Response | undefined, error: AxiosError | null, isPending: boolean } = useQuery({ queryKey: [`pet_${pet_id}`], queryFn: () => axios.get(`${API.baseURL}/pets/find/${pet_id}`).then(res => res.data), refetchInterval: 2000 })
 
     // Functions
     function removePetFromLiked(pet_id: string) {
@@ -73,19 +73,27 @@ export default function LikedPet({ pet, userData, setUserLiked }: { pet: Pet_Res
         }).catch(axiosErrorHandler)
     }
 
+    if (petError) {
+        axiosErrorHandler(petError)
+    }
+
     return (
         <Card className='flex items-center justify-between mt-2 p-3 cursor-pointer' >
-            {open && <PetOverlay open setOpen={setOpen} pet={pet} info contacts />}
-            <div className='w-full' onClick={() => { setOpen(true) }}>
-                <div className='flex gap-2 items-center'>
-                    <Avatar>
-                        <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
-                        <AvatarFallback>{pet.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <p>{pet.name}</p>
-                </div>
-            </div>
-            <RemoveLikeAlert onClick={() => { removePetFromLiked(pet._id); setUpdate(upd => !upd) }} />
+            {pet &&
+                <>
+                    {open && <PetOverlay open setOpen={setOpen} pet={pet} info contacts />}
+                    <div className='w-full' onClick={() => { setOpen(true) }}>
+                        <div className='flex gap-2 items-center'>
+                            <Avatar>
+                                <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
+                                <AvatarFallback>{pet.name[0]}</AvatarFallback>
+                            </Avatar>
+                            <p>{pet.name}</p>
+                        </div>
+                    </div>
+                    <RemoveLikeAlert onClick={() => { removePetFromLiked(pet._id) }} />
+                </>
+            }
         </Card>
     )
 }

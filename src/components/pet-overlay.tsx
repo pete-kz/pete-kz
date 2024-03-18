@@ -4,8 +4,7 @@ import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
 import { User_Response, type Pet_Response, AuthState } from '@declarations'
-import { axiosAuth as axios, axiosErrorHandler } from '@utils'
-import { AxiosError } from 'axios'
+import { axiosAuth as axios } from '@utils'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Phone, Send } from 'lucide-react'
@@ -13,6 +12,7 @@ import ReactImageGallery from 'react-image-gallery'
 import { formatAge } from '@/lib/utils'
 import { OverlayContent, Overlay } from './ui/overlay'
 import BackButton from './back-button'
+import { useQuery } from '@tanstack/react-query'
 
 const ChangePetForm = lazy(() => import('@/components/forms/change-pet'))
 const LikeButton = lazy(() => import('@/components/like-button'))
@@ -28,29 +28,17 @@ interface PetOverlayProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>, 
 }
 
-export default function PetOverlay({ pet, owner, info = false, edit = false, contacts = false, open = false, like = false, setOpen }: PetOverlayProps) {
+export default function PetOverlay({ pet, info = false, edit = false, contacts = false, open = false, like = false, setOpen }: PetOverlayProps) {
 
     // Setups
     const user = useAuthUser<AuthState>()
     const { t } = useTranslation()
+    const { data: ownerData } = useQuery({ queryKey: ['owner'], queryFn: () => axios.get(`${API.baseURL}/users/find/${pet.ownerID}`).then(res => res.data), refetchInterval: 2000 })
 
     // States
     const [imageLinks, setImageLinks] = useState<{ original: string, thumbnail: string }[]>([])
-    const [ownerData, setOwnerData] = useState<User_Response>(owner as User_Response)
-
-    // Functions
-    async function fetchOwner() {
-        if (owner) return
-        try {
-            const res = await axios.get(`${API.baseURL}/users/find/${pet.ownerID}`)
-            setOwnerData(res.data)
-        } catch (error) {
-            axiosErrorHandler(error as AxiosError)
-        }
-    }
 
     useEffect(() => {
-        fetchOwner()
         setImageLinks(pet.imagesPath.map(imageLink => ({
             original: imageLink,
             thumbnail: imageLink
@@ -63,7 +51,7 @@ export default function PetOverlay({ pet, owner, info = false, edit = false, con
                 {edit && ownerData?._id === user?._id && (
                     <div className='m-4 bg-card p-4 border rounded-lg mb-16'>
                         <BackButton className='p-0' action={() => setOpen(false)} />
-                        <ChangePetForm setOpen={setOpen} petData={pet} />
+                        <ChangePetForm setOpen={setOpen} pet_id={pet._id} />
                     </div>
                 )}
 
@@ -81,7 +69,9 @@ export default function PetOverlay({ pet, owner, info = false, edit = false, con
                             <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={true} showPlayButton={false} />
                         </CardContent>
                         <div className='p-6 pt-2 pb-2'>
-                            {pet.description}
+                            <p className='pb-3'>
+                            <pre className='font-normal font-sans'>{pet.description}</pre>
+                            </p>
                             <div id='pet_table'>
                                 <div id='pet_row'>
                                     <p>{t('pet.sex.default')}</p>

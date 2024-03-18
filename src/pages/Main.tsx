@@ -61,6 +61,7 @@ export default function Main() {
 			axios.get(`${API.baseURL}/users/find/${user._id}`).then((res: AxiosResponse) => {
 				const userData: User_Response = res.data
 				pets = pets.filter(pet => !(userData.liked.includes(pet._id)))
+				pets = pets.filter(pet => pet.ownerID !== user._id)
 			}).catch(axiosErrorHandler)
 		} else {
 			const browserLiked = JSON.parse(localStorage.getItem('_data_offline_liked') || '[]') as string[]

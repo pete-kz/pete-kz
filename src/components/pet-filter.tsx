@@ -60,18 +60,33 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
                     </DrawerHeader>
                     <div className="p-4 pb-0">
                         <div className="grid space-y-4">
-                            <div className='grid gap-1.5'>
-                                <Label htmlFor="">{t('pet.type.default')}</Label>
-                                <Select value={type} onValueChange={setType}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={'None'} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {filterValues.type.map((typepet) => (
-                                            <SelectItem key={typepet} value={typepet}>{t('pet.type.' + typepet)}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                            <div className='flex gap-2 w-full'>
+                                <div className='grid gap-1.5 w-full'>
+                                    <Label htmlFor="">{t('pet.type.default')}</Label>
+                                    <Select value={type} onValueChange={setType}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder={'None'} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {filterValues.type.map((typepet) => (
+                                                <SelectItem key={typepet} value={typepet}>{t('pet.type.' + typepet)}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className='grid gap-1.5 w-full'>
+                                    <Label htmlFor="">{t('pet.ownerType')}</Label>
+                                    <Select value={ownerType} onValueChange={setOwnerType}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder={'None'} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {filterValues.owner_type.map((ownerType) => (
+                                                <SelectItem key={ownerType} value={ownerType}>{t('user.type.' + ownerType)}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                             <div className='grid gap-1.5'>
                                 <Label htmlFor="sex">{t('pet.sex.default')}</Label>
@@ -94,27 +109,15 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
                                     setSterilized(_ => value !== 'indeterminate' ? value : _)
                                 }} />
                             </div>
-                            <div className="grid gap-2">
+                            {/* <div className="grid gap-2">
                                 <Label htmlFor="slider_weight">
                                     {`${t('pet.weight')} = ${weight}`}
                                 </Label>
                                 <Slider id='slider_weight' value={[weight!]} onValueChange={(value) => {
                                     setWeight(value[0])
                                 }} step={5} />
-                            </div>
-                            <div className='grid gap-1.5'>
-                                <Label htmlFor="">{t('pet.ownerType')}</Label>
-                                <Select value={ownerType} onValueChange={setOwnerType}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={'None'} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {filterValues.owner_type.map((ownerType) => (
-                                            <SelectItem key={ownerType} value={ownerType}>{t('user.type.' + ownerType)}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            </div> */}
+
                         </div>
                     </div>
                     <DrawerFooter className='flex flex-row w-full gap-1.5'>

@@ -10,7 +10,8 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { axiosAuth as axios, axiosErrorHandler, filterValues } from '@utils'
+import { axiosErrorHandler, filterValues } from '@utils'
+import axios from 'axios'
 import { API } from '@config'
 import LoadingSpinner from '@/components/loading-spinner'
 import { Textarea } from '@/components/ui/textarea'
@@ -19,9 +20,10 @@ import { AuthState, Pet_Response } from '@/lib/declarations'
 import { Checkbox } from '../ui/checkbox'
 import { useToast } from '../ui/use-toast'
 import { useNavigate } from 'react-router-dom'
-import useProfileUpdateContext from '@/hooks/use-profile-update-context'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 
-export default function ChangePetForm({ petData, setOpen }: { petData: Pet_Response, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Response['_id'], setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     // Setups
     const { t } = useTranslation()
@@ -29,13 +31,13 @@ export default function ChangePetForm({ petData, setOpen }: { petData: Pet_Respo
     const authHeader = useAuthHeader()
     const { toast } = useToast()
     const navigate = useNavigate()
-    const { setUpdate } = useProfileUpdateContext()
+    const queryClient = useQueryClient()
     const formSchema = z.object({
         name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
         birthDate: z.string(),
         type: z.string(),
         sterilized: z.boolean().default(false),
-        weight: z.string().transform(arg => Number(arg)),
+        weight: z.string(),
         sex: z.enum(['male', 'female']),
         description: z.string({ required_error: 'Description is required!' }),
     })
@@ -46,11 +48,12 @@ export default function ChangePetForm({ petData, setOpen }: { petData: Pet_Respo
             birthDate: '',
             type: 'cat',
             sterilized: false,
-            weight: 0,
+            weight: '0',
             sex: 'male',
             description: ''
         },
     })
+    const { data: petData, error: petError }: { data: Pet_Response | undefined, error: Error | null, isPending: boolean } = useQuery({ queryKey: [`pet_${pet_id}`], queryFn: () => axios.get(`${API.baseURL}/pets/find/${pet_id}`).then(res => res.data), refetchInterval: 2000 })
 
     // States
     const [loadingState, setLoadingState] = useState<boolean>(false)
@@ -62,32 +65,28 @@ export default function ChangePetForm({ petData, setOpen }: { petData: Pet_Respo
         if (user) {
             setLoadingState(true)
             const formData = new FormData()
+            // let noPictureObjectFix
             formData.append('name', values.name)
             formData.append('birthDate', `${values.birthDate}`)
             formData.append('description', values.description)
             formData.append('type', values.type)
             formData.append('sterilized', JSON.stringify(values.sterilized))
-            formData.append('weight', JSON.stringify(values.weight))
+            formData.append('weight', JSON.stringify(Number(values.weight)))
             formData.append('sex', values.sex)
             formData.append('ownerID', user._id)
             formData.append('city', localStorage.getItem('_city') || '0')
-            if (files) {
+            formData.append('imagesPath', JSON.stringify(images.map((img) => img.original)))
+            if (files && images[0].original.includes('blob')) {
                 for (let i = 0; i < files.length; i++) {
                     formData.append('images', files[i])
                 }
-            } else if (((images[0]).original as string).includes('http')) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                formData.append('imagesPath', images.map((img: any) => img.original).join(','))
-            } else {
-                console.log('No images')
             }
-
             axios
-                .post(`${API.baseURL}/pets/edit/${petData._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data', Authorization: authHeader } }).catch(axiosErrorHandler)
+                .post(`${API.baseURL}/pets/edit/${pet_id}`, formData, { headers: { 'Content-Type': 'multipart/form-data', Authorization: authHeader } }).catch(axiosErrorHandler)
                 .finally(() => {
-                    setUpdate(upd => !upd)
                     setLoadingState(false)
                     setOpen(false)
+                    queryClient.invalidateQueries({ queryKey: [`pet_${pet_id}`] })
                     toast({ description: t('pet.updated') })
                     navigate('/pwa/profile')
                 })
@@ -121,11 +120,18 @@ export default function ChangePetForm({ petData, setOpen }: { petData: Pet_Respo
             form.setValue('description', petData.description)
             form.setValue('type', petData.type)
             form.setValue('sterilized', petData.sterilized)
-            form.setValue('weight', petData.weight)
+            form.setValue('weight', JSON.stringify(petData.weight))
             form.setValue('sex', petData.sex)
-            setImages(petData.imagesPath.map(imgLink => { return { original: imgLink, thumbnail: imgLink } as never }))
+            const imagesPath = petData.imagesPath.map(imgLink => { return { original: imgLink, thumbnail: imgLink } })
+            setImages(imagesPath)
+            // Convert image URLs to Blob and update files state
+            Promise.all(imagesPath.map(image => fetch(image.original).then(res => res.blob()))).then(setFiles)
         }
     }, [petData, form])
+
+    if (petError) {
+        axiosErrorHandler(petError as AxiosError)
+    }
 
     return (
         <Form {...form}>
