@@ -18,6 +18,8 @@ import MainSkeleton from './pages/skeletons/main'
 import SettingsSkeleton from './pages/skeletons/settings'
 import axios from 'axios'
 import { API } from '@config'
+import User from './pages/User'
+import UserSkeleton from './pages/skeletons/user'
 
 // pages
 const Main = lazy(() => import('./pages/Main'))
@@ -97,6 +99,11 @@ const App = () => {
 										<Route path="/pwa/settings" element={
 											<Suspense fallback={<SettingsSkeleton />}>
 												<Settings />
+											</Suspense>
+										} />
+										<Route path="/pwa/users/:userId" element={
+											<Suspense fallback={<UserSkeleton />}>
+												<User />
 											</Suspense>
 										} />
 										<Route

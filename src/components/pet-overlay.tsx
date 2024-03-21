@@ -3,7 +3,7 @@ import React, { useState, useEffect, lazy } from 'react'
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
-import { User_Response, type Pet_Response, AuthState } from '@declarations'
+import { type Pet_Response, AuthState } from '@declarations'
 import { axiosAuth as axios } from '@utils'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -19,7 +19,6 @@ const LikeButton = lazy(() => import('@/components/like-button'))
 
 interface PetOverlayProps { 
     pet: Pet_Response, 
-    owner?: User_Response, 
     info?: boolean, 
     like?: boolean, 
     edit?: boolean, 

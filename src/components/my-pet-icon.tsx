@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Pet_Response, User_Response } from '@declarations'
+import { AuthState, Pet_Response } from '@declarations'
 import { Trash, Pencil } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,22 +13,24 @@ import { axiosAuth as axios, axiosErrorHandler } from '@/lib/utils'
 import { API } from '@config'
 import { useToast } from './ui/use-toast'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
+import { AxiosError } from 'axios'
 
 interface PetIcon {
     _id: string
-    user: User_Response
-    setUserPets: React.Dispatch<React.SetStateAction<Pet_Response[]>>
+    setUserPets?: React.Dispatch<React.SetStateAction<Pet_Response[]>>
 }
 
-export default function MyPetIcon({ _id, user, setUserPets }: PetIcon) {
+export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 
     // Setups
     const { t } = useTranslation()
     const authHeader = useAuthHeader()
     const isAuthenticated = useIsAuthenticated()
+    const authState = useAuthUser<AuthState>()
     const queryClient = useQueryClient()
     const { toast } = useToast()
-    const { data: pet, error: petError, isPending: petPending } = useQuery({ queryKey: [`pet_${_id}`], queryFn: () => axios.get(`${API.baseURL}/pets/find/${_id}`).then(res => res.data), refetchInterval: 100, refetchOnMount: 'always' })
+    const { data: pet, error: petError, isPending: petPending }: { data: Pet_Response | undefined, error: AxiosError | null, isPending: boolean } = useQuery({ queryKey: [`pet_${_id}`], queryFn: () => axios.get(`${API.baseURL}/pets/find/${_id}`).then(res => res.data), refetchInterval: 100, refetchOnMount: 'always' })
 
     // States
     const [openPet, setOpenPet] = useState<boolean>(false)
@@ -42,7 +44,7 @@ export default function MyPetIcon({ _id, user, setUserPets }: PetIcon) {
         axios.delete(`${API.baseURL}/pets/remove/${pet._id}`, { headers: { Authorization: authHeader } })
             .then(() => {
                 // Filter pet from state of user pets for rendering
-                setUserPets(pets => pets?.filter(userPet => userPet._id != pet._id))
+                setUserPets && setUserPets(pets => pets?.filter(userPet => userPet._id != pet._id))
                 toast({ description: `${t('pet.goodbye')}, ${pet.name}!` })
             })
             .catch(axiosErrorHandler)
@@ -63,37 +65,43 @@ export default function MyPetIcon({ _id, user, setUserPets }: PetIcon) {
 
     return pet && !petPending && (
         <>
-            <PetOverlay pet={pet} owner={user} edit open={openPet} setOpen={setOpenPet} />
+            {(authState && authState._id === pet.ownerID) ? (
+                <PetOverlay pet={pet} edit open={openPet} setOpen={setOpenPet} />
+            ) : (
+                <PetOverlay pet={pet} info contacts open={openPet} setOpen={setOpenPet} />
+            )}
             <Card className='flex flex-col items-center p-3 gap-2' >
                 <Avatar>
                     <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
                     <AvatarFallback>{pet.name[0]}</AvatarFallback>
                 </Avatar>
                 <p className='text-center'>{pet.name}</p>
-                <div className='grid grid-rows-1 grid-cols-2 gap-2'>
-                    <Button className='p-2 w-10 h-10' variant={'outline'} onClick={() => { setOpenPet(true) }}>
-                        <Pencil size={14} />
-                    </Button>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button className='p-2 w-10 h-10' variant={'outline'}>
-                                <Trash size={14} style={{ color: '#FF0000' }} />
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    {t('alert.delete_pet_profile')}
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => { removePet({ ...pet }) }}>{t('alert.sure')}</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </div>
+                {authState && authState._id === pet.ownerID && (
+                    <div className='grid grid-rows-1 grid-cols-2 gap-2'>
+                        <Button className='p-2 w-10 h-10' variant={'outline'} onClick={() => { setOpenPet(true) }}>
+                            <Pencil size={14} />
+                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button className='p-2 w-10 h-10' variant={'outline'}>
+                                    <Trash size={14} style={{ color: '#FF0000' }} />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>{t('alert.you_sure')}</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        {t('alert.delete_pet_profile')}
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>{t('alert.back')}</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => { removePet({ ...pet }) }}>{t('alert.sure')}</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
+                )}
             </Card>
         </>
     )

@@ -1,13 +1,14 @@
 import React, { lazy, useMemo } from 'react'
 import useSignOut from 'react-auth-kit/hooks/useSignOut'
 import { useTranslation } from 'react-i18next'
-import { User_Response } from '@declarations'
+import { AuthState, User_Response } from '@declarations'
 import { useNavigate } from 'react-router-dom'
 import { Pencil, LogOut } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { parseMongoDate } from '@/lib/utils'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
 
 
 const ChangeProfileForm = lazy(() => import('@/components/forms/change-profile'))
@@ -18,6 +19,7 @@ export default function UserProfileCard({ user }: { user: User_Response }) {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const signout = useSignOut()
+    const authState = useAuthUser<AuthState>()
 
     // Functions
     const userLastUpdated = useMemo(() => {
@@ -38,7 +40,8 @@ export default function UserProfileCard({ user }: { user: User_Response }) {
                     <p className=''>{`${t('label.lastUpdated')}: ${userLastUpdated}`}</p>
                 </div>
             </div>
-            <div className='grid grid-cols-2 border grid-rows-1 rounded-lg'>
+            {authState && authState?._id === user._id && (
+                <div className='grid grid-cols-2 border grid-rows-1 rounded-lg'>
                 <ChangeProfileForm>
                     <Button className='rounded-none p-2 m-0 border-r gap-2 rounded-l-lg' type='submit' variant={'link'}>
                         {t('label.edit')}<Pencil />
@@ -48,6 +51,7 @@ export default function UserProfileCard({ user }: { user: User_Response }) {
                 {t('label.logout')}<LogOut />
                 </Button>
             </div>
+            )}
         </Card>
     )
 }
