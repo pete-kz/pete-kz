@@ -8,7 +8,7 @@ import { Label } from './ui/label'
 const languages = main.languages
 const lanaguagesCodes = languages.map(language => language[0])
 
-export default function ChangeLanguage() {
+export default function ChangeLanguage({ label = true }: { label?: boolean }) {
 
 	// Setups
 	const { t, i18n } = useTranslation()
@@ -21,9 +21,9 @@ export default function ChangeLanguage() {
 
 	return (
 		<div className='grid w-full items-center gap-1.5'>
-			<Label>
+			{label && <Label>
 				{t('label.language')}
-			</Label>
+			</Label>}
 			<Select
 				value={currentLanguage}
 				onValueChange={(value) => {

@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { LazyMotion, domAnimation } from 'framer-motion'
+import { LazyMotion, domAnimation, AnimatePresence } from 'framer-motion'
 import { ThemeProvider } from '@/components/theme-provider'
 import RequireAuth from '@auth-kit/react-router/RequireAuth'
 import AuthProvider from 'react-auth-kit/AuthProvider'
@@ -56,7 +56,7 @@ const refresh = createRefresh({
 			}
 		}
 	}
-	})
+})
 
 const store = createStore({
 	authName: '_auth',
@@ -73,47 +73,49 @@ const App = () => {
 			<AuthProvider store={store}>
 				<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 					<LazyMotion features={domAnimation}>
-						<Suspense fallback={<LoadingPage />}>
-							<Router>
-								<Routes>
-									<Route path="/auth" element={<AuthLayout />}>
-										<Route path="/auth/login" element={<Login />} />
-										<Route path="/auth/register" element={<Register />} />
-									</Route>
-									<Route element={<WebLayout />}>
-										<Route path="/support" element={<SupportPage />} />
-										<Route path="/" element={<IndexPage />} />
-										<Route path="/about-us" element={<AboutUsPage />} />
-									</Route>
-									<Route element={<PwaLayout />}>
-										<Route path="/pwa" element={
-											<Suspense fallback={<MainSkeleton />}>
-												<Main />
-											</Suspense>
-										} />
-										<Route path="/pwa/profile" element={
-											<Suspense fallback={<ProfileSkeleton />}>
-												<Profile />
-											</Suspense>
-										} />
-										<Route path="/pwa/settings" element={
-											<Suspense fallback={<SettingsSkeleton />}>
-												<Settings />
-											</Suspense>
-										} />
-										<Route path="/pwa/users/:userId" element={
-											<Suspense fallback={<UserSkeleton />}>
-												<User />
-											</Suspense>
-										} />
-										<Route
-											path="/pwa/pets/add"
-											element={<RequireAuth fallbackPath="/auth/login"><AddPetPage /></RequireAuth>}
-										/>
-									</Route>
-								</Routes>
-							</Router>
-						</Suspense>
+						<AnimatePresence>
+							<Suspense fallback={<LoadingPage />}>
+								<Router>
+									<Routes>
+										<Route path="/auth" element={<AuthLayout />}>
+											<Route path="/auth/login" element={<Login />} />
+											<Route path="/auth/register" element={<Register />} />
+										</Route>
+										<Route element={<WebLayout />}>
+											<Route path="/support" element={<SupportPage />} />
+											<Route path="/" element={<IndexPage />} />
+											<Route path="/about-us" element={<AboutUsPage />} />
+										</Route>
+										<Route element={<PwaLayout />}>
+											<Route path="/pwa" element={
+												<Suspense fallback={<MainSkeleton />}>
+													<Main />
+												</Suspense>
+											} />
+											<Route path="/pwa/profile" element={
+												<Suspense fallback={<ProfileSkeleton />}>
+													<Profile />
+												</Suspense>
+											} />
+											<Route path="/pwa/settings" element={
+												<Suspense fallback={<SettingsSkeleton />}>
+													<Settings />
+												</Suspense>
+											} />
+											<Route path="/pwa/users/:userId" element={
+												<Suspense fallback={<UserSkeleton />}>
+													<User />
+												</Suspense>
+											} />
+											<Route
+												path="/pwa/pets/add"
+												element={<RequireAuth fallbackPath="/auth/login"><AddPetPage /></RequireAuth>}
+											/>
+										</Route>
+									</Routes>
+								</Router>
+							</Suspense>
+						</AnimatePresence>
 					</LazyMotion>
 				</ThemeProvider>
 			</AuthProvider>

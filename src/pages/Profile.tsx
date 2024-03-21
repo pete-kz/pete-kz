@@ -25,7 +25,7 @@ export default function Profile() {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const { data: petsData, error: petsError, isPending: petsPending } = useQuery({ queryKey: ['pets'], queryFn: () => axios.get(`${API.baseURL}/pets/find`).then(res => res.data), refetchInterval: 2000 })
-    const { data: userData, error: userError, isPending: userPending } = useQuery({ queryKey: ['user'], queryFn: () => axios.get(`${API.baseURL}/users/find/${user?._id}`).then(res => res.data), refetchInterval: 2000 })
+    const { data: userData, error: userError, isPending: userPending } = useQuery({ queryKey: ['user', user?._id], queryFn: () => axios.get(`${API.baseURL}/users/find/${user?._id}`).then(res => res.data), refetchInterval: 2000 })
 
     // States
     const [userPets, setUserPets] = useState<Pet_Response[]>([])
@@ -58,7 +58,7 @@ export default function Profile() {
                     <div className='grid grid-cols-3 gap-2 mt-2'>
                         {userPending && petsPending && <div>Loading...</div>}
                         {userData && userPets?.map((pet, index) => (
-                            <MyPetIcon key={index} user={userData} _id={pet._id} setUserPets={setUserPets} />
+                            <MyPetIcon key={index} _id={pet._id} setUserPets={setUserPets} />
                         ))}
                         <AddPetCard />
                     </div>

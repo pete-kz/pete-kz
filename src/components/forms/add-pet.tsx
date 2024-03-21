@@ -17,6 +17,8 @@ import { Textarea } from '@/components/ui/textarea'
 import ReactImageGallery from 'react-image-gallery'
 import { useToast } from '../ui/use-toast'
 import { AuthState } from '@/lib/declarations'
+import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 
 export function AddPetForm() {
 
@@ -25,6 +27,8 @@ export function AddPetForm() {
     const user = useAuthUser<AuthState>()
     const authHeader = useAuthHeader()
     const { toast } = useToast()
+    const navigate = useNavigate()
+    const queryClient = useQueryClient()
     const formSchema = z.object({
         name: z.string().min(2, { message: 'Pets name cant be shorter than 2 characters!' }),
         birthDate: z.string(),
@@ -75,6 +79,8 @@ export function AddPetForm() {
                 .then(() => {
                     toast({ description: t('label.success') })
                     setLoadingState(false)
+                    queryClient.invalidateQueries({ queryKey: ['pets'] })
+                    navigate('/pwa/profile')
                 })
                 .catch(axiosErrorHandler)
         }

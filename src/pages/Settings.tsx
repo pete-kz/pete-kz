@@ -16,8 +16,8 @@ export default function Settings() {
 	return (
 		<>
 			<MobilePageHeader title={t('header.settings')} to='/pwa/profile' />
-			<m.div className="grid p-4 gap-3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-				<ProjectCard />
+			<m.div className="grid p-4 gap-2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+				<ProjectCard social />
 				<SupportCard />
 				<ChangeCity />
 				<div>

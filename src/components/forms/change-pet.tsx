@@ -87,6 +87,7 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
                     setLoadingState(false)
                     setOpen(false)
                     queryClient.invalidateQueries({ queryKey: [`pet_${pet_id}`] })
+                    queryClient.invalidateQueries({ queryKey: ['pets'] })
                     toast({ description: t('pet.updated') })
                     navigate('/pwa/profile')
                 })

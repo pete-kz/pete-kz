@@ -64,7 +64,9 @@
     "support": {
       "default": "Support",
       "usVia": "You can support us by donating via",
-      "soon": "More ways to support soon."
+      "soon": "More ways to support soon.",
+      "ten": "10% of your donations we give to shelters in need",
+      "note": "All money transfers should be marked \"Pete\""
     },
     "liked": "Liked!",
     "goodbye": "Goodbye",
@@ -98,7 +100,9 @@
     "logout": "Exit",
     "addToLiked": "Add to favorites",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "userPets": "User's pets",
+    "newContentAvailable": "Доступно обновление. Установить?"
   },
   "text": {
     "about_us": {
@@ -213,5 +217,8 @@
       "confirm": "Confirm"
     }
   },
-  "error": "Error"
+  "error": "Error",
+  "errors": {
+    "user_not_found": "User not found"
+  }
 }

@@ -57,7 +57,9 @@
     "support": {
       "default": "Қолдау",
       "usVia": "Сіз бізге қайырымдылық арқылы қолдау көрсете аласыз",
-      "soon": "Жақында қолдаудың көбірек тәсілдері."
+      "soon": "Жақында қолдаудың көбірек тәсілдері.",
+      "ten": "10% of your donations we give to shelters in need",
+      "note": "Все переводы делайте с пометкой \"Pete\""
     },
     "liked": "Ұнады!Профайлыңызды кейінірек тексеріңіз.",
     "goodbye": "Сау болыңыз",
@@ -91,7 +93,9 @@
     "logout": "Шығу",
     "addToLiked": "Add to favorites",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "userPets": "Питомцы пользователя",
+    "newContentAvailable": "Доступно обновление. Установить?"
   },
   "text": {
     "about_us": {
@@ -206,5 +210,8 @@
       "confirm": "Жақсы"
     }
   },
-  "error": "Error"
+  "error": "Error",
+  "errors": {
+    "user_not_found": "User not found"
+  }
 }

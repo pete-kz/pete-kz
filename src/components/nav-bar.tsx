@@ -16,12 +16,15 @@ export default function NavigationBar() {
     }
 
     return (
-        <header className='h-16 fixed top-0 flex items-center px-5 w-screen bg-card border-b justify-between' style={{ zIndex: 9999 }}>
-            <img src="/images/pete-logo.svg" onClick={() => { navigate('/') }} width={30} />
-            <div className='flex gap-3'>
-                {main.navLinks.map((link, index) => (
-                    <Button variant={'link'} className={`text-white/75 hover:bg-none transition-all ease-in duration-75 p-0 ${isActive(link[1]) && 'text-primary'}`} key={index} onClick={() => { navigate(link[1]) }}>{t(link[0])}</Button>
-                ))}
+        <header className='h-16 fixed top-0 w-screen bg-card border-b flex justify-center' style={{ zIndex: 9999 }}>
+            <div className='flex items-center h-full justify-between w-full max-w-7xl'>
+                <img src="/images/pete-logo.svg" onClick={() => { navigate('/') }} width={30} />
+                <div className='flex gap-3'>
+                    {main.navLinks.map((link, index) => (
+                        <Button variant={'link'} className={`text-white/75 hover:bg-none hover:no-underline hover:text-[#c18dbf] transition-all ease-in duration-75 p-0 ${isActive(link[1]) && 'text-primary'}`} key={index} onClick={() => { navigate(link[1]) }}>{t(link[0])}</Button>
+                    ))}
+                    <Button onClick={() => { navigate('/pwa') }}>{t('label.proceedPWA')}</Button>
+                </div>
             </div>
         </header>
     )

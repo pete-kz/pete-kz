@@ -3,16 +3,17 @@ import React, { useState, useEffect, lazy } from 'react'
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
 import { useTranslation } from 'react-i18next'
 import { API } from '@config'
-import { type Pet_Response, AuthState } from '@declarations'
+import { type Pet_Response, AuthState, User_Response } from '@declarations'
 import { axiosAuth as axios } from '@utils'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Phone, Send } from 'lucide-react'
+import { ExternalLink, Phone, Send } from 'lucide-react'
 import ReactImageGallery from 'react-image-gallery'
 import { formatAge } from '@/lib/utils'
 import { OverlayContent, Overlay } from './ui/overlay'
 import BackButton from './back-button'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
 const ChangePetForm = lazy(() => import('@/components/forms/change-pet'))
 const LikeButton = lazy(() => import('@/components/like-button'))
@@ -32,7 +33,8 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
     // Setups
     const user = useAuthUser<AuthState>()
     const { t } = useTranslation()
-    const { data: ownerData } = useQuery({ queryKey: ['owner'], queryFn: () => axios.get(`${API.baseURL}/users/find/${pet.ownerID}`).then(res => res.data), refetchInterval: 2000 })
+    const navigate = useNavigate()
+    const { data: ownerData } = useQuery<User_Response>({ queryKey: ['owner', pet._id], queryFn: () => axios.get(`${API.baseURL}/users/find/${pet.ownerID}`).then(res => res.data), refetchInterval: 2000 })
 
     // States
     const [imageLinks, setImageLinks] = useState<{ original: string, thumbnail: string }[]>([])
@@ -47,7 +49,7 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
     return (
         <Overlay open={open}>
             <OverlayContent className='max-h-full h-fit overflow-scroll'>
-                {edit && ownerData?._id === user?._id && (
+                {edit && pet.ownerID === user?._id && (
                     <div className='m-4 bg-card p-4 border rounded-lg mb-16'>
                         <BackButton className='p-0' action={() => setOpen(false)} />
                         <ChangePetForm setOpen={setOpen} pet_id={pet._id} />
@@ -60,8 +62,8 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
                         <CardTitle className='p-6 pb-2 pt-0'>
                             {pet.name}, {formatAge(pet.birthDate, t('pet.year'), t('pet.month')) as string}
                             <br />
-                            <span className='text-muted font-normal'>
-                                {ownerData.companyName ? ownerData.companyName : ownerData.firstName + ' ' + ownerData.lastName}
+                            <span className='text-muted font-normal hover:text-[#c18dbf] transition-all ease-in duration-75 p-0 gap-2' onClick={() => { navigate('/pwa/users/' + ownerData._id) }}>
+                                {ownerData.companyName ? ownerData.companyName : ownerData.firstName + ' ' + ownerData.lastName}<ExternalLink />
                             </span>
                         </CardTitle>
                         <CardContent className='p-0'>

@@ -9,9 +9,11 @@ export default function WebLayout() {
 		<div className='h-screen'>
 			<NavigationBar />
 			<Toaster />
-			<main className='p-4 pt-20'>
-				<Outlet />
-			</main>
+			<div className='p-4 pt-20 flex justify-center'>
+				<main className='md:max-w-7xl w-full'>
+					<Outlet />
+				</main>
+			</div>
 		</div>
 	)
 }
