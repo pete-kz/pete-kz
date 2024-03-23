@@ -1,0 +1,6 @@
+build
+node_modules
+dev-dist
+.vscode
+dist
+public

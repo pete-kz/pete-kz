@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   Toast,
   ToastClose,
@@ -6,14 +6,14 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from '@/components/ui/toast'
-import { useToast } from '@/components/ui/use-toast'
+} from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 
 export function Toaster() {
   const { toasts } = useToast()
 
   return (
-    <ToastProvider swipeDirection='up'>
+    <ToastProvider swipeDirection="up">
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
           <Toast key={id} {...props} duration={1000}>

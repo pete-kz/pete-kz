@@ -2,14 +2,14 @@
 
 html,
 body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: auto;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
 }
 
 * {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }

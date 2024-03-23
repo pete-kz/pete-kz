@@ -18,32 +18,20 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
-    "types": [
-      "vite-plugin-pwa/client"
-    ],
+    "types": ["vite-plugin-pwa/client"],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@declarations": [
-        "./src/lib/declarations.d.ts"
-      ],
-      "@utils": [
-        "./src/lib/utils.ts"
-      ],
-      "@hooks": [
-        "./src/lib/hooks.ts"
-      ],
-      "@config": [
-        "./config/config.ts"
-      ]
+      "@/*": ["./src/*"],
+      "@declarations": ["./src/lib/declarations.d.ts"],
+      "@utils": ["./src/lib/utils.ts"],
+      "@hooks": ["./src/lib/hooks.ts"],
+      "@config": ["./config/config.ts"]
     }
   },
-  "references": [{
-    "path": "./tsconfig.node.json"
-  }],
-  "exclude": [
-    "node_modules"
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
   ],
-  "include": ["src"],
+  "exclude": ["node_modules"],
+  "include": ["src"]
 }

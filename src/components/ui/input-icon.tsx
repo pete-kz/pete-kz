@@ -1,19 +1,21 @@
-import React from 'react'
-import { cn } from '@/lib/utils'
+import React from "react"
+import { cn } from "@/lib/utils"
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   icon: React.ReactNode
 }
 
-const InputIcon = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,  icon, ...props }, ref) => {
+const InputIcon = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, icon, ...props }, ref) => {
     return (
       <div
         className={cn(
-          'flex items-center text-sm pl-3 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border border-input bg-background rounded-md',
+          "flex items-center text-sm pl-3 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border border-input bg-background rounded-md",
           className,
         )}
       >
-         {icon}
+        {icon}
         <input
           {...props}
           type={type}
@@ -25,6 +27,6 @@ const InputIcon = React.forwardRef<HTMLInputElement, InputProps>(({ className, t
   },
 )
 
-InputIcon.displayName = 'InputIcon'
+InputIcon.displayName = "InputIcon"
 
 export { InputIcon }
