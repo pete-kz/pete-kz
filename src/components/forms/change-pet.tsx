@@ -157,7 +157,7 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
+			<form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
 				<div className="mb-2">
 					<ReactImageGallery items={images} showFullscreenButton={false} showPlayButton={false} />
 				</div>
@@ -174,7 +174,7 @@ export default function ChangePetForm({ pet_id, setOpen }: { pet_id: Pet_Respons
 						</FormItem>
 					)}
 				/>
-				<div className="grid grid-rows-1 grid-cols-2 gap-1.5">
+				<div className="grid grid-cols-2 grid-rows-1 gap-1.5">
 					<FormField
 						control={form.control}
 						name="type"

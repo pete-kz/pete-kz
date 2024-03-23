@@ -22,7 +22,7 @@ export default function SupportCard() {
 			<CardContent className="mt-2 p-0">
 				<p className="italic">{`(${t("label.support.ten")})`}</p>
 				<p>{t("label.support.usVia")}</p>
-				<ul className="list-disc ml-5">
+				<ul className="ml-5 list-disc">
 					<li>
 						Kaspi Gold {"->"}{" "}
 						<Button className="p-0" variant={"link"} onClick={copyToClipboard("4400430228103260")}>

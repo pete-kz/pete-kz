@@ -64,7 +64,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 	}
 
 	if (petError) {
-		;<Card className="flex flex-col items-center p-3 gap-2">
+		;<Card className="flex flex-col items-center gap-2 p-3">
 			<Avatar>
 				<AvatarFallback>{t("error")}</AvatarFallback>
 			</Avatar>
@@ -82,7 +82,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 			<>
 				{authState && authState._id === pet.ownerID ? <PetOverlay pet={pet} edit open={openPet} setOpen={setOpenPet} /> : <PetOverlay pet={pet} info contacts open={openPet} setOpen={setOpenPet} />}
 				<Card
-					className="flex flex-col items-center p-3 gap-2"
+					className="flex flex-col items-center gap-2 p-3"
 					onClick={
 						authState && authState._id === pet.ownerID
 							? undefined
@@ -96,9 +96,9 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 					</Avatar>
 					<p className="text-center">{pet.name}</p>
 					{authState && authState._id === pet.ownerID && (
-						<div className="grid grid-rows-1 grid-cols-2 gap-2">
+						<div className="grid grid-cols-2 grid-rows-1 gap-2">
 							<Button
-								className="p-2 w-10 h-10"
+								className="h-10 w-10 p-2"
 								variant={"outline"}
 								onClick={() => {
 									setOpenPet(true)
@@ -107,7 +107,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 							</Button>
 							<AlertDialog>
 								<AlertDialogTrigger asChild>
-									<Button className="p-2 w-10 h-10" variant={"outline"}>
+									<Button className="h-10 w-10 p-2" variant={"outline"}>
 										<Trash size={14} style={{ color: "#FF0000" }} />
 									</Button>
 								</AlertDialogTrigger>

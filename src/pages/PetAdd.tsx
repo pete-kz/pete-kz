@@ -7,6 +7,7 @@ import useSignOut from "react-auth-kit/hooks/useSignOut"
 import { useTranslation } from "react-i18next"
 import { AddPetForm } from "@/components/forms/add-pet"
 import MobilePageHeader from "@/components/mobile-page-header"
+import { Helmet } from "react-helmet"
 
 export default function AddPetPage() {
 	// Setups
@@ -35,8 +36,11 @@ export default function AddPetPage() {
 
 	return (
 		<>
+			<Helmet>
+				<title>{"Pete - " + t("header.petAdd")}</title>
+			</Helmet>
 			<MobilePageHeader title={t("header.petAdd")} to="/pwa/profile" />
-			<div className="m-2 p-2 mb-20">
+			<div className="m-2 mb-20 p-2">
 				<AddPetForm />
 			</div>
 		</>

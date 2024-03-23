@@ -47,7 +47,7 @@
 }
 
 #pet_table {
-	@apply border border-collapse border-border w-full table-auto;
+	@apply w-full table-auto border-collapse border border-border;
 }
 
 #pet_table #pet_row {

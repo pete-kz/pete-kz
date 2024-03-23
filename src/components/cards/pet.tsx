@@ -40,7 +40,7 @@ export default function PetCard(props: PetCard) {
 							objectFit: "cover",
 						}}
 					/>
-					<div className="rounded-lg absolute flex items-end bottom-0 left-0 p-3 bg-gradient-to-t w-full h-full from-black from-2% to-transparent to-40%">
+					<div className="from-2% absolute bottom-0 left-0 flex h-full w-full items-end rounded-lg bg-gradient-to-t from-black to-transparent to-40% p-3">
 						<div>
 							<p className="text-2xl font-bold">{props.name}</p>
 							<p>{formatAge(props.birthDate, t("pet.year"), t("pet.month")) as string}</p>

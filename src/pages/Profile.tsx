@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import MobilePageHeader from "@/components/mobile-page-header"
 import AddPetCard from "@/components/cards/add-pet"
 import { useQuery } from "@tanstack/react-query"
+import { Helmet } from "react-helmet"
 
 const LikedPet = lazy(() => import("@/components/cards/liked-pet"))
 const MyPetIcon = lazy(() => import("@/components/my-pet-icon"))
@@ -55,15 +56,18 @@ export default function Profile() {
 
 	return (
 		<>
+			<Helmet>
+				<title>{"Pete - " + t("header.profile")}</title>
+			</Helmet>
 			<MobilePageHeader title={t("header.profile")} to="/pwa" />
-			<div className="block w-full gap-2 p-3 mb-20">
+			<div className="mb-20 block w-full gap-2 p-3">
 				<Suspense fallback={<div>Loading...</div>}>
 					{isAuthenticated() ? (
 						userData && <UserProfileCard user={userData} />
 					) : (
 						<Button
 							variant={"secondary"}
-							className="gap-2 w-full font-bold"
+							className="w-full gap-2 font-bold"
 							onClick={() => {
 								navigate("/auth/login")
 							}}>
@@ -72,9 +76,9 @@ export default function Profile() {
 					)}
 				</Suspense>
 
-				<div className="p-1 mt-3">
+				<div className="mt-3 p-1">
 					<p>{t("label.myPets")}</p>
-					<div className="grid grid-cols-3 gap-2 mt-2">
+					<div className="mt-2 grid grid-cols-3 gap-2">
 						{userPending && petsPending && <div>Loading...</div>}
 						{userData && userPets?.map((pet, index) => <MyPetIcon key={index} _id={pet._id} setUserPets={setUserPets} />)}
 						<AddPetCard />
@@ -107,7 +111,7 @@ function SettingsButton() {
 	const navigate = useNavigate()
 
 	return (
-		<button className="p-3 bg-primary rounded-full text-border" onClick={() => navigate("/pwa/settings")}>
+		<button className="rounded-full bg-primary p-3 text-border" onClick={() => navigate("/pwa/settings")}>
 			<Settings className="h-8 w-8" />
 		</button>
 	)

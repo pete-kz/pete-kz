@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom"
 import MobilePageHeader from "@/components/mobile-page-header"
 import { useQuery } from "@tanstack/react-query"
 import PetOverlayContactSection from "@/components/pet-overlay-contact-section"
+import { Helmet } from "react-helmet"
 
 const MyPetIcon = lazy(() => import("@/components/my-pet-icon"))
 const UserProfileCard = lazy(() => import("@/components/cards/user-profile"))
@@ -33,8 +34,11 @@ export default function User() {
 
 	return (
 		<>
+			<Helmet>
+				<title>{"Pete - " + (user?.companyName ? user?.companyName : user?.firstName) || "404"}</title>
+			</Helmet>
 			<MobilePageHeader to="/pwa" title={(user?.companyName ? user?.companyName : user?.firstName) || "404"} />
-			<div className="block w-full gap-2 p-3 mb-20">
+			<div className="mb-20 block w-full gap-2 p-3">
 				<div className="space-y-2">
 					{error && <div>{t("errors.user_not_found")}</div>}
 					{isPending ? (
@@ -44,7 +48,7 @@ export default function User() {
 							<UserProfileCard user={user!} />
 							<div>
 								<h1 className="text-2xl font-bold">{t("label.userPets")}</h1>
-								<div className="grid grid-cols-3 mt-3">
+								<div className="mt-3 grid grid-cols-3">
 									{pets?.map((pet) => <MyPetIcon key={pet._id} {...pet} />)}
 									{pets?.length === 0 && t("label.noPets")}
 								</div>

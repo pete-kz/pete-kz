@@ -15,8 +15,8 @@ export default function NavigationBar() {
 	}
 
 	return (
-		<header className="h-16 fixed top-0 w-screen bg-card border-b flex justify-center" style={{ zIndex: 9999 }}>
-			<div className="flex items-center h-full justify-between w-full max-w-7xl">
+		<header className="fixed top-0 flex h-16 w-screen justify-center border-b bg-card" style={{ zIndex: 9999 }}>
+			<div className="flex h-full w-full max-w-7xl items-center justify-between">
 				<img
 					src="/images/pete-logo.svg"
 					onClick={() => {
@@ -28,7 +28,7 @@ export default function NavigationBar() {
 					{main.navLinks.map((link, index) => (
 						<Button
 							variant={"link"}
-							className={`text-white/75 hover:bg-none hover:no-underline hover:text-[#c18dbf] transition-all ease-in duration-75 p-0 ${isActive(link[1]) && "text-primary"}`}
+							className={`p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline ${isActive(link[1]) && "text-primary"}`}
 							key={index}
 							onClick={() => {
 								navigate(link[1])

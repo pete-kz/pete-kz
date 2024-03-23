@@ -95,7 +95,7 @@ export default function LikedPet({ pet_id, userData, setUserLiked }: { pet_id: P
 	}
 
 	return (
-		<Card className="flex items-center justify-between mt-2 p-3 cursor-pointer">
+		<Card className="mt-2 flex cursor-pointer items-center justify-between p-3">
 			{pet && (
 				<>
 					{open && <PetOverlay open setOpen={setOpen} pet={pet} info contacts />}
@@ -104,7 +104,7 @@ export default function LikedPet({ pet_id, userData, setUserLiked }: { pet_id: P
 						onClick={() => {
 							setOpen(true)
 						}}>
-						<div className="flex gap-2 items-center">
+						<div className="flex items-center gap-2">
 							<Avatar>
 								<AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
 								<AvatarFallback>{pet.name[0]}</AvatarFallback>

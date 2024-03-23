@@ -10,7 +10,7 @@ export default function AboutUsPage() {
 	return (
 		<>
 			<Helmet>
-				<title>{t("label.aboutUs")}</title>
+				<title>{"Pete - " + t("label.aboutUs")}</title>
 			</Helmet>
 			<AboutUsCard />
 		</>

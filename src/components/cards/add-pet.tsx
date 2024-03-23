@@ -11,7 +11,7 @@ export default function AddPetCard() {
 
 	return (
 		<Card
-			className="flex flex-col justify-center items-center p-3 gap-3 cursor-pointer"
+			className="flex cursor-pointer flex-col items-center justify-center gap-3 p-3"
 			onClick={() => {
 				navigate("/pwa/pets/add")
 			}}>

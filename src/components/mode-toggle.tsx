@@ -12,7 +12,7 @@ export function ModeToggle() {
 	const { t } = useTranslation()
 
 	return (
-		<div className="grid w-fit h-fit items-center gap-1.5">
+		<div className="grid h-fit w-fit items-center gap-1.5">
 			<Label className="text-ellipsis">{t("label.mode.default")}</Label>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>

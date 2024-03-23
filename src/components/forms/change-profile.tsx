@@ -134,7 +134,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 				</DialogHeader>
 				{userData?._id && (
 					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
+						<form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
 							{userData.companyName && (
 								<FormField
 									control={form.control}

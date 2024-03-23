@@ -27,7 +27,7 @@ export default function UserProfileCard({ user }: { user: User_Response }) {
 	}, [user])
 
 	return (
-		<Card className="p-3 flex flex-col gap-4">
+		<Card className="flex flex-col gap-4 p-3">
 			<div className="flex gap-2">
 				<Avatar>
 					<AvatarImage src={"/images/pete-logo.svg"} alt={"PETE"} />
@@ -39,16 +39,16 @@ export default function UserProfileCard({ user }: { user: User_Response }) {
 				</div>
 			</div>
 			{authState && authState?._id === user._id && (
-				<div className="grid grid-cols-2 border grid-rows-1 rounded-lg">
+				<div className="grid grid-cols-2 grid-rows-1 rounded-lg border">
 					<ChangeProfileForm>
-						<Button className="rounded-none p-2 m-0 border-r gap-2 rounded-l-lg" type="submit" variant={"link"}>
+						<Button className="m-0 gap-2 rounded-none rounded-l-lg border-r p-2" type="submit" variant={"link"}>
 							{t("label.edit")}
 							<Pencil />
 						</Button>
 					</ChangeProfileForm>
 					<Button
 						variant={"link"}
-						className="text-red-500 hover:bg-red-500 hover:text-white hover:rounded-r-lg rounded-r-lg border-l rounded-none p-2 m-0 gap-2"
+						className="m-0 gap-2 rounded-none rounded-r-lg border-l p-2 text-red-500 hover:rounded-r-lg hover:bg-red-500 hover:text-white"
 						onClick={() => {
 							signout()
 							navigate("/pwa")

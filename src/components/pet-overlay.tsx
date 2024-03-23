@@ -52,28 +52,28 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 
 	return (
 		<Overlay open={open}>
-			<OverlayContent className="max-h-full h-fit overflow-scroll">
+			<OverlayContent className="h-fit max-h-full overflow-scroll">
 				{edit && pet.ownerID === user?._id && (
-					<div className="m-4 bg-card p-4 border rounded-lg mb-16">
+					<div className="m-4 mb-16 rounded-lg border bg-card p-4">
 						<BackButton className="p-0" action={() => setOpen(false)} />
 						<ChangePetForm setOpen={setOpen} pet_id={pet._id} />
 					</div>
 				)}
 
 				{ownerData && info && (
-					<Card className="border-none rounded-none flex flex-col h-full w-full">
+					<Card className="flex h-full w-full flex-col rounded-none border-none">
 						<BackButton className="pb-0 pl-4" action={() => setOpen(false)} />
 						<CardTitle className="p-6 pb-2 pt-2">
 							{pet.name}, {formatAge(pet.birthDate, t("pet.year"), t("pet.month")) as string}
 							<br />
-							<span className="text-muted font-normal" onClick={() => navigate("/pwa/users/" + ownerData._id)}>
+							<span className="font-normal text-muted" onClick={() => navigate("/pwa/users/" + ownerData._id)}>
 								{ownerData.companyName ? ownerData.companyName : ownerData.firstName + " " + ownerData.lastName}
 							</span>
 						</CardTitle>
 						<CardContent className="p-0">
 							<ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={true} showPlayButton={false} />
 						</CardContent>
-						<div className="p-6 pt-2 pb-2">
+						<div className="p-6 pb-2 pt-2">
 							<div id="pet_table">
 								<div id="pet_row">
 									<p>{t("pet.sex.default")}</p>
@@ -88,7 +88,7 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 									<p>{`${pet.weight} ${t("pet.kg")}`}</p>
 								</div>
 							</div>
-							<pre className="font-normal font-sans p-3 bg-border rounded-lg mt-3 mb-0">{pet.description}</pre>
+							<pre className="mb-0 mt-3 rounded-lg bg-border p-3 font-sans font-normal">{pet.description}</pre>
 						</div>
 						{contacts && (
 							<div className="p-6 pt-0">

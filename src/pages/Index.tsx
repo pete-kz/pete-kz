@@ -24,10 +24,10 @@ export default function IndexPage() {
 	}, [])
 
 	return (
-		<Card className="flex flex-col items-center justify-center w-full p-3">
+		<Card className="flex w-full flex-col items-center justify-center p-3">
 			<div className="flex flex-col">
 				<img loading="lazy" src="/images/repository-open-graph-russian.png" />
-				<div className="flex mx-auto items-center gap-1.5">
+				<div className="mx-auto flex items-center gap-1.5">
 					<ChangeLanguage label={false} />
 					<Button onClick={go}>{t("label.proceedPWA")}</Button>
 				</div>

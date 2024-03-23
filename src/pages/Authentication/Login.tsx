@@ -19,9 +19,9 @@ export default function Login() {
 	}, [])
 
 	return (
-		<div className="flex flex-col gap-1 w-full">
+		<div className="flex w-full flex-col gap-1">
 			<Helmet>
-				<title>{t("label.authorization.login.default")}</title>
+				<title>{"Pete - " + t("label.authorization.login.default")}</title>
 			</Helmet>
 			<div>
 				<h1 className="text-2xl">{t("label.authorization.login.default")}</h1>

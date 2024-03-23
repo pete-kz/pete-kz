@@ -87,8 +87,8 @@ export function RegisterForm() {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
-				<div className="w-full flex gap-1.5">
+			<form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
+				<div className="flex w-full gap-1.5">
 					<FormField
 						control={form.control}
 						name="firstName"

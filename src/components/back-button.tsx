@@ -11,11 +11,11 @@ export default function BackButton({ to = "/pwa", action, className }: { to?: st
 	const { t } = useTranslation()
 
 	return (
-		<div className={cn("flex justify-start gap-1 h-fit p-4 pl-0", className)}>
+		<div className={cn("flex h-fit justify-start gap-1 p-4 pl-0", className)}>
 			<Button
 				variant={"link"}
 				type="button"
-				className="grid gap-1.5 text-muted-foreground p-0 m-0"
+				className="m-0 grid gap-1.5 p-0 text-muted-foreground"
 				onClick={() => {
 					action ? action() : navigate(to)
 				}}>

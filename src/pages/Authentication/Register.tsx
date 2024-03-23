@@ -19,9 +19,9 @@ export default function Register() {
 	}, [])
 
 	return (
-		<div className="flex flex-col gap-2 w-full">
+		<div className="flex w-full flex-col gap-2">
 			<Helmet>
-				<title>{t("label.authorization.register.default")}</title>
+				<title>{"Pete - " + t("label.authorization.register.default")}</title>
 			</Helmet>
 			<div className="w-full">
 				<h1 className="text-2xl">{t("label.authorization.register.default")}</h1>

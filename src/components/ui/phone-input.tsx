@@ -41,7 +41,7 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> = React.forwa
 ))
 PhoneInput.displayName = "PhoneInput"
 
-const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, ref) => <Input className={cn("rounded-s-none rounded-e-lg", className)} {...props} ref={ref} />)
+const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, ref) => <Input className={cn("rounded-e-lg rounded-s-none", className)} {...props} ref={ref} />)
 InputComponent.displayName = "InputComponent"
 
 type CountrySelectOption = { label: string; value: RPNInput.Country }
@@ -64,12 +64,12 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
-				<Button type="button" variant={"outline"} className={cn("flex gap-1 rounded-e-none rounded-s-lg pr-1 pl-3")} disabled={disabled}>
+				<Button type="button" variant={"outline"} className={cn("flex gap-1 rounded-e-none rounded-s-lg pl-3 pr-1")} disabled={disabled}>
 					<FlagComponent country={value} countryName={value} />
 					<ChevronsUpDown className={cn("h-4 w-4 opacity-50", disabled ? "hidden" : "opacity-100")} />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="p-0 w-[300px]">
+			<PopoverContent className="w-[300px] p-0">
 				<Command>
 					<CommandList>
 						<CommandInput placeholder="Search country..." />
@@ -80,7 +80,7 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
 								.map((option) => (
 									<CommandItem className="gap-2" key={option.value} onSelect={() => handleSelect(option.value)}>
 										<FlagComponent country={option.value} countryName={option.label} />
-										<span className="text-sm flex-1">{option.label}</span>
+										<span className="flex-1 text-sm">{option.label}</span>
 										{option.value && <span className="text-sm text-foreground/50">{`+${RPNInput.getCountryCallingCode(option.value)}`}</span>}
 										<CheckIcon className={cn("ml-auto h-4 w-4", option.value === value ? "opacity-100" : "opacity-0")} />
 									</CommandItem>

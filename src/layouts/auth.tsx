@@ -9,7 +9,7 @@ export default function AuthLayout() {
 	const { t } = useTranslation()
 
 	return (
-		<div className='h-screen flex justify-center bg-[url("/images/background.webp")]'>
+		<div className='flex h-screen justify-center bg-[url("/images/background.webp")]'>
 			<div className="max-w-lg bg-background">
 				<MobilePageHeader title={t("header.authorization")} to="/pwa/profile" />
 				<Toaster />

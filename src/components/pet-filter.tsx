@@ -56,8 +56,8 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 					</DrawerHeader>
 					<div className="p-4 pb-0">
 						<div className="grid space-y-4">
-							<div className="flex gap-2 w-full">
-								<div className="grid gap-1.5 w-full">
+							<div className="flex w-full gap-2">
+								<div className="grid w-full gap-1.5">
 									<Label htmlFor="">{t("pet.type.default")}</Label>
 									<Select value={type} onValueChange={setType}>
 										<SelectTrigger>
@@ -72,7 +72,7 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
 										</SelectContent>
 									</Select>
 								</div>
-								<div className="grid gap-1.5 w-full">
+								<div className="grid w-full gap-1.5">
 									<Label htmlFor="">{t("pet.ownerType")}</Label>
 									<Select value={ownerType} onValueChange={setOwnerType}>
 										<SelectTrigger>
@@ -123,7 +123,7 @@ export default function PetFilter({ updateFilter, filter, children }: { updateFi
                             </div> */}
 						</div>
 					</div>
-					<DrawerFooter className="flex flex-row w-full gap-1.5">
+					<DrawerFooter className="flex w-full flex-row gap-1.5">
 						<DrawerClose asChild>
 							<Button className="w-full" onClick={onSubmit}>
 								{t("label.apply")}

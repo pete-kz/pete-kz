@@ -176,13 +176,13 @@ export default function Main() {
 					<Filter className={iconSize} />
 				</Button>
 			</PetFilter>
-			<div className="p-4 flex flex-col items-center w-full justify-center h-screen">
+			<div className="flex h-screen w-full flex-col items-center justify-center p-4">
 				<div className="max-w-md">
 					{loadingPets ? (
 						<LoadingSpinner size={12} />
 					) : allPets.length > 0 ? (
 						<>
-							{updatingCache && !loadingPets && <p className="animate-pulse font-semibold bg-card p-4 mb-2 rounded-lg border w-full">{t("label.updatePets")}...</p>}
+							{updatingCache && !loadingPets && <p className="mb-2 w-full animate-pulse rounded-lg border bg-card p-4 font-semibold">{t("label.updatePets")}...</p>}
 							<Carousel setApi={setApi} className="mb-5" opts={{ loop: false }}>
 								<CarouselContent>
 									{typeof allUsers.filter === "function" &&
@@ -194,7 +194,7 @@ export default function Main() {
 								</CarouselContent>
 							</Carousel>
 							{typeof allUsers.filter === "function" && (
-								<div className="flex w-full gap-2 justify-center px-3 mt-2">
+								<div className="mt-2 flex w-full justify-center gap-2 px-3">
 									<Button
 										size={"icon"}
 										variant={"secondary"}
@@ -230,8 +230,8 @@ export default function Main() {
 function NoMorePets() {
 	const { t } = useTranslation()
 	return (
-		<Card className="flex flex-col text-center justify-center items-center p-6">
-			<h1 className="text-2xl font-bold flex gap-2 items-center text-orange-200">
+		<Card className="flex flex-col items-center justify-center p-6 text-center">
+			<h1 className="flex items-center gap-2 text-2xl font-bold text-orange-200">
 				<LucideDog />
 				{t("label.noPets")}
 				<LucideCat />

@@ -9,15 +9,15 @@ export default function ProjectCard({ description = false, social = false }: { d
 	const navigate = useNavigate()
 
 	return (
-		<div className="p-4 flex flex-col items-center justify-center">
+		<div className="flex flex-col items-center justify-center p-4">
 			<img loading="lazy" src="/images/pete-logo.svg" width={30} />
 			<p className="text-2xl font-semibold">Pete</p>
 			{social && (
 				<div className="flex gap-2">
-					<Button variant={"link"} className="text-white/75 hover:bg-none hover:text-[#c18dbf] transition-all ease-in duration-75 p-0 gap-2 hover:no-underline" onClick={() => navigate("https://github.com/pete-kz")}>
+					<Button variant={"link"} className="gap-2 p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline" onClick={() => navigate("https://github.com/pete-kz")}>
 						Github <Github />
 					</Button>
-					<Button variant={"link"} className="text-white/75 hover:bg-none hover:text-[#c18dbf] transition-all ease-in duration-75 p-0 gap-2 hover:no-underline" onClick={() => navigate("https://instagram.com/pete.kazakhstan")}>
+					<Button variant={"link"} className="gap-2 p-0 text-white/75 transition-all duration-75 ease-in hover:bg-none hover:text-[#c18dbf] hover:no-underline" onClick={() => navigate("https://instagram.com/pete.kazakhstan")}>
 						Instagram <Instagram />
 					</Button>
 				</div>
