@@ -9,36 +9,36 @@ import { AddPetForm } from "@/components/forms/add-pet"
 import MobilePageHeader from "@/components/mobile-page-header"
 
 export default function AddPetPage() {
-  // Setups
-  const isAuthenticated = useIsAuthenticated()
-  const navigate = useNavigate()
-  const signout = useSignOut()
-  const authHeader = useAuthHeader()
-  const { t } = useTranslation()
+	// Setups
+	const isAuthenticated = useIsAuthenticated()
+	const navigate = useNavigate()
+	const signout = useSignOut()
+	const authHeader = useAuthHeader()
+	const { t } = useTranslation()
 
-  // Functions
-  function checkToken() {
-    const token = `${localStorage.getItem("_auth_type")} ${localStorage.getItem("_auth")}`
-    const isEqualTokens = authHeader == token
-    if (!isEqualTokens) {
-      signout()
-    }
-  }
+	// Functions
+	function checkToken() {
+		const token = `${localStorage.getItem("_auth_type")} ${localStorage.getItem("_auth")}`
+		const isEqualTokens = authHeader == token
+		if (!isEqualTokens) {
+			signout()
+		}
+	}
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate("/auth/login")
-      return
-    }
-    checkToken()
-  }, [])
+	useEffect(() => {
+		if (!isAuthenticated()) {
+			navigate("/auth/login")
+			return
+		}
+		checkToken()
+	}, [])
 
-  return (
-    <>
-      <MobilePageHeader title={t("header.petAdd")} to="/pwa/profile" />
-      <div className="m-2 p-2 mb-20">
-        <AddPetForm />
-      </div>
-    </>
-  )
+	return (
+		<>
+			<MobilePageHeader title={t("header.petAdd")} to="/pwa/profile" />
+			<div className="m-2 p-2 mb-20">
+				<AddPetForm />
+			</div>
+		</>
+	)
 }

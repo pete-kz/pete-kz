@@ -3,61 +3,61 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 270 20% 10%;
-    --foreground: 270 15% 90%;
+	:root {
+		--background: 270 20% 10%;
+		--foreground: 270 15% 90%;
 
-    --card: 270 15% 15%;
-    --card-foreground: 270 15% 90%;
+		--card: 270 15% 15%;
+		--card-foreground: 270 15% 90%;
 
-    --popover: 270 15% 15%;
-    --popover-foreground: 270 15% 90%;
+		--popover: 270 15% 15%;
+		--popover-foreground: 270 15% 90%;
 
-    --primary: 290 50% 70%;
-    --primary-foreground: 270 15% 20%;
+		--primary: 290 50% 70%;
+		--primary-foreground: 270 15% 20%;
 
-    --secondary: 260 45% 65%;
-    --secondary-foreground: 270 15% 20%;
+		--secondary: 260 45% 65%;
+		--secondary-foreground: 270 15% 20%;
 
-    --muted: 270 10% 75%;
-    --muted-foreground: 270 30% 80%;
+		--muted: 270 10% 75%;
+		--muted-foreground: 270 30% 80%;
 
-    --accent: 285 60% 75%;
-    --accent-foreground: 270 15% 20%;
+		--accent: 285 60% 75%;
+		--accent-foreground: 270 15% 20%;
 
-    --destructive: 345 65% 50%;
-    --destructive-foreground: 270 15% 98%;
+		--destructive: 345 65% 50%;
+		--destructive-foreground: 270 15% 98%;
 
-    --border: 270 15% 30%;
-    --input: 270 15% 25%;
-    --ring: 270 30% 60%;
+		--border: 270 15% 30%;
+		--input: 270 15% 25%;
+		--ring: 270 30% 60%;
 
-    --radius: 1rem;
-  }
+		--radius: 1rem;
+	}
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+	* {
+		@apply border-border;
+	}
 
-  body {
-    @apply bg-background text-foreground;
-  }
+	body {
+		@apply bg-background text-foreground;
+	}
 }
 
 #pet_table {
-  @apply border border-collapse border-border w-full table-auto;
+	@apply border border-collapse border-border w-full table-auto;
 }
 
 #pet_table #pet_row {
-  @apply grid grid-cols-2 grid-rows-1;
+	@apply grid grid-cols-2 grid-rows-1;
 }
 
 #pet_table #pet_row p {
-  @apply border p-2 text-white;
+	@apply border p-2 text-white;
 }
 
 #pet_table #pet_row p:nth-child(odd) {
-  @apply font-bold;
+	@apply font-bold;
 }

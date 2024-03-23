@@ -7,38 +7,31 @@ import { Card } from "@/components/ui/card"
 import { useQuery } from "@/lib/utils"
 
 export default function IndexPage() {
-  // Setups
-  const navigate = useNavigate()
-  const { t } = useTranslation()
-  const query = useQuery()
+	// Setups
+	const navigate = useNavigate()
+	const { t } = useTranslation()
+	const query = useQuery()
 
-  // Functions
-  function go() {
-    navigate("/pwa")
-  }
+	// Functions
+	function go() {
+		navigate("/pwa")
+	}
 
-  useEffect(() => {
-    if (query.get("pwa") === "true") {
-      navigate("/pwa")
-    }
-  }, [])
+	useEffect(() => {
+		if (query.get("pwa") === "true") {
+			navigate("/pwa")
+		}
+	}, [])
 
-  return (
-    <>
-      <div>
-        <Card className="flex flex-col items-center justify-center w-full p-3">
-          <div className="flex flex-col">
-            <img
-              loading="lazy"
-              src="/images/repository-open-graph-russian.png"
-            />
-            <div className="flex mx-auto items-center gap-1.5">
-              <ChangeLanguage label={false} />
-              <Button onClick={go}>{t("label.proceedPWA")}</Button>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </>
-  )
+	return (
+		<Card className="flex flex-col items-center justify-center w-full p-3">
+			<div className="flex flex-col">
+				<img loading="lazy" src="/images/repository-open-graph-russian.png" />
+				<div className="flex mx-auto items-center gap-1.5">
+					<ChangeLanguage label={false} />
+					<Button onClick={go}>{t("label.proceedPWA")}</Button>
+				</div>
+			</div>
+		</Card>
+	)
 }

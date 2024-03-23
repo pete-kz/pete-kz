@@ -7,20 +7,20 @@ import ProjectCard from "@/components/cards/project"
 import MobilePageHeader from "@/components/mobile-page-header"
 
 export default function Settings() {
-  // Setups
-  const { t } = useTranslation()
+	// Setups
+	const { t } = useTranslation()
 
-  return (
-    <>
-      <MobilePageHeader title={t("header.settings")} to="/pwa/profile" />
-      <div className="grid p-4 gap-2">
-        <ProjectCard social />
-        <SupportCard />
-        <ChangeCity />
-        <div>
-          <ChangeLanguage />
-        </div>
-      </div>
-    </>
-  )
+	return (
+		<>
+			<MobilePageHeader title={t("header.settings")} to="/pwa/profile" />
+			<div className="grid p-4 gap-2">
+				<ProjectCard social />
+				<SupportCard />
+				<ChangeCity />
+				<div>
+					<ChangeLanguage />
+				</div>
+			</div>
+		</>
+	)
 }

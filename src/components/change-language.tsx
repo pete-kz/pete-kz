@@ -2,49 +2,42 @@
 import React, { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { main } from "@config"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { Label } from "./ui/label"
 
 const languages = main.languages
 const lanaguagesCodes = languages.map((language) => language[0])
 
 export default function ChangeLanguage({ label = true }: { label?: boolean }) {
-  // Setups
-  const { t, i18n } = useTranslation()
-  const [currentLanguage, setLanguage] = useState<string>()
+	// Setups
+	const { t, i18n } = useTranslation()
+	const [currentLanguage, setLanguage] = useState<string>()
 
-  useEffect(() => {
-    setLanguage(lanaguagesCodes.includes(i18n.language) ? i18n.language : "en")
-    i18n.changeLanguage(currentLanguage)
-  }, [])
+	useEffect(() => {
+		setLanguage(lanaguagesCodes.includes(i18n.language) ? i18n.language : "en")
+		i18n.changeLanguage(currentLanguage)
+	}, [])
 
-  return (
-    <div className="grid w-full items-center gap-1.5">
-      {label && <Label>{t("label.language")}</Label>}
-      <Select
-        value={currentLanguage}
-        onValueChange={(value) => {
-          i18n.changeLanguage(value)
-          setLanguage(value)
-        }}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder={t("label.language")} />
-          <SelectContent>
-            {languages.map((language) => (
-              <SelectItem key={language[0]} value={language[0]}>
-                {language[1]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectTrigger>
-      </Select>
-    </div>
-  )
+	return (
+		<div className="grid w-full items-center gap-1.5">
+			{label && <Label>{t("label.language")}</Label>}
+			<Select
+				value={currentLanguage}
+				onValueChange={(value) => {
+					i18n.changeLanguage(value)
+					setLanguage(value)
+				}}>
+				<SelectTrigger>
+					<SelectValue placeholder={t("label.language")} />
+					<SelectContent>
+						{languages.map((language) => (
+							<SelectItem key={language[0]} value={language[0]}>
+								{language[1]}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</SelectTrigger>
+			</Select>
+		</div>
+	)
 }
