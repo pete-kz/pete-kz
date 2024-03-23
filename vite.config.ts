@@ -1,9 +1,7 @@
-import { defineConfig, type PluginOption } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
 import { VitePWA } from 'vite-plugin-pwa'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import { visualizer } from 'rollup-plugin-visualizer'
-import analyze from 'rollup-plugin-analyzer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,10 +11,6 @@ export default defineConfig({
       mode: (process.env.NODE_ENV as 'development' | 'production' | undefined) || 'development',
       injectRegister: 'auto',
       registerType: 'prompt',
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}', '**/**/*.{js,css,html,ico,png,svg,json}', '*.{js,css,html,ico,png,svg,json}']
-      },
-      devOptions: { enabled: true },
       manifest: {
         'name': 'Pete',
         'short_name': 'Pete',
@@ -179,25 +173,8 @@ export default defineConfig({
             'url': '/pwa/settings'
           }
         ]
-      }
+      },
     }),
-    tsconfigPaths(),
-    visualizer({ open: true }) as unknown as PluginOption
-  ],
-  build: {
-    rollupOptions: {
-      plugins: [
-        analyze({
-          summaryOnly: true
-        }) as unknown as PluginOption
-      ],
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor'
-          }
-        }
-      }
-    }
-  }
+    tsconfigPaths()
+  ]
 })

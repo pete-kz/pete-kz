@@ -11,6 +11,6 @@ const main = {
         ['kz', '🇰🇿 Қазақ тілі'], 
         ['en-US', '🇬🇧 English']
     ]
-}
+} as const
 
 export { API, main }

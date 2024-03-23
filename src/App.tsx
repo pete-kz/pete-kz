@@ -61,7 +61,6 @@ const store = createStore({
 	authName: '_auth',
 	authType: 'localstorage',
 	refresh,
-	debug: true
 })
 
 const queryClient = new QueryClient()
