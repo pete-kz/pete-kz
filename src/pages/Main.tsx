@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button'
 import LoadingSpinner from '@/components/loading-spinner'
 import { CarouselItem, Carousel, CarouselContent, CarouselApi } from '@/components/ui/carousel'
 import { Filter, UserRound } from 'lucide-react'
-import { m } from 'framer-motion'
 import { useToast } from '@/components/ui/use-toast'
 
 const commonClasses = 'absolute top-0 p-2 z-50 m-2'
@@ -168,7 +167,7 @@ export default function Main() {
 					<Filter className={iconSize} />
 				</Button>
 			</PetFilter>
-			<m.div initial={{ opacity: 0, y: 10 }} className='p-4 flex flex-col items-center w-full justify-center h-screen' animate={{ opacity: 1, y: 0 }}>
+			<div className='p-4 flex flex-col items-center w-full justify-center h-screen'>
 				<div className='max-w-md'>
 					{loadingPets ? <LoadingSpinner size={12} /> : allPets.length > 0 ? (
 						<>
@@ -188,16 +187,16 @@ export default function Main() {
 							</Carousel>
 							{typeof allUsers.filter === 'function' &&
 								<div className='flex w-full gap-2 justify-center px-3 mt-2'>
-								<Button size={'icon'} variant={'secondary'} className='active:scale-95' disabled={allPets[current]._id === allPets[0]._id} onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
-								<Button size={'icon'} variant={'secondary'} className='active:scale-95' disabled={allPets[current]._id === allPets[allPets.length - 1]._id} onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
-							</div>
+									<Button size={'icon'} variant={'secondary'} className='active:scale-95' disabled={allPets[current]._id === allPets[0]._id} onClick={() => { api?.scrollPrev() }}><MoveLeft /></Button>
+									<Button size={'icon'} variant={'secondary'} className='active:scale-95' disabled={allPets[current]._id === allPets[allPets.length - 1]._id} onClick={() => { api?.scrollNext() }}><MoveRight /></Button>
+								</div>
 							}
 						</>
 					) : (
 						<NoMorePets />
 					)}
 				</div>
-			</m.div>
+			</div>
 		</>
 	)
 }

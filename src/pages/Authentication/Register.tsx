@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { RegisterForm } from '@/components/forms/register'
-import { m } from 'framer-motion'
 
 export default function Register() {
 
@@ -20,7 +19,7 @@ export default function Register() {
 	}, [])
 
 	return (
-		<m.div className='flex flex-col gap-2 w-full' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+		<div className='flex flex-col gap-2 w-full'>
 			<div className='w-full'>
 				<h1 className="text-2xl">{t('label.authorization.register.default')}</h1>
 				<p className="flex items-center gap-1.5 text-sm">
@@ -30,6 +29,6 @@ export default function Register() {
 				</p>
 			</div>
 			<RegisterForm />
-		</m.div>
+		</div>
 	)
 }

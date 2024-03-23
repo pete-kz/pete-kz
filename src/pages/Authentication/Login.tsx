@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import { useTranslation } from 'react-i18next'
-import { m } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { LoginForm } from '@/components/forms/login'
 
@@ -20,7 +19,7 @@ export default function Login() {
 	}, [])
 
 	return (
-		<m.div className='flex flex-col gap-1 w-full' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+		<div className='flex flex-col gap-1 w-full'>
 			<div>
 				<h1 className="text-2xl">{t('label.authorization.login.default')}</h1>
 				<p className="flex items-center gap-1.5 text-sm">
@@ -30,6 +29,6 @@ export default function Login() {
 				</p>
 			</div>
 			<LoginForm />
-		</m.div>
+		</div>
 	)
 }

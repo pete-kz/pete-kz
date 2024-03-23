@@ -30,7 +30,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
     const authState = useAuthUser<AuthState>()
     const queryClient = useQueryClient()
     const { toast } = useToast()
-    const { data: pet, error: petError, isPending: petPending }: { data: Pet_Response | undefined, error: AxiosError | null, isPending: boolean } = useQuery({ queryKey: [`pet_${_id}`], queryFn: () => axios.get(`${API.baseURL}/pets/find/${_id}`).then(res => res.data), refetchInterval: 100, refetchOnMount: 'always' })
+    const { data: pet, error: petError, isPending: petPending }: { data: Pet_Response | undefined, error: AxiosError | null, isPending: boolean } = useQuery({ queryKey: [`pet_${_id}`], queryFn: () => axios.get(`${API.baseURL}/pets/find/${_id}`).then(res => res.data) })
 
     // States
     const [openPet, setOpenPet] = useState<boolean>(false)
@@ -70,7 +70,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
             ) : (
                 <PetOverlay pet={pet} info contacts open={openPet} setOpen={setOpenPet} />
             )}
-            <Card className='flex flex-col items-center p-3 gap-2' >
+            <Card className='flex flex-col items-center p-3 gap-2' onClick={(authState && authState._id === pet.ownerID) ? undefined : () => { setOpenPet(true) }} >
                 <Avatar>
                     <AvatarImage src={pet.imagesPath[0]} alt={pet.name} />
                     <AvatarFallback>{pet.name[0]}</AvatarFallback>

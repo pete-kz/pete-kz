@@ -6,14 +6,13 @@ import { API } from '@config'
 import { type Pet_Response, AuthState, User_Response } from '@declarations'
 import { axiosAuth as axios } from '@utils'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { ExternalLink, Phone, Send } from 'lucide-react'
 import ReactImageGallery from 'react-image-gallery'
 import { formatAge } from '@/lib/utils'
 import { OverlayContent, Overlay } from './ui/overlay'
 import BackButton from './back-button'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
+import PetOverlayContactSection from './pet-overlay-contact-section'
 
 const ChangePetForm = lazy(() => import('@/components/forms/change-pet'))
 const LikeButton = lazy(() => import('@/components/like-button'))
@@ -57,22 +56,19 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
                 )}
 
                 {ownerData && info && (
-                    <Card className='border-none rounded-none flex flex-col gap-3 h-full w-full'>
+                    <Card className='border-none rounded-none flex flex-col h-full w-full'>
                         <BackButton className='pb-0 pl-4' action={() => setOpen(false)} />
-                        <CardTitle className='p-6 pb-2 pt-0'>
+                        <CardTitle className='p-6 pb-2 pt-2'>
                             {pet.name}, {formatAge(pet.birthDate, t('pet.year'), t('pet.month')) as string}
                             <br />
-                            <span className='text-muted font-normal hover:text-[#c18dbf] transition-all ease-in duration-75 p-0 gap-2' onClick={() => { navigate('/pwa/users/' + ownerData._id) }}>
-                                {ownerData.companyName ? ownerData.companyName : ownerData.firstName + ' ' + ownerData.lastName}<ExternalLink />
+                            <span className='text-muted font-normal' onClick={() => navigate('/pwa/users/' + ownerData._id)}>
+                                {ownerData.companyName ? ownerData.companyName : ownerData.firstName + ' ' + ownerData.lastName}
                             </span>
                         </CardTitle>
                         <CardContent className='p-0'>
                             <ReactImageGallery items={imageLinks} showFullscreenButton={false} showThumbnails={true} showPlayButton={false} />
                         </CardContent>
                         <div className='p-6 pt-2 pb-2'>
-                            <p className='pb-3'>
-                            <pre className='font-normal font-sans'>{pet.description}</pre>
-                            </p>
                             <div id='pet_table'>
                                 <div id='pet_row'>
                                     <p>{t('pet.sex.default')}</p>
@@ -87,26 +83,11 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
                                     <p>{`${pet.weight} ${t('pet.kg')}`}</p>
                                 </div>
                             </div>
+                            <pre className='font-normal font-sans p-3 bg-border rounded-lg mt-3 mb-0'>{pet.description}</pre>
                         </div>
                         {contacts && (
                             <div className='p-6 pt-0'>
-                                <h3 className='text-xl'>{t('label.contacts')}</h3>
-                                <p>{ownerData.firstName + ' ' + ownerData.lastName}</p>
-                                {ownerData.social.instagram && (
-                                    <Button variant={'link'} className='flex gap-2 pl-0' onClick={() => { window.open(`https://instagram.com/${ownerData.social.instagram}`, '_blank') }}>
-                                        {ownerData.social.instagram}
-                                    </Button>
-                                )}
-                                {ownerData.social.telegram && (
-                                    <Button className='flex gap-2 pl-0' variant={'link'} onClick={() => { window.open(`https://t.me/${ownerData.social.telegram}`, '_blank') }}>
-                                        <Send />{ownerData.social.telegram}
-                                    </Button>
-                                )}
-                                {ownerData.phone && (
-                                    <Button className='flex gap-2 pl-0' variant={'link'} onClick={() => { window.open(`tel:${ownerData.phone}`, '_blank') }}>
-                                        <Phone />{ownerData.phone}
-                                    </Button>
-                                )}
+                                <PetOverlayContactSection user={ownerData} />
                             </div>
                         )}
                     </Card>

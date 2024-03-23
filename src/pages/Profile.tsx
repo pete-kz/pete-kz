@@ -1,7 +1,6 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react'
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
-import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import { API } from '@config'
@@ -42,7 +41,7 @@ export default function Profile() {
     return (
         <>
             <MobilePageHeader title={t('header.profile')} to='/pwa' />
-            <m.div className="block w-full gap-2 p-3 mb-20" initial={{ opacity: 0, y: 1 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="block w-full gap-2 p-3 mb-20">
                 <Suspense fallback={<div>Loading...</div>}>
                     {isAuthenticated() ? (
                         userData && <UserProfileCard user={userData} />
@@ -65,11 +64,11 @@ export default function Profile() {
                 </div>
 
                 {userPending && petsPending && <div>Likes loading...</div>}
-                
+
                 {userLiked.length > 0 && (
                     <div className='p-1'>
                         <p>{t('label.myLikes')}</p>
-                        
+
                         {userLiked.map((pet, index) => (
                             <LikedPet setUserLiked={setUserLiked} key={index} pet_id={pet._id} userData={userData} />
                         ))}
@@ -80,7 +79,7 @@ export default function Profile() {
                 </div>
                 {userError && <div>{userError.message}</div>}
                 {petsError && <div>{petsError.message}</div>}
-            </m.div>
+            </div>
         </>
     )
 }

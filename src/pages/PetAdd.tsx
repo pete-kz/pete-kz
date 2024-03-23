@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader'
 import useSignOut from 'react-auth-kit/hooks/useSignOut'
-import { m } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { AddPetForm } from '@/components/forms/add-pet'
 import MobilePageHeader from '@/components/mobile-page-header'
@@ -39,9 +38,9 @@ export default function AddPetPage() {
     return (
         <>
             <MobilePageHeader title={t('header.petAdd')} to='/pwa/profile' />
-            <m.div className='m-2 p-2 mb-20' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className='m-2 p-2 mb-20'>
                 <AddPetForm />        
-            </m.div>
+            </div>
         </>
     )
 }

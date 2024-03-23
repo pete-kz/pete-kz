@@ -1,7 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
-import { m } from 'framer-motion'
 import MobilePageHeader from '@/components/mobile-page-header'
 import { useTranslation } from 'react-i18next'
 
@@ -11,7 +10,7 @@ export default function AuthLayout() {
 	const { t } = useTranslation()
 
 	return (
-		<m.div className='h-screen flex justify-center bg-[url("/images/background.webp")]' initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+		<div className='h-screen flex justify-center bg-[url("/images/background.webp")]'>
 			<div className='max-w-lg bg-background'>
 				<MobilePageHeader title={t('header.authorization')} to='/pwa/profile' />
 				<Toaster />
@@ -19,6 +18,6 @@ export default function AuthLayout() {
 					<Outlet />
 				</main>
 			</div>
-		</m.div>
+		</div>
 	)
 }

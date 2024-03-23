@@ -1,6 +1,5 @@
 import React, { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { LazyMotion, domAnimation, AnimatePresence } from 'framer-motion'
 import { ThemeProvider } from '@/components/theme-provider'
 import RequireAuth from '@auth-kit/react-router/RequireAuth'
 import AuthProvider from 'react-auth-kit/AuthProvider'
@@ -18,7 +17,6 @@ import MainSkeleton from './pages/skeletons/main'
 import SettingsSkeleton from './pages/skeletons/settings'
 import axios from 'axios'
 import { API } from '@config'
-import User from './pages/User'
 import UserSkeleton from './pages/skeletons/user'
 
 // pages
@@ -31,6 +29,7 @@ const AddPetPage = lazy(() => import('./pages/PetAdd'))
 const IndexPage = lazy(() => import('./pages/Index'))
 const SupportPage = lazy(() => import('./pages/Support'))
 const AboutUsPage = lazy(() => import('./pages/AboutUs'))
+const UserPage = lazy(() => import('./pages/User'))
 
 const refresh = createRefresh({
 	interval: 60 * 30, // The time in sec to refresh the Access token
@@ -72,51 +71,47 @@ const App = () => {
 		<QueryClientProvider client={queryClient}>
 			<AuthProvider store={store}>
 				<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-					<LazyMotion features={domAnimation}>
-						<AnimatePresence>
-							<Suspense fallback={<LoadingPage />}>
-								<Router>
-									<Routes>
-										<Route path="/auth" element={<AuthLayout />}>
-											<Route path="/auth/login" element={<Login />} />
-											<Route path="/auth/register" element={<Register />} />
-										</Route>
-										<Route element={<WebLayout />}>
-											<Route path="/support" element={<SupportPage />} />
-											<Route path="/" element={<IndexPage />} />
-											<Route path="/about-us" element={<AboutUsPage />} />
-										</Route>
-										<Route element={<PwaLayout />}>
-											<Route path="/pwa" element={
-												<Suspense fallback={<MainSkeleton />}>
-													<Main />
-												</Suspense>
-											} />
-											<Route path="/pwa/profile" element={
-												<Suspense fallback={<ProfileSkeleton />}>
-													<Profile />
-												</Suspense>
-											} />
-											<Route path="/pwa/settings" element={
-												<Suspense fallback={<SettingsSkeleton />}>
-													<Settings />
-												</Suspense>
-											} />
-											<Route path="/pwa/users/:userId" element={
-												<Suspense fallback={<UserSkeleton />}>
-													<User />
-												</Suspense>
-											} />
-											<Route
-												path="/pwa/pets/add"
-												element={<RequireAuth fallbackPath="/auth/login"><AddPetPage /></RequireAuth>}
-											/>
-										</Route>
-									</Routes>
-								</Router>
-							</Suspense>
-						</AnimatePresence>
-					</LazyMotion>
+					<Suspense fallback={<LoadingPage />}>
+						<Router>
+							<Routes>
+								<Route path="/auth" element={<AuthLayout />}>
+									<Route path="/auth/login" element={<Login />} />
+									<Route path="/auth/register" element={<Register />} />
+								</Route>
+								<Route element={<WebLayout />}>
+									<Route path="/support" element={<SupportPage />} />
+									<Route path="/" element={<IndexPage />} />
+									<Route path="/about-us" element={<AboutUsPage />} />
+								</Route>
+								<Route element={<PwaLayout />}>
+									<Route path="/pwa" element={
+										<Suspense fallback={<MainSkeleton />}>
+											<Main />
+										</Suspense>
+									} />
+									<Route path="/pwa/profile" element={
+										<Suspense fallback={<ProfileSkeleton />}>
+											<Profile />
+										</Suspense>
+									} />
+									<Route path="/pwa/settings" element={
+										<Suspense fallback={<SettingsSkeleton />}>
+											<Settings />
+										</Suspense>
+									} />
+									<Route path="/pwa/users/:userId" element={
+										<Suspense fallback={<UserSkeleton />}>
+											<UserPage />
+										</Suspense>
+									} />
+									<Route
+										path="/pwa/pets/add"
+										element={<RequireAuth fallbackPath="/auth/login"><AddPetPage /></RequireAuth>}
+									/>
+								</Route>
+							</Routes>
+						</Router>
+					</Suspense>
 				</ThemeProvider>
 			</AuthProvider>
 		</QueryClientProvider>
