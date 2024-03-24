@@ -1,13 +1,13 @@
-import React, { lazy } from "react"
+import React, { lazy, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import axios, { AxiosError } from "axios"
 import { API } from "@config"
 import { Pet_Response, User_Response } from "@declarations"
 import { useParams } from "react-router-dom"
-import MobilePageHeader from "@/components/mobile-page-header"
 import { useQuery } from "@tanstack/react-query"
 import PetOverlayContactSection from "@/components/pet-overlay-contact-section"
 import { Helmet } from "react-helmet"
+import { useNav } from "@/lib/contexts"
 
 const MyPetIcon = lazy(() => import("@/components/my-pet-icon"))
 const UserProfileCard = lazy(() => import("@/components/cards/user-profile"))
@@ -31,13 +31,17 @@ export default function User() {
 				return (res.data as Pet_Response[]).filter((pet) => pet.ownerID === user?._id)
 			}),
 	})
+	const { updateNavText } = useNav()
+
+	useEffect(() => {
+		updateNavText(user?.companyName ? user?.companyName : user?.firstName || "404")
+	}, [user])
 
 	return (
 		<>
 			<Helmet>
 				<title>{"Pete - " + (user?.companyName ? user?.companyName : user?.firstName) || "404"}</title>
 			</Helmet>
-			<MobilePageHeader to="/pwa" title={(user?.companyName ? user?.companyName : user?.firstName) || "404"} />
 			<div className="mb-20 block w-full gap-2 p-3">
 				<div className="space-y-2">
 					{error && <div>{t("errors.user_not_found")}</div>}

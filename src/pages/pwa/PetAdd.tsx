@@ -6,8 +6,8 @@ import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
 import useSignOut from "react-auth-kit/hooks/useSignOut"
 import { useTranslation } from "react-i18next"
 import { AddPetForm } from "@/components/forms/add-pet"
-import MobilePageHeader from "@/components/mobile-page-header"
 import { Helmet } from "react-helmet"
+import { useNav } from "@/lib/contexts"
 
 export default function AddPetPage() {
 	// Setups
@@ -16,6 +16,7 @@ export default function AddPetPage() {
 	const signout = useSignOut()
 	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
+	const { updateNavText } = useNav()
 
 	// Functions
 	function checkToken() {
@@ -32,6 +33,7 @@ export default function AddPetPage() {
 			return
 		}
 		checkToken()
+		updateNavText(t("header.petAdd"))
 	}, [])
 
 	return (
@@ -39,7 +41,6 @@ export default function AddPetPage() {
 			<Helmet>
 				<title>{"Pete - " + t("header.petAdd")}</title>
 			</Helmet>
-			<MobilePageHeader title={t("header.petAdd")} to="/pwa/profile" />
 			<div className="m-2 mb-20 p-2">
 				<AddPetForm />
 			</div>

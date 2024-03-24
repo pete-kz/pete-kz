@@ -42,6 +42,7 @@
 		"clsx": "^2.1.0",
 		"cmdk": "^1.0.0",
 		"embla-carousel-react": "^8.0.0-rc22",
+		"framer-motion": "^11.0.20",
 		"i18next": "^23.10.1",
 		"i18next-browser-languagedetector": "^7.2.0",
 		"i18next-http-backend": "^2.5.0",

@@ -30,7 +30,9 @@
     "profile_updated": "Профиль жаңартылды!",
     "passwordNoMatch": "Парольдер сәйкес келмейді!",
     "checkNetwork": "Интернет қосылымын тексеріңіз",
-    "unauthorized": "You must be authorized!"
+    "unauthorized": "You must be authorized!",
+    "formErrorsTitle": "There are errors in form!",
+    "formErrors": "Please check every page for errors and ensure they all filled!"
   },
   "alert": {
     "you_sure": "Сіз толықтай сенімдісіз бе?",
@@ -95,7 +97,8 @@
     "yes": "Yes",
     "no": "No",
     "userPets": "Питомцы пользователя",
-    "newContentAvailable": "Доступно обновление. Установить?"
+    "newContentAvailable": "Доступно обновление. Установить?",
+    "next": "Далее"
   },
   "text": {
     "about_us": {
@@ -188,7 +191,8 @@
     "phone": "Жәрдем",
     "instagram": "Инстаграм",
     "telegram": "Жеделхат",
-    "passwordConfirm": "Құпия сөзді растаңыз"
+    "passwordConfirm": "Құпия сөзді растаңыз",
+    "address": "Адрес"
   },
   "navigation_main_bar": {
     "pages": {

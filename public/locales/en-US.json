@@ -37,7 +37,9 @@
     "profile_updated": "Profile updated!",
     "passwordNoMatch": "Passwords do not match!",
     "checkNetwork": "Check your internet connection",
-    "unauthorized": "You must be authorized!"
+    "unauthorized": "You must be authorized!",
+    "formErrorsTitle": "There are errors in form!",
+    "formErrors": "Please check every page for errors and ensure they all filled!"
   },
   "alert": {
     "you_sure": "Are you absolutely sure?",
@@ -102,7 +104,8 @@
     "yes": "Yes",
     "no": "No",
     "userPets": "User's pets",
-    "newContentAvailable": "Доступно обновление. Установить?"
+    "newContentAvailable": "Доступно обновление. Установить?",
+    "next": "Next"
   },
   "text": {
     "about_us": {
@@ -195,7 +198,8 @@
     "phone": "Phone",
     "instagram": "Instagram",
     "telegram": "Telegram",
-    "passwordConfirm": "Confirm your password"
+    "passwordConfirm": "Confirm your password",
+    "address": "Address"
   },
   "navigation_main_bar": {
     "pages": {
