@@ -5,21 +5,25 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { RegisterForm } from "@/components/forms/register"
 import { Helmet } from "react-helmet"
+import { motion } from "framer-motion"
+import { useNav } from "@/lib/contexts"
 
 export default function Register() {
 	// Setups
 	const navigate = useNavigate()
 	const isAuthenticated = useIsAuthenticated()
 	const { t } = useTranslation()
+	const { updateNavText } = useNav()
 
 	useEffect(() => {
 		if (isAuthenticated()) {
 			navigate("/pwa")
 		}
+		updateNavText(t("label.authorization.register.default"))
 	}, [])
 
 	return (
-		<div className="flex w-full flex-col gap-2">
+		<motion.div className="flex w-full flex-col gap-2 p-4" key={"register_page"} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
 			<Helmet>
 				<title>{"Pete - " + t("label.authorization.register.default")}</title>
 			</Helmet>
@@ -38,6 +42,6 @@ export default function Register() {
 				</p>
 			</div>
 			<RegisterForm />
-		</div>
+		</motion.div>
 	)
 }

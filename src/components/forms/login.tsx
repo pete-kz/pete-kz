@@ -11,9 +11,9 @@ import axios, { AxiosResponse } from "axios"
 import { useToast } from "../ui/use-toast"
 import { API } from "@config"
 import LoadingSpinner from "@/components/loading-spinner"
-import { PhoneInput } from "../ui/phone-input"
 import { axiosErrorHandler } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
+const PhoneInput = React.lazy(() => import("../ui/phone-input").then((module) => ({ default: module.PhoneInput })))
 
 export function LoginForm() {
 	// Setups

@@ -64,7 +64,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 	}
 
 	if (petError) {
-		;<Card className="flex flex-col items-center gap-2 p-3">
+		<Card className="flex flex-col items-center gap-2 p-3">
 			<Avatar>
 				<AvatarFallback>{t("error")}</AvatarFallback>
 			</Avatar>

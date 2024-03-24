@@ -8,10 +8,10 @@ import { AuthState, Pet_Response } from "@declarations"
 import { useNavigate } from "react-router-dom"
 import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import MobilePageHeader from "@/components/mobile-page-header"
 import AddPetCard from "@/components/cards/add-pet"
 import { useQuery } from "@tanstack/react-query"
 import { Helmet } from "react-helmet"
+import { useNav } from "@/lib/contexts"
 
 const LikedPet = lazy(() => import("@/components/cards/liked-pet"))
 const MyPetIcon = lazy(() => import("@/components/my-pet-icon"))
@@ -41,6 +41,7 @@ export default function Profile() {
 		queryFn: () => axios.get(`${API.baseURL}/users/find/${user?._id}`).then((res) => res.data),
 		refetchInterval: 2000,
 	})
+	const { updateNavText } = useNav()
 
 	// States
 	const [userPets, setUserPets] = useState<Pet_Response[]>([])
@@ -54,12 +55,15 @@ export default function Profile() {
 		}
 	}, [petsData, userData])
 
+	useEffect(() => {
+		updateNavText(t("header.profile"))
+	}, [])
+
 	return (
 		<>
 			<Helmet>
 				<title>{"Pete - " + t("header.profile")}</title>
 			</Helmet>
-			<MobilePageHeader title={t("header.profile")} to="/pwa" />
 			<div className="mb-20 block w-full gap-2 p-3">
 				<Suspense fallback={<div>Loading...</div>}>
 					{isAuthenticated() ? (

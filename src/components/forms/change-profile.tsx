@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, lazy } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -16,7 +16,7 @@ import { AuthState, User_Response } from "@/lib/declarations"
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { InputIcon } from "../ui/input-icon"
 import { useToast } from "../ui/use-toast"
-import { PhoneInput } from "../ui/phone-input"
+const PhoneInput = lazy(() => import("../ui/phone-input").then((module) => ({ default: module.PhoneInput })))
 
 export default function ChangeProfileForm({ children }: { children: React.ReactNode }) {
 	// Setups
@@ -35,6 +35,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 		firstName: z.string().min(2),
 		companyName: z.string().optional(),
 		lastName: z.string().min(2),
+		address: z.string().optional(),
 		phone: z
 			.string()
 			.min(7, { message: t("notifications.phone_length") })
@@ -62,6 +63,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 			instagram: userData?.social.instagram,
 			telegram: userData?.social.telegram,
 			password: "",
+			address: "",
 		},
 	})
 
@@ -125,7 +127,6 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 	}, [userData, form])
 
 	return (
-		// user.name, user.login, user.phone, user.contacts.instagram, user.contacts.telegram, user.password
 		<Dialog>
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent className="rounded-lg">
@@ -186,6 +187,19 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 										<FormLabel>{t("user.phone")}</FormLabel>
 										<FormControl>
 											<PhoneInput placeholder={t("user.phone")} {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="address"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>{t("user.address")}</FormLabel>
+										<FormControl>
+											<Input placeholder="" type="text" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
