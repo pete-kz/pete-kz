@@ -14,6 +14,7 @@ import { CarouselItem, Carousel, CarouselContent, CarouselApi } from "@/componen
 import { Filter, UserRound } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { useGetReccommendations } from "@/lib/hooks"
+import PWAInstallComponent from "@/components/pwa-install"
 
 const commonClasses = "absolute top-0 p-2 z-50 m-2"
 const iconSize = "w-8 h-8"
@@ -35,6 +36,7 @@ export default function Main() {
 	const [page, setPage] = useState<number>(1)
 	const [filter, setFilter] = useState<Pet_Filter>(defaultFilterValue)
 	const [openAlertCity, setOpenAlertCity] = useState<boolean>(false)
+	const [openInstall, setOpenInstall] = useState<boolean>(false)
 
 	const { data: allPets, loading: loadingPets, updatingCache } = useGetReccommendations(page, filter)
 
@@ -55,9 +57,19 @@ export default function Main() {
 		setFilter(() => filter)
 	}
 
+	function isPWA() {
+		let displayMode = "browser"
+		const mqStandAlone = "(display-mode: standalone)"
+		// @ts-expect-error not correct types
+		if (navigator.standalone || window.matchMedia(mqStandAlone).matches) {
+			displayMode = "standalone"
+		}
+		return displayMode === "standalone"
+	}
+
 	useEffect(() => {
 		if (current === allPets.length - 1 && allPets.length % 10 === 0) {
-			setPage(prevPage => prevPage + 1)
+			setPage((prevPage) => prevPage + 1)
 		}
 	}, [current])
 
@@ -74,10 +86,14 @@ export default function Main() {
 		} else {
 			setOpenAlertCity(true)
 		}
+		if (!isPWA()) {
+			setOpenInstall(true)
+		}
 	}, [])
 
 	return (
 		<>
+			<PWAInstallComponent icon="images/pete-logo.svg" name="Pete" manifestUrl="/manifest.webmanifest" open={openInstall} />
 			{openAlertCity && <CityAlert setOpen={setOpenAlertCity} />}
 			<div
 				className={cn(commonClasses, "left-0")}

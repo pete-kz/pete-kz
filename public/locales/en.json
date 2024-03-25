@@ -98,7 +98,9 @@
     "no": "No",
     "userPets": "User's pets",
     "newContentAvailable": "Доступно обновление. Установить?",
-    "next": "Next"
+    "next": "Next",
+    "install": "Install",
+    "web": "Web"
   },
   "text": {
     "about_us": {

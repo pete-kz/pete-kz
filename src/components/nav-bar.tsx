@@ -16,7 +16,7 @@ export default function NavigationBar() {
 
 	return (
 		<header className="fixed top-0 flex h-16 w-screen justify-center border-b bg-card" style={{ zIndex: 9999 }}>
-			<div className="flex h-full w-full max-w-7xl items-center justify-between">
+			<div className="flex h-full w-full px-4 md:px-0 md:max-w-7xl items-center justify-between">
 				<img
 					src="/images/pete-logo.svg"
 					onClick={() => {

@@ -22,14 +22,14 @@ export function useGetReccommendations(page: number = 1, filter?: Pet_Filter) {
 		return `${paginationParams}&${params}`
 	}, [filter])
 
-	const getCached = useCallback(() => {
+	const getCached = () => {
 		const cachedPets = localStorage.getItem("_data_allPets")
 		if (cachedPets) {
 			setAllPets(JSON.parse(cachedPets))
 			setLoading(false)
 			setUpdatingCache(true)
 		}
-	}, [])
+	}
 
 	const cachePets = useCallback((pets: Pet_Response[]): void => {
 		localStorage.setItem("_data_allPets", JSON.stringify(allPets.length < 20 ? pets : allPets))
