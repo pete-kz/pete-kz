@@ -14,7 +14,7 @@ export default function PwaLayout() {
 			<Toaster />
 			{location.pathname !== "/pwa" && <MobilePageHeader />}
 			<motion.div className='flex items-center justify-center bg-[url("/images/background.webp")] object-cover' animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
-				<main className="relative h-[calc(100vh-4rem)] w-full max-w-lg bg-background">
+				<main className={`relative ${location.pathname !== "/pwa" ? "h-[calc(100vh-4rem)]" : "h-screen"} w-full max-w-lg bg-background`}>
 					<AnimatePresence mode="wait">
 						<Outlet />
 					</AnimatePresence>
