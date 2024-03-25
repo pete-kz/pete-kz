@@ -8,13 +8,11 @@ import "@fontsource/inter/400.css"
 import "@fontsource/inter/500.css"
 import "@fontsource/inter/700.css"
 import { registerSW } from "virtual:pwa-register"
-import i18n from "./i18"
 
 const updateSW = registerSW({
 	onNeedRefresh() {
-		if (window.confirm(i18n.t("label.newContentAvailable"))) {
-			updateSW(true)
-		}
+		updateSW(true)
+		console.info("[PWA] App has been updated")
 	},
 	onOfflineReady() {
 		// window.alert('App has been loaded.')
