@@ -28,7 +28,7 @@ export default function AddPetPage() {
 	}
 
 	useEffect(() => {
-		if (!isAuthenticated()) {
+		if (!isAuthenticated) {
 			navigate("/auth/login")
 			return
 		}

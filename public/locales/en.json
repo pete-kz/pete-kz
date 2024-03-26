@@ -1,4 +1,5 @@
 {
+  
   "header": {
     "authorization": "Authorization",
     "petAdd": "Add pet",
@@ -219,5 +220,12 @@
   "error": "Error",
   "errors": {
     "user_not_found": "User not found"
+  },
+  "api": {
+    "userNotFound": "User not found!",
+    "userExists": "User with this phone number already exists!",
+    "wrongPassword": "Wrong password",
+    "internal": "Internal error!",
+    "noAuth": "No authorization!"
   }
 }

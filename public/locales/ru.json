@@ -219,5 +219,12 @@
   "error": "Ошибка",
   "errors": {
     "user_not_found": "Пользователь не найден"
+  },
+  "api": {
+    "userNotFound": "User not found!",
+    "userExists": "User with this phone number already exists!",
+    "wrongPassword": "Wrong password",
+    "internal": "Internal error!",
+    "noAuth": "No authorization!"
   }
 }

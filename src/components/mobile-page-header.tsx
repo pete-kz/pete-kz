@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useNav } from "@/lib/contexts"
 
-export default function MobilePageHeader() {
+export default function MobilePageHeader({ href }: { href: string }) {
 	// Setups
 	const navigate = useNavigate()
 	const { t } = useTranslation()
@@ -17,7 +17,7 @@ export default function MobilePageHeader() {
 				<Button
 					variant={"link"}
 					onClick={() => {
-						navigate(navText === t("header.profile") ? "/pwa" : "/pwa/profile")
+						navigate(href)
 					}}
 					className="flex h-fit justify-start gap-1 p-4 pl-0 text-muted-foreground">
 					<div className="flex items-center">

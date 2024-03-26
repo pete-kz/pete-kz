@@ -48,7 +48,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 	// Functions
 	function removePet(pet: Pet_Response) {
 		// If user is not authenticated, do not do anything
-		if (!isAuthenticated()) return
+		if (!isAuthenticated) return
 
 		// Send request to remove pet from user data
 		axios
@@ -80,7 +80,7 @@ export default function MyPetIcon({ _id, setUserPets }: PetIcon) {
 		pet &&
 		!petPending && (
 			<>
-				{authState && authState._id === pet.ownerID ? <PetOverlay pet={pet} edit open={openPet} setOpen={setOpenPet} /> : <PetOverlay pet={pet} info contacts open={openPet} setOpen={setOpenPet} />}
+				{authState && authState._id === pet.ownerID ? <PetOverlay pet={pet} edit open={openPet} setOpen={setOpenPet} /> : <PetOverlay pet={pet} info contacts like open={openPet} setOpen={setOpenPet} />}
 				<Card
 					className="flex flex-col items-center gap-2 p-3"
 					onClick={

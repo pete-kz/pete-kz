@@ -63,7 +63,7 @@ const axiosAuth = setupCache(axios)
 
 export function axiosErrorHandler(error: AxiosError) {
 	if (error.response) {
-		if (error.response.status === 500)
+		if (error.response.status === 500 || error.response.status === 400)
 			return toast({
 				description: i18n.t(`api.${(error.response.data as { msg: APIErrors }).msg}`),
 				variant: "destructive",
@@ -74,6 +74,11 @@ export function axiosErrorHandler(error: AxiosError) {
 				variant: "destructive",
 			})
 		console.error(error.response)
+		return toast({
+			title: String(error.status),
+			description: i18n.t("api.internal"),
+			variant: "destructive",
+		})
 	} else if (error.request) {
 		console.error(error.request)
 		toast({ description: i18n.t("notifications.checkNetwork") })
@@ -111,6 +116,16 @@ function parseMongoDate(Mongo_Date: string) {
 		}
 	}
 	return null
+}
+
+export function isPWA() {
+	let displayMode = "browser"
+	const mqStandAlone = "(display-mode: standalone)"
+	// @ts-expect-error not correct types
+	if (navigator.standalone || window.matchMedia(mqStandAlone).matches) {
+		displayMode = "standalone"
+	}
+	return displayMode === "standalone"
 }
 
 const filterValues = {

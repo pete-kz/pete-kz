@@ -16,7 +16,7 @@ export default function Register() {
 	const { updateNavText } = useNav()
 
 	useEffect(() => {
-		if (isAuthenticated()) {
+		if (isAuthenticated) {
 			navigate("/pwa")
 		}
 		updateNavText(t("label.authorization.register.default"))

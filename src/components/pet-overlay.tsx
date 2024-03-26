@@ -34,8 +34,7 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 	const navigate = useNavigate()
 	const { data: ownerData } = useQuery<User_Response>({
 		queryKey: ["owner", pet._id],
-		queryFn: () => axios.get(`${API.baseURL}/users/find/${pet.ownerID}`).then((res) => res.data),
-		refetchInterval: 2000,
+		queryFn: () => axios.get(`${API.baseURL}/users/${pet.ownerID}`).then((res) => res.data)
 	})
 
 	// States
@@ -52,7 +51,7 @@ export default function PetOverlay({ pet, info = false, edit = false, contacts =
 
 	return (
 		<Overlay open={open}>
-			<OverlayContent className="h-fit max-h-full overflow-scroll">
+			<OverlayContent className="h-full max-h-full overflow-scroll">
 				{edit && pet.ownerID === user?._id && (
 					<div className="m-4 mb-16 rounded-lg border bg-card p-4">
 						<BackButton className="p-0" action={() => setOpen(false)} />

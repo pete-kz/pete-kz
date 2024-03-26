@@ -1,7 +1,7 @@
 import React, { lazy, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Pet_Response, User_Response } from "@/lib/declarations"
+import { AuthState, Pet_Response } from "@/lib/declarations"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
 import { axiosAuth as axios, axiosErrorHandler } from "@utils"
 import { API } from "@config"
@@ -10,16 +10,18 @@ import { useTranslation } from "react-i18next"
 import { useToast } from "../ui/use-toast"
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
 import { useQuery } from "@tanstack/react-query"
+import useAuthUser from "react-auth-kit/hooks/useAuthUser"
 
 const RemoveLikeAlert = lazy(() => import("@/components/popups/remove-like"))
 const PetOverlay = lazy(() => import("../pet-overlay"))
 
-export default function LikedPet({ pet_id, userData, setUserLiked }: { pet_id: Pet_Response["_id"]; userData: User_Response | undefined; setUserLiked: React.Dispatch<React.SetStateAction<Pet_Response[]>> }) {
+export default function LikedPet({ pet_id, setUserLiked }: { pet_id: Pet_Response["_id"]; setUserLiked: React.Dispatch<React.SetStateAction<Pet_Response[]>> }) {
 	// States
 	const [open, setOpen] = useState<boolean>(false)
 
 	// Setups
 	const isAuthenticated = useIsAuthenticated()
+	const authState = useAuthUser<AuthState>()
 	const { t } = useTranslation()
 	const { toast } = useToast()
 	const authHeader = useAuthHeader()
@@ -39,7 +41,7 @@ export default function LikedPet({ pet_id, userData, setUserLiked }: { pet_id: P
 	// Functions
 	function removePetFromLiked(pet_id: string) {
 		// If user is not authenticated, remove pet from local storage
-		if (!isAuthenticated() || !userData) {
+		if (!isAuthenticated || !authState) {
 			// Parse liked pets from local storage
 			let browserLiked = JSON.parse(localStorage.getItem("_data_offline_liked") || "[]") as string[]
 			// Filter liked pets from unliked pet
@@ -67,19 +69,9 @@ export default function LikedPet({ pet_id, userData, setUserLiked }: { pet_id: P
 
 			return
 		}
-		// If user is authenticated, remove pet from user data
-		const userPrevData = structuredClone(userData) // Clone user data
-
-		// Filter liked pets from unliked pet
-		userPrevData.liked.filter((pet) => pet != pet_id)
-
-		// Removing password field from userData so API does not update the password by accident
-		// @ts-expect-error Using interface User_Response that have strict definitions throws error when trying to exclude password from data
-		userPrevData.password = undefined
 
 		// Send request to remove liked pet from user data
-		axios
-			.delete(`${API.baseURL}/users/remove/${userData._id}/liked/${pet_id}`, {
+		axios.delete(`${API.baseURL}/me/liked/${pet_id}/remove`, {
 				headers: { Authorization: authHeader! },
 			})
 			.then(() => {

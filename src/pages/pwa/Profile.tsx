@@ -1,10 +1,9 @@
-import React, { useEffect, useState, lazy, Suspense } from "react"
-import useAuthUser from "react-auth-kit/hooks/useAuthUser"
+import React, { useEffect, lazy, Suspense } from "react"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
 import { useTranslation } from "react-i18next"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { API } from "@config"
-import { AuthState, Pet_Response } from "@declarations"
+import { Pet_Response } from "@declarations"
 import { useNavigate } from "react-router-dom"
 import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -12,48 +11,58 @@ import AddPetCard from "@/components/cards/add-pet"
 import { useQuery } from "@tanstack/react-query"
 import { Helmet } from "react-helmet"
 import { useNav } from "@/lib/contexts"
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
+import { axiosErrorHandler } from "@/lib/utils"
 
 const LikedPet = lazy(() => import("@/components/cards/liked-pet"))
 const MyPetIcon = lazy(() => import("@/components/my-pet-icon"))
-const UserProfileCard = lazy(() => import("@/components/cards/user-profile"))
+const MyProfileCard = lazy(() => import("@/components/cards/my-profile"))
 
 export default function Profile() {
 	// Setups
-	const user = useAuthUser<AuthState>()
 	const isAuthenticated = useIsAuthenticated()
+	const authHeader = useAuthHeader()
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const {
-		data: petsData,
-		error: petsError,
-		isPending: petsPending,
-	} = useQuery({
-		queryKey: ["pets"],
-		queryFn: () => axios.get(`${API.baseURL}/pets/find`).then((res) => res.data),
-		refetchInterval: 2000,
+		data: userPets,
+		error: userPetsError,
+		isPending: userPetsPending,
+	} = useQuery<Pet_Response[], AxiosError>({
+		queryKey: ["me", "pets", isAuthenticated],
+		queryFn: () => axios.get(`${API.baseURL}/me/pets`, { headers: { Authorization: authHeader } }).then((res) => res.data),
+		retry(failureCount, error) {
+			if (error.response?.status === 401) {
+				return false
+			}
+			return failureCount < 2
+		},
 	})
+
 	const {
-		data: userData,
-		error: userError,
-		isPending: userPending,
-	} = useQuery({
-		queryKey: ["user", user?._id],
-		queryFn: () => axios.get(`${API.baseURL}/users/find/${user?._id}`).then((res) => res.data),
-		refetchInterval: 2000,
+		data: likedPets,
+		error: likedPetsError,
+		isPending: likedPetsPending,
+	} = useQuery<Pet_Response[], AxiosError>({
+		queryKey: ["me", "pets", isAuthenticated, "liked"],
+		queryFn: () => axios.get(`${API.baseURL}/me/liked`, { headers: { Authorization: authHeader }}).then((res) => res.data),
+		retry(failureCount, error) {
+			if (error.response?.status === 401) {
+				return false
+			}
+			return failureCount < 2
+		},
 	})
+	
 	const { updateNavText } = useNav()
 
-	// States
-	const [userPets, setUserPets] = useState<Pet_Response[]>([])
-	const [userLiked, setUserLiked] = useState<Pet_Response[]>([])
+	if (userPetsError) {
+		console.error(userPetsError)
+	}
 
-	useEffect(() => {
-		if (petsData) {
-			const likedIds: string[] = userData?.liked || (JSON.parse(localStorage.getItem("_data_offline_liked") || "[]") as string[])
-			setUserPets((petsData as Pet_Response[]).filter((pet) => pet.ownerID === user?._id))
-			setUserLiked((petsData as Pet_Response[]).filter((pet) => likedIds.includes(pet._id)))
-		}
-	}, [petsData, userData])
+	if (likedPetsError) {
+		console.error(likedPetsError)
+	}
 
 	useEffect(() => {
 		updateNavText(t("header.profile"))
@@ -66,8 +75,8 @@ export default function Profile() {
 			</Helmet>
 			<div className="mb-20 block w-full gap-2 p-3">
 				<Suspense fallback={<div>Loading...</div>}>
-					{isAuthenticated() ? (
-						userData && <UserProfileCard user={userData} />
+					{isAuthenticated ? (
+						<MyProfileCard />
 					) : (
 						<Button
 							variant={"secondary"}
@@ -83,28 +92,26 @@ export default function Profile() {
 				<div className="mt-3 p-1">
 					<p>{t("label.myPets")}</p>
 					<div className="mt-2 grid grid-cols-3 gap-2">
-						{userPending && petsPending && <div>Loading...</div>}
-						{userData && userPets?.map((pet, index) => <MyPetIcon key={index} _id={pet._id} setUserPets={setUserPets} />)}
+						{userPetsPending && <div>Loading...</div>}
+						{userPets?.map((pet, index) => <MyPetIcon key={index} _id={pet._id} />)}
 						<AddPetCard />
 					</div>
 				</div>
 
-				{userPending && petsPending && <div>Likes loading...</div>}
+				{likedPetsPending && <div>Likes loading...</div>}
 
-				{userLiked.length > 0 && (
+				{likedPets && likedPets.length > 0 && (
 					<div className="p-1">
 						<p>{t("label.myLikes")}</p>
 
-						{userLiked.map((pet, index) => (
-							<LikedPet setUserLiked={setUserLiked} key={index} pet_id={pet._id} userData={userData} />
+						{likedPets?.map((pet, index) => (
+							<LikedPet key={index} pet_id={pet._id} setUserLiked={() => {}} />
 						))}
 					</div>
 				)}
-				<div className="absolute bottom-5 right-5">
+				<div className="fixed bottom-5 right-5">
 					<SettingsButton />
 				</div>
-				{userError && <div>{userError.message}</div>}
-				{petsError && <div>{petsError.message}</div>}
 			</div>
 		</>
 	)

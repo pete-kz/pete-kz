@@ -1,10 +1,10 @@
 {
   "api": {
-    "userNotFound": "",
-    "userExists": "",
-    "wrongPassword": "",
-    "internal": "",
-    "noAuth": ""
+    "userNotFound": "User not found!",
+    "userExists": "User with this phone number already exists!",
+    "wrongPassword": "Wrong password",
+    "internal": "Internal error!",
+    "noAuth": "No authorization!"
   },
   "header": {
     "authorization": "Authorization",

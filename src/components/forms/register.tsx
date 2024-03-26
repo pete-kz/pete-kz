@@ -79,7 +79,7 @@ export function RegisterForm() {
 	function submitRegistration(values: z.infer<typeof formSchema>) {
 		setLoadingState(true)
 		axios
-			.post(`${API.baseURL}/users/register`, values)
+			.post(`${API.baseURL}/auth/register`, values)
 			.then((response: AxiosResponse) => {
 				if (!response.data.err) {
 					navigate("/auth/login")

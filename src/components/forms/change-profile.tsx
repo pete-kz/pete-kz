@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
-import useAuthUser from "react-auth-kit/hooks/useAuthUser"
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -12,7 +11,7 @@ import { AxiosResponse } from "axios"
 import { axiosAuth as axios, axiosErrorHandler } from "@utils"
 import { API } from "@config"
 import LoadingSpinner from "@/components/loading-spinner"
-import { AuthState, User_Response } from "@/lib/declarations"
+import { User_Response } from "@/lib/declarations"
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { InputIcon } from "../ui/input-icon"
 import { useToast } from "../ui/use-toast"
@@ -21,14 +20,12 @@ const PhoneInput = lazy(() => import("../ui/phone-input").then((module) => ({ de
 export default function ChangeProfileForm({ children }: { children: React.ReactNode }) {
 	// Setups
 	const { t } = useTranslation()
-	const user = useAuthUser<AuthState>()
 	const authHeader = useAuthHeader()
 	const { toast } = useToast()
 
 	// States
 	const [loadingState, setLoadingState] = useState<boolean>(false)
 	const [userData, setUserData] = useState<User_Response>()
-	const [updated, setUpdated] = useState<boolean>(false)
 
 	// Form Setups
 	const formSchema = z.object({
@@ -71,7 +68,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 	function getUserInfo() {
 		setLoadingState(true)
 		axios
-			.get(`${API.baseURL}/users/find/${user?._id}`)
+			.get(`${API.baseURL}/me`, { headers: { Authorization: authHeader } })
 			.then((res: AxiosResponse) => {
 				const user: User_Response = res.data
 				setUserData(user)
@@ -82,9 +79,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		setLoadingState(true)
-		axios
-			.post(
-				`${API.baseURL}/users/update/${user?._id}`,
+		axios.post(`${API.baseURL}/me`,
 				{
 					update: {
 						companyName: values.companyName,
@@ -102,7 +97,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 			)
 			.then(() => {
 				toast({ description: t("notifications.profile_updated") })
-				setUpdated((update) => !update)
+				getUserInfo()
 				setLoadingState(false)
 			})
 			.catch(axiosErrorHandler)
@@ -113,7 +108,7 @@ export default function ChangeProfileForm({ children }: { children: React.ReactN
 
 	useEffect(() => {
 		getUserInfo()
-	}, [updated])
+	}, [])
 
 	useEffect(() => {
 		if (userData) {

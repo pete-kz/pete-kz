@@ -1,15 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
-import type { Pet_Response, User_Response } from "@declarations"
+import type { Pet_Response } from "@declarations"
 import { formatAge } from "@/lib/utils"
 import PetOverlay from "@/components/pet-overlay"
 
-interface PetCard extends Pet_Response {
-	user?: User_Response
-}
-
-export default function PetCard(props: PetCard) {
+export default function PetCard(props: Pet_Response) {
 	// Setups
 	const { t } = useTranslation()
 
@@ -17,9 +13,9 @@ export default function PetCard(props: PetCard) {
 	const [openPet, setOpenPet] = useState<boolean>(false)
 
 	return (
-		props.user && (
+
 			<>
-				<PetOverlay pet={props} info contacts open={openPet} setOpen={setOpenPet} />
+				<PetOverlay pet={props} info contacts like open={openPet} setOpen={setOpenPet} />
 				<div
 					className="relative cursor-pointer"
 					style={{
@@ -48,6 +44,6 @@ export default function PetCard(props: PetCard) {
 					</div>
 				</div>
 			</>
-		)
+		
 	)
 }

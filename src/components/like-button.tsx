@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Heart } from "lucide-react"
 
 import { useToast } from "./ui/use-toast"
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader"
 
 export default function LikeButton(props: { pet: Pet_Response }) {
 	// Setups
@@ -18,6 +19,7 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 	const { t } = useTranslation()
 	const isAuthenticated = useIsAuthenticated()
 	const { toast } = useToast()
+	const authHeader = useAuthHeader()
 
 	// States
 	const [userData, setUserData] = useState<User_Response>()
@@ -26,7 +28,7 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 	// Functions
 	function likePet() {
 		if (!liked) {
-			if (!isAuthenticated() || !userData) {
+			if (!isAuthenticated || !userData) {
 				const browserLiked = JSON.parse(localStorage.getItem("_data_offline_liked") || "[]") as string[]
 				browserLiked.push(props.pet._id)
 				localStorage.setItem("_data_offline_liked", JSON.stringify(browserLiked))
@@ -40,10 +42,9 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 			userPrevData.liked.push(props.pet._id)
 			// @ts-expect-error Using interface User_Response that have strict definitions throws error when trying to exclude password from data
 			userPrevData.password = undefined
-			axios
-				.post(`${API.baseURL}/users/update/${userData._id}`, {
+			axios.post(`${API.baseURL}/me`, {
 					update: userPrevData,
-				})
+				}, { headers: { Authorization: authHeader }})
 				.then(() => {
 					toast({
 						description: t("pet.liked") + " " + props.pet.name + "!",
@@ -51,6 +52,7 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 					setLiked(true)
 				})
 				.catch(axiosErrorHandler)
+				.finally(() => setLiked(true))
 		} else {
 			removePetFromLiked(props.pet._id)
 			setLiked(false)
@@ -72,8 +74,7 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 		}
 		// If user is authenticated, remove pet from user data
 		// Send request to remove liked pet from user data
-		axios
-			.delete(`${API.baseURL}/users/remove/${userData._id}/liked/${pet_id}`)
+		axios.delete(`${API.baseURL}/me/liked/${pet_id}/remove`, { headers: { Authorization: authHeader }})
 			.then(() => {
 				toast({ description: t("notifications.liked_remove") })
 			})
@@ -81,11 +82,15 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 	}
 
 	function getUser() {
-		if (isAuthenticated() && user) {
+		if (isAuthenticated && user) {
 			axios
-				.post(`${API.baseURL}/users/find`, { query: { _id: user._id } })
+				.get(`${API.baseURL}/me`, { headers: { Authorization: authHeader }} )
 				.then((res: AxiosResponse) => {
-					setUserData(res.data)
+					const user: User_Response = res.data
+					setUserData(user)
+					if (user.liked.includes(props.pet._id)) {
+						setLiked(true)
+					}
 				})
 				.catch(axiosErrorHandler)
 		}
@@ -96,7 +101,7 @@ export default function LikeButton(props: { pet: Pet_Response }) {
 	}, [])
 
 	return (
-		<div className="sticky bottom-5 flex w-full justify-center">
+		<div className="fixed bottom-2 right-2">
 			<Button variant={"outline"} size={"icon"} className="w-fit gap-2 rounded-full p-6" style={{ color: "#FF0000" }} onClick={likePet}>
 				<span className="text-white">{t("label.addToLiked")}</span>
 				<Heart fill={liked ? "#FF0000" : "transparent"} />

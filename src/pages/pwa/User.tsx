@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query"
 import PetOverlayContactSection from "@/components/pet-overlay-contact-section"
 import { Helmet } from "react-helmet"
 import { useNav } from "@/lib/contexts"
+import { axiosErrorHandler } from "@/lib/utils"
 
 const MyPetIcon = lazy(() => import("@/components/my-pet-icon"))
 const UserProfileCard = lazy(() => import("@/components/cards/user-profile"))
@@ -16,20 +17,21 @@ export default function User() {
 	// Setups
 	const { userId } = useParams()
 	const { t } = useTranslation()
-	const {
-		data: user,
-		error,
-		isPending,
-	} = useQuery<User_Response, AxiosError>({
+	const { data: user, isPending } = useQuery<User_Response, AxiosError>({
 		queryKey: ["user", userId],
-		queryFn: () => axios.get(`${API.baseURL}/users/find/${userId}`).then((res) => res.data),
+		queryFn: () =>
+			axios
+				.get(`${API.baseURL}/users/${userId}`)
+				.then((res) => res.data)
+				.catch(axiosErrorHandler),
 	})
 	const { data: pets } = useQuery<Pet_Response[], AxiosError>({
-		queryKey: ["user_pets", userId],
+		queryKey: ["user", userId, "pets"],
 		queryFn: () =>
-			axios.get(`${API.baseURL}/pets/find/`).then((res) => {
-				return (res.data as Pet_Response[]).filter((pet) => pet.ownerID === user?._id)
-			}),
+			axios
+				.get(`${API.baseURL}/users/${userId}/pets`)
+				.then((res) => res.data)
+				.catch(axiosErrorHandler),
 	})
 	const { updateNavText } = useNav()
 
@@ -44,7 +46,6 @@ export default function User() {
 			</Helmet>
 			<div className="mb-20 block w-full gap-2 p-3">
 				<div className="space-y-2">
-					{error && <div>{t("errors.user_not_found")}</div>}
 					{isPending ? (
 						<div>Loading...</div>
 					) : (
@@ -52,7 +53,7 @@ export default function User() {
 							<UserProfileCard user={user!} />
 							<div>
 								<h1 className="text-2xl font-bold">{t("label.userPets")}</h1>
-								<div className="mt-3 grid grid-cols-3">
+								<div className="mt-3 grid grid-cols-3 gap-2">
 									{pets?.map((pet) => <MyPetIcon key={pet._id} {...pet} />)}
 									{pets?.length === 0 && t("label.noPets")}
 								</div>

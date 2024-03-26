@@ -25,9 +25,7 @@ export default function Settings() {
 				<ProjectCard social />
 				<SupportCard />
 				<ChangeCity />
-				<div>
-					<ChangeLanguage />
-				</div>
+				<ChangeLanguage />
 			</div>
 		</>
 	)

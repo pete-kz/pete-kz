@@ -16,7 +16,7 @@ export default function Login() {
 	const { updateNavText } = useNav()
 
 	useEffect(() => {
-		if (isAuthenticated()) {
+		if (isAuthenticated) {
 			navigate("/pwa")
 		}
 		updateNavText(t("label.authorization.login.default"))
